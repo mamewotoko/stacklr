@@ -20,13 +20,13 @@ Concept
   | Apple   |
   | Orange  |
   ===========
-  | Banana  | <- touch
+  | Banana  | &lt;- touch
   | Sugar   |
   +---------+
 </pre>
 <pre>
   +---------+
-  | Banana  | <- push 
+  | Banana  | &lt;- push 
   | Apple   |
   | Orange  |
   ===========
@@ -39,7 +39,7 @@ Concept
 <pre>
   +---------+
   | Apple   |
-  | Orange  | <- touch
+  | Orange  | &lt;- touch
   ===========
   | Banana  | 
   | Sugar   |
@@ -52,7 +52,7 @@ Concept
   ===========
   | Banana  | 
   | Sugar   |
-  | Orange  | <- push? 
+  | Orange  | &lt;- push? 
   +---------+
 </pre>
 
