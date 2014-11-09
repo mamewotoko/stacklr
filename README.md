@@ -23,7 +23,8 @@ Concept
   | Banana  | <- touch
   | Sugar   |
   +---------+
-
+</pre>
+<pre>
   +---------+
   | Banana  | <- push 
   | Apple   |
@@ -43,7 +44,9 @@ Concept
   | Banana  | 
   | Sugar   |
   +---------+
+</pre>
 
+<pre>
   +---------+
   | Apple   |
   ===========
