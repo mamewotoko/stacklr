@@ -3,7 +3,7 @@ stacklr - Stack based shopping/TODO list
 Concept
 -------
 ### UI
-
+<pre>
   +----------
   | Apple   ^
   | Orange  | items to buy 
@@ -11,9 +11,9 @@ Concept
   | Banana  | history 
   | Sugar   V
   +---------
-
+</pre>
 ### add to stack
-
+<pre>
   +---------+
   | Apple   |
   | Orange  |
@@ -29,9 +29,10 @@ Concept
   ===========
   | Sugar   |
   +---------+
+</pre>
 
 ### pop from stack
-
+<pre>
   +---------+
   | Apple   |
   | Orange  | <- touch
@@ -47,6 +48,7 @@ Concept
   | Sugar   |
   | Orange  | <- push? 
   +---------+
+</pre>
 
 Functions
 ---------
@@ -63,7 +65,7 @@ Functions
     simple list
     sort by frequency of touch
     ...
-
+- support due date
 
 TODO
 -----
