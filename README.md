@@ -12,7 +12,9 @@ Concept
   | Sugar   V
   +---------
 </pre>
+
 ### add to stack
+
 <pre>
   +---------+
   | Apple   |
@@ -32,6 +34,7 @@ Concept
 </pre>
 
 ### pop from stack
+
 <pre>
   +---------+
   | Apple   |
