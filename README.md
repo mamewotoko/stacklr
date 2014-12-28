@@ -80,3 +80,12 @@ Design
   Android Native App?
   Sync with google calendar/spreadsheet?
 
+
+MEMO
+----
+- Google Keep has no api yet
+  http://stackoverflow.com/questions/19196238/is-there-a-google-keep-api
+- Google Calendar API
+  https://developers.google.com/google-apps/calendar/?hl=ja
+- Google Tasks API
+  https://developers.google.com/google-apps/tasks/?hl=ja
