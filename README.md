@@ -75,7 +75,9 @@ Functions
 
 TODO
 -----
+Supprot voice
 Design
+  Save items to local database
   Web UI?
   Android Native App?
   Sync with google calendar/spreadsheet?
@@ -89,3 +91,8 @@ MEMO
   https://developers.google.com/google-apps/calendar/?hl=ja
 - Google Tasks API
   https://developers.google.com/google-apps/tasks/?hl=ja
+
+android create project -n stacklr -p . -t android-16 -k com.mamewo.stacklr -a StacklrActivity
+
+
+

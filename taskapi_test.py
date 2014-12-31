@@ -31,4 +31,5 @@ http = credentials.authorize(http)
 service = build('calendar', 'v3', http=http)
 req = service.calendarList().list()
 response = req.execute()
+print req
 print response
