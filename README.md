@@ -75,13 +75,19 @@ Functions
 
 TODO
 -----
-Supprot voice
-Design
+- history list
+- implement "push to history list"
+    add checkbox to stack item
+    use swipe?
+      https://github.com/47deg/android-swipelistview
+      http://www.tutecentral.com/android-swipe-listview/
+- implement "enter text by speech"
+- add items in history as suggestion
+- Data storage design
+  Write data storage interface
   Save items to local database
   Web UI?
-  Android Native App?
-  Sync with google calendar/spreadsheet?
-
+  Sync with google tasks/clendar/spreadsheet?
 
 MEMO
 ----
