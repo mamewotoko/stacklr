@@ -4,9 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +30,9 @@ public class StacklrActivity
     private StackAdapter stackAdapter_;
     static private
     final String TAG = "stacklr";
+    static private
+    final int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+    private Intent speechIntent_;
     
     /** Called when the activity is first created. */
     @Override
@@ -36,11 +42,15 @@ public class StacklrActivity
         stackListView_ = (ListView) findViewById(R.id.stacklist);
         targetEditText_ = (EditText) findViewById(R.id.target_text_view);
         targetEditText_.setOnEditorActionListener(this);
+        targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
         stackAdapter_ = new StackAdapter();
         stackListView_.setAdapter(stackAdapter_);
         stackListView_.setOnItemClickListener(this);
         Button pushButton = (Button) findViewById(R.id.push_button);
         pushButton.setOnClickListener(new PushButtonListener());
+        
+        speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     }
 
     public class PushButtonListener
@@ -58,6 +68,21 @@ public class StacklrActivity
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE) {
+            if(resultCode != RESULT_OK) {
+                return;
+            }
+            //TODO: select good one or display list dialog 
+            List<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if(matches.isEmpty()){
+                return;
+            }
+            targetEditText_.setText(matches.get(0));
+        }
+    }
+
     public class StackAdapter
         extends BaseAdapter
     {
@@ -68,7 +93,6 @@ public class StacklrActivity
         }
 
         public void push(String item) {
-            //TODO: select more efficient way
             for(int i = 0; i < stack_.size(); i++) {
                 String existing = stack_.get(i);
                 if(existing.equals(item)){
@@ -132,5 +156,21 @@ public class StacklrActivity
             }
         }
         return false;
+    }
+
+    private
+    class MicClickListener
+        extends RightDrawableOnTouchListener
+    {
+        public MicClickListener(TextView view) {
+            super(view);
+        }
+
+        @Override
+        public boolean onDrawableTouch(MotionEvent event) {
+            //enter by speech
+            startActivityForResult(speechIntent_, SPEECH_RECOGNITION_REQUEST_CODE);
+            return true;
+        }
     }
 }
