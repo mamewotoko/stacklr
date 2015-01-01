@@ -6,8 +6,10 @@ import java.util.List;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +19,8 @@ import android.widget.AdapterView;
 
 public class StacklrActivity
     extends Activity
-    implements AdapterView.OnItemClickListener
+    implements AdapterView.OnItemClickListener,
+    TextView.OnEditorActionListener
 {
     private ListView stackListView_;
     private EditText targetEditText_;
@@ -32,12 +35,12 @@ public class StacklrActivity
         setContentView(R.layout.main);
         stackListView_ = (ListView) findViewById(R.id.stacklist);
         targetEditText_ = (EditText) findViewById(R.id.target_text_view);
+        targetEditText_.setOnEditorActionListener(this);
         stackAdapter_ = new StackAdapter();
         stackListView_.setAdapter(stackAdapter_);
         stackListView_.setOnItemClickListener(this);
         Button pushButton = (Button) findViewById(R.id.push_button);
         pushButton.setOnClickListener(new PushButtonListener());
-
     }
 
     public class PushButtonListener
@@ -100,7 +103,6 @@ public class StacklrActivity
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d(TAG, "getView: " + position + " " + stack_.size());
             if(convertView == null){
                 convertView = View.inflate(StacklrActivity.this, R.layout.stackitem, null);
             }
@@ -116,5 +118,19 @@ public class StacklrActivity
             long id) {
         stackAdapter_.push(position);
         targetEditText_.setText("");
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        Log.d(TAG, "onAction " + event + " " + Integer.toHexString(actionId));
+        if(actionId == EditorInfo.IME_ACTION_DONE){
+            String item = v.getText().toString();
+            if(item.length() > 0) {
+                stackAdapter_.push(item);
+                v.setText("");
+                return true;
+            }
+        }
+        return false;
     }
 }
