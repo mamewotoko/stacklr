@@ -2,9 +2,13 @@ package com.mamewo.stacklr;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.io.File;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -16,6 +20,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,10 +30,14 @@ public class StacklrActivity
     extends Activity
     implements TextView.OnEditorActionListener
 {
-    static private
-    final String TAG = "stacklr";
-    static private
-    final int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+    static final
+	protected String TAG = "stacklr";
+    static final
+	private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+	static final
+	private String STACK_FILENAME = "stack.txt";
+	static final
+	private String HISTORY_FILENAME = "history.txt";
     private ListView stackListView_;
     private ListView historyListView_;
     private EditText targetEditText_;
@@ -41,10 +50,20 @@ public class StacklrActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+		PackageManager m = getPackageManager();
+		String s = getPackageName();
+		String datadir = null;
+		try {
+			PackageInfo p = m.getPackageInfo(s, 0);
+			datadir = p.applicationInfo.dataDir;
+		} catch (NameNotFoundException e) {
+			Log.w(TAG, "Error Package name not found ", e);
+		}
         targetEditText_ = (EditText) findViewById(R.id.target_text_view);
         targetEditText_.setOnEditorActionListener(this);
         targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
-        stackAdapter_ = new StackAdapter();
+		File stackfile = new File(datadir, STACK_FILENAME);
+        stackAdapter_ = new StackAdapter(new FileItemStorage(stackfile.getPath()));
 
         stackListView_ = (ListView) findViewById(R.id.stack_list);
         stackListView_.setAdapter(stackAdapter_);
@@ -53,8 +72,9 @@ public class StacklrActivity
         stackListView_.setOnItemLongClickListener(stackListener);
         Button pushButton = (Button) findViewById(R.id.push_button);
         pushButton.setOnClickListener(new PushButtonListener());
-        
-        historyAdapter_ = new HistoryAdapter();
+		
+		File historyfile = new File(datadir, HISTORY_FILENAME);
+		historyAdapter_ = new HistoryAdapter(new FileItemStorage(historyfile.getPath()));
         historyListView_ = (ListView) findViewById(R.id.history_list);
         historyListView_.setAdapter(historyAdapter_);
         HistoryListItemClickListener historyListener = new HistoryListItemClickListener();
@@ -65,7 +85,14 @@ public class StacklrActivity
         speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
     }
     
-    //TOOD: resume
+	//TODO: load data in onStart method
+
+	@Override
+    protected void onDestroy(){
+		historyAdapter_.save();
+		stackAdapter_.save();
+		super.onDestroy();
+	}
 
     public class PushButtonListener
         implements View.OnClickListener
@@ -101,9 +128,11 @@ public class StacklrActivity
         extends BaseAdapter
     {
         List<String> stack_;
+		ItemStorage storage_;
 
-        public StackAdapter() {
-            stack_ = new LinkedList<String>();
+        public StackAdapter(ItemStorage storage) {
+			storage_ = storage;
+            stack_ = storage_.load();
         }
 
         public void push(String item) {
@@ -130,6 +159,10 @@ public class StacklrActivity
             return item;
         }
         
+		public void save(){
+			storage_.save(stack_);
+		}
+
         @Override
         public int getCount() {
             return stack_.size();
@@ -159,14 +192,13 @@ public class StacklrActivity
 
     private class StackClickListener 
         implements AdapterView.OnItemClickListener,
-        AdapterView.OnItemLongClickListener
+        OnItemLongClickListener
     {
     
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                 long id) {
-            stackAdapter_.push(position);
-            targetEditText_.setText("");
+            //TODO: manage state...
         }
 
         @Override
@@ -236,9 +268,11 @@ public class StacklrActivity
         extends BaseAdapter
     {
         private List<String> historyList_;
+		private ItemStorage storage_;
 
-        public HistoryAdapter(){
-            historyList_ = new LinkedList<String>();
+        public HistoryAdapter(ItemStorage storage){
+            storage_ = storage;
+			historyList_ = storage_.load();
         }
 
         public String remove(int pos){
@@ -253,9 +287,12 @@ public class StacklrActivity
             notifyDataSetChanged();
         }
         
+        public void save(){
+            storage_.save(historyList_);
+        }
+        
         @Override
         public int getCount() {
-
             return historyList_.size();
         }
 

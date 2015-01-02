@@ -99,6 +99,3 @@ MEMO
   https://developers.google.com/google-apps/tasks/?hl=ja
 
 android create project -n stacklr -p . -t android-16 -k com.mamewo.stacklr -a StacklrActivity
-
-
-
