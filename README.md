@@ -76,15 +76,19 @@ Functions
 TODO
 -----
 - history list
+   add timestamp
 - implement "push to history list"
     add checkbox to stack item
     use swipe?
       https://github.com/47deg/android-swipelistview
       http://www.tutecentral.com/android-swipe-listview/
+- add check to stack items
+- change height correspnding to number of stack items
 - implement "enter text by speech"
 - add items in history as suggestion
 - Data storage design
   Write data storage interface
+    cursor adapter?
   Save items to local database
   Web UI?
   Sync with google tasks/clendar/spreadsheet?
