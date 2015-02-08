@@ -7,6 +7,6 @@ import java.util.List;
 //preserve item order
 public interface ItemStorage
 {
-    public List<String> load();
-    public void save(List<String> data);
+	public List<Item> load();
+	public void save(List<Item> data);
 }

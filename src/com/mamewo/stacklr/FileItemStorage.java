@@ -14,21 +14,21 @@ import static com.mamewo.stacklr.StacklrActivity.TAG;
 public class FileItemStorage
 	implements ItemStorage
 {
-    private String filename_;
+	private String filename_;
 
-    public FileItemStorage(String filename) {
-        filename_ = filename;
-    }
+	public FileItemStorage(String filename) {
+		filename_ = filename;
+	}
 
-    @Override
-    public List<String> load() {
-		List<String> result = new LinkedList<String>();
+	@Override
+	public List<Item> load() {
+		List<Item> result = new LinkedList<Item>();
 		BufferedReader br = null;
 		try{
 			br = new BufferedReader(new FileReader(filename_));
 			String line;
 			while((line = br.readLine()) != null){
-				result.add(line);
+				result.add(new Item(line));
 			}
 		}
 		catch(IOException e){
@@ -36,32 +36,32 @@ public class FileItemStorage
 		}
 		finally {
 			if(br != null){
-			    try{
-			        br.close();
-			    }
-			    catch(Exception e){
-			    
-			    }
-			
+				try{
+					br.close();
+				}
+				catch(Exception e){
+
+				}
+
 			}
 		}
-        return result;
-    }
+		return result;
+	}
 
-    @Override
-    public void save(List<String> data) {
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(filename_);
-            for (String line : data) {
-                pw.println(line);
-            }
-        } catch (IOException e) {
-            Log.d(TAG, "IOException", e);
-        } finally {
-            if (pw != null) {
-                pw.close();
-            }
-        }
-    }
+	@Override
+	public void save(List<Item> data) {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(filename_);
+			for (Item item : data) {
+				pw.println(item.getName());
+			}
+		} catch (IOException e) {
+			Log.d(TAG, "IOException", e);
+		} finally {
+			if (pw != null) {
+				pw.close();
+			}
+		}
+	}
 }
