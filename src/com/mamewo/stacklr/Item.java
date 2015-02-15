@@ -28,6 +28,9 @@ public class Item
 	}
 	
 	public String getLastToucheddTimeStr(){
+		if(lastTouchedTime_ == 0){
+			return "";
+		}
 		return FORMAT.format(new Date(lastTouchedTime_));
 	}
 }

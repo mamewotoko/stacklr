@@ -2,67 +2,28 @@ stacklr - Stack based shopping/TODO list
 ========================================
 Concept
 -------
-### UI
 <pre>
   +----------
   | Apple   ^
-  | Orange  | items to buy 
-  =========== border
-  | Banana  | history 
-  | Sugar   V
+  | Orange  | shopping list
+  =========== 
+  | Banana  | stock
+  ===========
+  | Sugar   V history: candidates to add to shopping list 
   +---------
-</pre>
-
-### add to stack
-
-<pre>
-  +---------+
-  | Apple   |
-  | Orange  |
-  ===========
-  | Banana  | &lt;- touch
-  | Sugar   |
-  +---------+
-</pre>
-<pre>
-  +---------+
-  | Banana  | &lt;- push 
-  | Apple   |
-  | Orange  |
-  ===========
-  | Sugar   |
-  +---------+
-</pre>
-
-### pop from stack
-
-<pre>
-  +---------+
-  | Apple   |
-  | Orange  | &lt;- touch
-  ===========
-  | Banana  | 
-  | Sugar   |
-  +---------+
-</pre>
-
-<pre>
-  +---------+
-  | Apple   |
-  ===========
-  | Banana  | 
-  | Sugar   |
-  | Orange  | &lt;- push? 
-  +---------+
 </pre>
 
 Functions
 ---------
-- pop
-- push
-- enter new item to list
-   from app
+- add new item to shopping list
+   by keyboard of smart phone
+   by voice
    from pc
+- move shopping list to stock
+   bought item but not consumed
+- move stock to shopping list
+   no stock
+- move history item to shopping list
 - add timestamp to each list item
 - undo?
 - search item?
