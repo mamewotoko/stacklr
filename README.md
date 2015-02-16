@@ -36,6 +36,9 @@ Functions
 
 TODO
 -----
+- add licence file
+- draw icon
+- add wording file and support multiple language
 - history list
   add timestamp
 - add "stock" group?

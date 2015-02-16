@@ -32,16 +32,36 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-public class StacklrExpActivity extends Activity implements
-TextView.OnEditorActionListener {
+public class StacklrExpActivity
+	extends Activity
+	implements TextView.OnEditorActionListener
+{
 	static final protected String TAG = "stacklr";
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
-	static final private String STACK_FILENAME = "stack.txt";
-	static final private String HISTORY_FILENAME = "history.txt";
+	static final private String GROUPS[] = new String[]{
+		"To buy list", "Stock", "History"
+	};
+	
+	//order of groups
+	static private final int TO_BUY = 0;
+	static private final int STOCK = 1;
+	static private final int HISTORY = 2;
+
+	private final int[] NEXT_GROUP = new int[]{
+		STOCK, //from to buy
+		TO_BUY, //from stock, to buy(click) or history list(long)
+		TO_BUY, //from history
+	};
+
 	private ExpandableListView listView_;
 	private EditText targetEditText_;
 	private ExpandableAdapter adapter_;
 	private Intent speechIntent_;
+	private File datadir_;
+
+	static String groupNameToFilename(String groupName){
+		return groupName.replaceAll(" ", "_")+".txt";
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -51,25 +71,20 @@ TextView.OnEditorActionListener {
 		// line based
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
 		targetEditText_.setOnEditorActionListener(this);
-		targetEditText_
-		.setOnTouchListener(new MicClickListener(targetEditText_));
+		targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
 
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
 
 		PackageManager m = getPackageManager();
 		String s = getPackageName();
-		String datadir = null;
 		try {
 			PackageInfo p = m.getPackageInfo(s, 0);
-			datadir = p.applicationInfo.dataDir;
+			datadir_ = new File(p.applicationInfo.dataDir);
 		} catch (NameNotFoundException e) {
 			Log.w(TAG, "Error Package name not found ", e);
 		}
-		File stackfile = new File(datadir, STACK_FILENAME);
-		File historyfile = new File(datadir, HISTORY_FILENAME);
-		adapter_ = new ExpandableAdapter(stackfile.getPath(),
-				historyfile.getPath());
+		adapter_ = new ExpandableAdapter(GROUPS);
 		listView_ = (ExpandableListView) findViewById(R.id.expandableListView1);
 		ItemClickListener listener = new ItemClickListener();
 		listView_.setOnChildClickListener(listener);
@@ -77,9 +92,10 @@ TextView.OnEditorActionListener {
 		listView_.setAdapter(adapter_);
 		speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		listView_.expandGroup(ExpandableAdapter.TODO);
-		listView_.expandGroup(ExpandableAdapter.HISTORY);
+							   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		for(int i = 0; i < GROUPS.length; i++){
+			listView_.expandGroup(i);
+		}
 	}
 
 	// TODO: load data in onStart method
@@ -95,7 +111,9 @@ TextView.OnEditorActionListener {
 		super.onDestroy();
 	}
 
-	public class PushButtonListener implements View.OnClickListener {
+	public class PushButtonListener
+		implements View.OnClickListener
+	{
 		@Override
 		public void onClick(View v) {
 			String itemname = targetEditText_.getText().toString();
@@ -106,6 +124,7 @@ TextView.OnEditorActionListener {
 			// TODO: pushitem to TODO group
 			// stackAdapter_.push(itemname);
 			// targetEditText_.setText("");
+			// hide keyboard?
 		}
 	}
 
@@ -121,9 +140,13 @@ TextView.OnEditorActionListener {
 		boolean handled = false;
 		switch (item.getItemId()) {
 		case R.id.clear_menu:
-			adapter_.clearTODO();
-			adapter_.clearHistory();
+			for(int i = 0; i < GROUPS.length; i++){
+				adapter_.clearGroup(i);
+			}
 			handled = true;
+			break;
+		case R.id.save_menu:
+			adapter_.save();
 			break;
 		default:
 			break;
@@ -153,7 +176,7 @@ TextView.OnEditorActionListener {
 		if (actionId == EditorInfo.IME_ACTION_DONE) {
 			String item = v.getText().toString();
 			if (item.length() > 0) {
-				adapter_.pushTODOList(item);
+				adapter_.pushToBuyList(item);
 				v.setText("");
 				return true;
 			}
@@ -161,7 +184,9 @@ TextView.OnEditorActionListener {
 		return false;
 	}
 
-	private class MicClickListener extends RightDrawableOnTouchListener {
+	private class MicClickListener
+		extends RightDrawableOnTouchListener
+	{
 		public MicClickListener(TextView view) {
 			super(view);
 		}
@@ -192,15 +217,7 @@ TextView.OnEditorActionListener {
 				int groupPosition, int childPosition, long id) {
 			boolean handled = false;
 			Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
-			if (groupPosition == ExpandableAdapter.TODO) {
-				Item item = adapter_.remove(ExpandableAdapter.TODO,
-											childPosition);
-				adapter_.addHistory(item);
-			} else if (groupPosition == ExpandableAdapter.HISTORY) {
-				Item item = adapter_.remove(ExpandableAdapter.HISTORY,
-						childPosition);
-				adapter_.pushTODO(item);
-			}
+			adapter_.moveToNextGroup(groupPosition, childPosition);
 			return handled;
 		}
 
@@ -213,7 +230,7 @@ TextView.OnEditorActionListener {
 				int childPosition = ExpandableListView.getPackedPositionChild(id);
 				//TODO: display context menu
 				Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
-				adapter_.remove(groupPosition, childPosition);
+				adapter_.moveToHistory(groupPosition, childPosition);
 				handled = true;
 			}
 			return handled;
@@ -224,31 +241,41 @@ TextView.OnEditorActionListener {
 		extends BaseExpandableListAdapter
 	{
 		// TODO:Customize?
-		final static public int TODO = 0;
-		final static public int HISTORY = 1;
-		final private String groups_[] = { "TODO", "History" };
-		// child
 		private List<List<Item>> children_;
 		private List<ItemStorage> storageList_;
+		private String[] groups_;
 
-		public ExpandableAdapter(String stackpath, String historypath) {
+		//long touch -> history or remove
+
+		public ExpandableAdapter(String[] groups){
+			groups_ = groups;
 			children_ = new ArrayList<List<Item>>();
 			storageList_ = new ArrayList<ItemStorage>();
-			storageList_.add(new FileItemStorage(stackpath));
-			storageList_.add(new FileItemStorage(historypath));
-			for (int i = 0; i < groups_.length; i++) {
+			for (int i = 0; i < groups.length; i++) {
+				String filename = groupNameToFilename(groups[i]);
+				storageList_.add(new FileItemStorage(new File(datadir_, filename)));
 				children_.add(storageList_.get(i).load());
+				//modify group name
 			}
 		}
 
-		public void pushTODO(Item item) {
-			children_.get(TODO).remove(item);
-			children_.get(HISTORY).remove(item);
-			children_.get(TODO).add(0, item);
+		public void moveToNextGroup(int groupPosition, int childPosition){
+			int nextGroupPosition = NEXT_GROUP[groupPosition];
+			Item item = children_.get(groupPosition).remove(childPosition);
+			children_.get(nextGroupPosition).add(item);
 			notifyDataSetChanged();
 		}
 
-		public void pushTODOList(String items) {
+		public void pushToBuy(Item item) {
+			children_.get(TO_BUY).remove(item);
+			//XXXX
+			children_.get(STOCK).remove(item);
+			children_.get(HISTORY).remove(item);
+			children_.get(TO_BUY).add(0, item);
+			notifyDataSetChanged();
+		}
+
+		public void pushToBuyList(String items) {
 			BufferedReader br = new BufferedReader(new StringReader(items));
 			String item;
 			try {
@@ -258,39 +285,28 @@ TextView.OnEditorActionListener {
 						continue;
 					}
 					//TODO: date
-					pushTODO(new Item(item));
+					pushToBuy(new Item(item));
 				}
 			} catch (IOException e) {
 				Log.d(TAG, "IOException", e);
 			}
 		}
 
-		public void addHistory(Item item) {
-			children_.get(TODO).remove(item);
-			children_.get(HISTORY).remove(item);
-			children_.get(HISTORY).add(item);
-			notifyDataSetChanged();
-		}
-
 		public Item remove(int group, int pos) {
-			Log.d(TAG, "group, pos " + group + ", " + pos);
-			Log.d(TAG, "TODO");
-			//debugList(children_.get(TODO));
-			Log.d(TAG, "History");
 			///debugList(children_.get(HISTORY));
 			Item item = children_.get(group).remove(pos);
 			notifyDataSetChanged();
 			return item;
 		}
 
-		public void clearTODO(){
-			children_.get(TODO).clear();
+		public void moveToHistory(int groupPosition, int childPosition){
+			Item item = children_.get(groupPosition).remove(childPosition);
+			children_.get(HISTORY).add(item);
 			notifyDataSetChanged();
 		}
 
-		public void clearHistory(){
-			children_.get(HISTORY).clear();
-			notifyDataSetChanged();
+		public void clearGroup(int groupPos){
+			children_.get(groupPos).clear();
 		}
 
 		public void save() {
@@ -344,8 +360,7 @@ TextView.OnEditorActionListener {
 						android.R.layout.simple_expandable_list_item_1, null);
 			}
 			// TextView text = (TextView) convertView.findViewById(R.id.text);
-			TextView text = (TextView) convertView
-					.findViewById(android.R.id.text1);
+			TextView text = (TextView) convertView.findViewById(android.R.id.text1);
 			text.setText(groups_[groupPosition]);
 			return convertView;
 		}
