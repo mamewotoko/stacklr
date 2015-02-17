@@ -253,7 +253,7 @@ public class StacklrExpActivity
 			storageList_ = new ArrayList<ItemStorage>();
 			for (int i = 0; i < groups.length; i++) {
 				String filename = groupNameToFilename(groups[i]);
-				storageList_.add(new FileItemStorage(new File(datadir_, filename)));
+				storageList_.add(new CSVItemStorage(new File(datadir_, filename)));
 				children_.add(storageList_.get(i).load());
 				//modify group name
 			}
@@ -262,6 +262,7 @@ public class StacklrExpActivity
 		public void moveToNextGroup(int groupPosition, int childPosition){
 			int nextGroupPosition = NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
+			item.setLastTouchedTime(System.currentTimeMillis());
 			children_.get(nextGroupPosition).add(item);
 			notifyDataSetChanged();
 		}
@@ -354,12 +355,9 @@ public class StacklrExpActivity
 		public View getGroupView(int groupPosition, boolean isExpanded,
 				View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				// convertView = View.inflate(StacklrExpActivity.this,
-						// R.layout.exp_group, null);
-				convertView = View.inflate(StacklrExpActivity.this,
-						android.R.layout.simple_expandable_list_item_1, null);
+ 				convertView = View.inflate(StacklrExpActivity.this,
+ 						android.R.layout.simple_expandable_list_item_1, null);
 			}
-			// TextView text = (TextView) convertView.findViewById(R.id.text);
 			TextView text = (TextView) convertView.findViewById(android.R.id.text1);
 			text.setText(groups_[groupPosition]);
 			return convertView;
@@ -369,16 +367,23 @@ public class StacklrExpActivity
 		public View getChildView(int groupPosition, int childPosition,
 				boolean isLastChild, View convertView, ViewGroup parent) {
 			if (convertView == null) {
-				// convertView = View.inflate(StacklrExpActivity.this,
-				// R.layout.exp_item, null);
-				convertView = View.inflate(StacklrExpActivity.this,
-						android.R.layout.simple_expandable_list_item_2, null);
+				//convertView = View.inflate(StacklrExpActivity.this,
+				//R.layout.exp_item, null);
+ 				convertView = View.inflate(StacklrExpActivity.this,
+ 						android.R.layout.simple_expandable_list_item_2, null);
 			}
 			// TextView text = (TextView)
 			// convertView.findViewById(R.id.item_name);
-			TextView text = (TextView) convertView
-					.findViewById(android.R.id.text1);
-			text.setText(children_.get(groupPosition).get(childPosition).getName());
+			TextView text = (TextView) convertView.findViewById(android.R.id.text1);
+			//TextView text = (TextView) convertView.findViewById(R.id.item_name);
+			Item item = children_.get(groupPosition).get(childPosition);
+			String time = "";
+			if(item.getLastTouchedTimeStr().length() > 0){
+				time = " : " + item.getLastTouchedTimeStr();
+			}
+			text.setText(item.getName() + time);
+			//TextView time = (TextView) convertView.findViewById(R.id.item_time);
+			//text.setText(children_.get(groupPosition).get(childPosition).getLastTouchedTimeStr());
 			return convertView;
 		}
 

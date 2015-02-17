@@ -27,7 +27,7 @@ public class Item
 		return name_;
 	}
 	
-	public String getLastToucheddTimeStr(){
+	public String getLastTouchedTimeStr(){
 		if(lastTouchedTime_ == 0){
 			return "";
 		}

@@ -16,7 +16,7 @@ import static com.mamewo.stacklr.StacklrActivity.TAG;
 public class FileItemStorage
 	implements ItemStorage
 {
-	private File file_;
+	protected File file_;
 
 	public FileItemStorage(File f) {
 		file_ = f;

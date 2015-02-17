@@ -63,7 +63,7 @@ implements TextView.OnEditorActionListener
 		targetEditText_.setOnEditorActionListener(this);
 		targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
 		File stackfile = new File(datadir, STACK_FILENAME);
-		stackAdapter_ = new StackAdapter(new FileItemStorage(stackfile.getPath()));
+		stackAdapter_ = new StackAdapter(new CSVItemStorage(stackfile));
 
 		stackListView_ = (ListView) findViewById(R.id.stack_list);
 		stackListView_.setAdapter(stackAdapter_);
@@ -74,7 +74,7 @@ implements TextView.OnEditorActionListener
 		pushButton.setOnClickListener(new PushButtonListener());
 
 		File historyfile = new File(datadir, HISTORY_FILENAME);
-		historyAdapter_ = new HistoryAdapter(new FileItemStorage(historyfile.getPath()));
+		historyAdapter_ = new HistoryAdapter(new CSVItemStorage(historyfile));
 		historyListView_ = (ListView) findViewById(R.id.history_list);
 		historyListView_.setAdapter(historyAdapter_);
 		HistoryListItemClickListener historyListener = new HistoryListItemClickListener();
