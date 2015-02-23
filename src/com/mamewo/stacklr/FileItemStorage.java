@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import android.util.Log;
 import java.io.File;
 
-import static com.mamewo.stacklr.StacklrActivity.TAG;
+import static com.mamewo.stacklr.Constant.TAG;
 
 //Line based text representation
 public class FileItemStorage

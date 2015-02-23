@@ -31,12 +31,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import static com.mamewo.stacklr.Constant.*;
 
 public class StacklrExpActivity
 	extends Activity
 	implements TextView.OnEditorActionListener
 {
-	static final protected String TAG = "stacklr";
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final private String GROUPS[] = new String[]{
 		"To buy list", "Stock", "History"
@@ -379,7 +379,7 @@ public class StacklrExpActivity
 			Item item = children_.get(groupPosition).get(childPosition);
 			String time = "";
 			if(item.getLastTouchedTimeStr().length() > 0){
-				time = " : " + item.getLastTouchedTimeStr();
+				time = " : " + item.getLastTouchedTimeStr() + String.format(" (%dd)", item.elapsedDays());
 			}
 			text.setText(item.getName() + time);
 			//TextView time = (TextView) convertView.findViewById(R.id.item_time);

@@ -33,4 +33,9 @@ public class Item
 		}
 		return FORMAT.format(new Date(lastTouchedTime_));
 	}
+	
+	public int elapsedDays(){
+		long now = System.currentTimeMillis();
+		return (int)((now-lastTouchedTime_)/((double)1000*60*60*24));
+	}
 }
