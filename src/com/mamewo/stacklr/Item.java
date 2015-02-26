@@ -7,7 +7,10 @@ public class Item
 {
 	private String name_;
 	private long lastTouchedTime_;
-	SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+	static final
+	private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
+	static final
+	private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	public Item(String name){
 		name_ = name;
@@ -27,13 +30,20 @@ public class Item
 		return name_;
 	}
 	
-	public String getLastTouchedTimeStr(){
+	public String lastTouchedDateStr(){
 		if(lastTouchedTime_ == 0){
 			return "";
 		}
-		return FORMAT.format(new Date(lastTouchedTime_));
+		return DATE_FORMAT.format(new Date(lastTouchedTime_));
 	}
 	
+	public String lastTouchedTimestampStr(){
+		if(lastTouchedTime_ == 0){
+			return "";
+		}
+		return TIME_FORMAT.format(new Date(lastTouchedTime_));
+	}
+
 	public int elapsedDays(){
 		long now = System.currentTimeMillis();
 		return (int)((now-lastTouchedTime_)/((double)1000*60*60*24));

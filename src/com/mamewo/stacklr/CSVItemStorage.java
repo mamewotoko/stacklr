@@ -105,7 +105,7 @@ public class CSVItemStorage
 			writer =  new CSVWriter(new FileWriter(file_));
 			writer.writeNext(header);
 			for (Item item : data) {
-				writer.writeNext(new String[] { item.getLastTouchedTimeStr(),
+				writer.writeNext(new String[] { item.lastTouchedTimestampStr(),
 												item.getName() });
 			}
 			writer.close();

@@ -39,18 +39,27 @@ public class StacklrExpActivity
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final private String GROUPS[] = new String[]{
-		"To buy list", "Stock", "History"
+		"To buy list", "Stock", "History", "Archives"
 	};
 	
 	//order of groups
 	static private final int TO_BUY = 0;
 	static private final int STOCK = 1;
 	static private final int HISTORY = 2;
+	static private final int ARCHIVE = 3;
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
 		TO_BUY, //from stock, to buy(click) or history list(long)
 		TO_BUY, //from history
+		HISTORY //from archive
+	};
+
+	private final int[] LONG_NEXT_GROUP = new int[]{
+		HISTORY,
+		HISTORY,
+		ARCHIVE,
+		HISTORY
 	};
 
 	private ExpandableListView listView_;
@@ -139,12 +148,12 @@ public class StacklrExpActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean handled = false;
 		switch (item.getItemId()) {
-		case R.id.clear_menu:
-			for(int i = 0; i < GROUPS.length; i++){
-				adapter_.clearGroup(i);
-			}
-			handled = true;
-			break;
+// 		case R.id.clear_menu:
+// 			for(int i = 0; i < GROUPS.length; i++){
+// 				adapter_.clearGroup(i);
+// 			}
+// 			handled = true;
+// 			break;
 		case R.id.save_menu:
 			adapter_.save();
 			break;
@@ -230,7 +239,8 @@ public class StacklrExpActivity
 				int childPosition = ExpandableListView.getPackedPositionChild(id);
 				//TODO: display context menu
 				Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
-				adapter_.moveToHistory(groupPosition, childPosition);
+				adapter_.moveToNextGroupLong(groupPosition, childPosition);
+				//adapter_.moveToHistory(groupPosition, childPosition);
 				handled = true;
 			}
 			return handled;
@@ -267,6 +277,14 @@ public class StacklrExpActivity
 			notifyDataSetChanged();
 		}
 
+		public void moveToNextGroupLong(int groupPosition, int childPosition){
+			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
+			Item item = children_.get(groupPosition).remove(childPosition);
+			item.setLastTouchedTime(System.currentTimeMillis());
+			children_.get(nextGroupPosition).add(item);
+			notifyDataSetChanged();
+		}
+
 		public void pushToBuy(Item item) {
 			children_.get(TO_BUY).remove(item);
 			//XXXX
@@ -278,15 +296,16 @@ public class StacklrExpActivity
 
 		public void pushToBuyList(String items) {
 			BufferedReader br = new BufferedReader(new StringReader(items));
-			String item;
+			String itemname;
 			try {
-				while ((item = br.readLine()) != null) {
-					item = item.trim();
-					if(item.length() == 0){
+				while ((itemname = br.readLine()) != null) {
+					itemname = itemname.trim();
+					if(itemname.length() == 0){
 						continue;
 					}
+					//TODO: find existing item
 					//TODO: date
-					pushToBuy(new Item(item));
+					pushToBuy(new Item(itemname, System.currentTimeMillis()));
 				}
 			} catch (IOException e) {
 				Log.d(TAG, "IOException", e);
@@ -378,8 +397,9 @@ public class StacklrExpActivity
 			//TextView text = (TextView) convertView.findViewById(R.id.item_name);
 			Item item = children_.get(groupPosition).get(childPosition);
 			String time = "";
-			if(item.getLastTouchedTimeStr().length() > 0){
-				time = " : " + item.getLastTouchedTimeStr() + String.format(" (%dd)", item.elapsedDays());
+			String date = item.lastTouchedDateStr();
+			if(date.length() > 0){
+				time = " : " + date + String.format(" (%dd)", item.elapsedDays());
 			}
 			text.setText(item.getName() + time);
 			//TextView time = (TextView) convertView.findViewById(R.id.item_time);
