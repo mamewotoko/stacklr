@@ -47,6 +47,7 @@ public class StacklrExpActivity
 	static private final int STOCK = 1;
 	static private final int HISTORY = 2;
 	static private final int ARCHIVE = 3;
+	static private final int REMOVE = -1;
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
@@ -59,7 +60,7 @@ public class StacklrExpActivity
 		HISTORY,
 		HISTORY,
 		ARCHIVE,
-		HISTORY
+		REMOVE
 	};
 
 	private ExpandableListView listView_;
@@ -184,11 +185,20 @@ public class StacklrExpActivity
 		Log.d(TAG, "onAction " + event + " " + Integer.toHexString(actionId));
 		if (actionId == EditorInfo.IME_ACTION_DONE) {
 			String item = v.getText().toString();
-			if (item.length() > 0) {
-				adapter_.pushToBuyList(item);
-				v.setText("");
+			//search
+			if(item.length() == 0){
 				return true;
 			}
+			Item existing = adapter_.search(item);
+			if(existing != null){
+				existing.setLastTouchedTime(System.currentTimeMillis());
+				adapter_.pushToBuy(existing);
+			}
+			else {
+				adapter_.pushToBuyList(item);
+			}
+			v.setText("");
+			return true;
 		}
 		return false;
 	}
@@ -272,17 +282,32 @@ public class StacklrExpActivity
 		public void moveToNextGroup(int groupPosition, int childPosition){
 			int nextGroupPosition = NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
-			item.setLastTouchedTime(System.currentTimeMillis());
-			children_.get(nextGroupPosition).add(item);
+			if(nextGroupPosition != REMOVE){
+				item.setLastTouchedTime(System.currentTimeMillis());
+				children_.get(nextGroupPosition).add(item);
+			}
 			notifyDataSetChanged();
 		}
 
 		public void moveToNextGroupLong(int groupPosition, int childPosition){
-			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
-			item.setLastTouchedTime(System.currentTimeMillis());
-			children_.get(nextGroupPosition).add(item);
+			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
+			if(nextGroupPosition != REMOVE){
+				item.setLastTouchedTime(System.currentTimeMillis());
+				children_.get(nextGroupPosition).add(item);
+			}
 			notifyDataSetChanged();
+		}
+
+		public Item search(String itemname){
+			for(List<Item> itemlist: children_){
+				for(int i = 0; i < itemlist.size(); i++){
+					if(itemname.equals(itemlist.get(i).getName())){
+						return itemlist.remove(i);
+					}
+				}
+			}
+			return null;
 		}
 
 		public void pushToBuy(Item item) {
@@ -304,6 +329,8 @@ public class StacklrExpActivity
 						continue;
 					}
 					//TODO: find existing item
+					//TODO: if entered from text box
+					
 					//TODO: date
 					pushToBuy(new Item(itemname, System.currentTimeMillis()));
 				}
