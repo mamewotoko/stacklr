@@ -171,8 +171,7 @@ public class StacklrExpActivity
 				return;
 			}
 			// TODO: select good one or display list dialog
-			List<String> matches = data
-			.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+			List<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			if (matches.isEmpty()) {
 				return;
 			}
@@ -269,8 +268,8 @@ public class StacklrExpActivity
 
 		public ExpandableAdapter(String[] groups){
 			groups_ = groups;
-			children_ = new ArrayList<List<Item>>();
-			storageList_ = new ArrayList<ItemStorage>();
+			children_ = new LinkedList<List<Item>>();
+			storageList_ = new LinkedList<ItemStorage>();
 			for (int i = 0; i < groups.length; i++) {
 				String filename = groupNameToFilename(groups[i]);
 				storageList_.add(new CSVItemStorage(new File(datadir_, filename)));
@@ -284,7 +283,7 @@ public class StacklrExpActivity
 			Item item = children_.get(groupPosition).remove(childPosition);
 			if(nextGroupPosition != REMOVE){
 				item.setLastTouchedTime(System.currentTimeMillis());
-				children_.get(nextGroupPosition).add(item);
+				children_.get(nextGroupPosition).add(0, item);
 			}
 			notifyDataSetChanged();
 		}
@@ -294,7 +293,7 @@ public class StacklrExpActivity
 			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
 			if(nextGroupPosition != REMOVE){
 				item.setLastTouchedTime(System.currentTimeMillis());
-				children_.get(nextGroupPosition).add(item);
+				children_.get(nextGroupPosition).add(0, item);
 			}
 			notifyDataSetChanged();
 		}
@@ -348,7 +347,7 @@ public class StacklrExpActivity
 
 		public void moveToHistory(int groupPosition, int childPosition){
 			Item item = children_.get(groupPosition).remove(childPosition);
-			children_.get(HISTORY).add(item);
+			children_.get(HISTORY).add(0, item);
 			notifyDataSetChanged();
 		}
 
