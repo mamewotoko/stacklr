@@ -36,8 +36,9 @@ Functions
 
 TODO
 -----
-- add licence file
 - draw icon
+- add dialog to set item property
+- add licence file
 - add wording file and support multiple language
 - history list
   add timestamp
@@ -86,8 +87,6 @@ Tasks API Client Library for Java - Google APIs Client Library for Java — Goog
 https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/com/google/api/services/tasks/Tasks.html
 
 - initialize android project
-
-
 
 android create project -n stacklr -p . -t android-16 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
 cd libsrc/google-play-services_lib

@@ -95,6 +95,7 @@ public class StacklrExpActivity
 			Log.w(TAG, "Error Package name not found ", e);
 		}
 		adapter_ = new ExpandableAdapter(GROUPS);
+		//TODO: show load toast?
 		listView_ = (ExpandableListView) findViewById(R.id.expandableListView1);
 		ItemClickListener listener = new ItemClickListener();
 		listView_.setOnChildClickListener(listener);
@@ -108,7 +109,6 @@ public class StacklrExpActivity
 		}
 	}
 
-	// TODO: load data in onStart method
 	@Override
 	protected void onStart(){
 		super.onStart();
@@ -283,7 +283,9 @@ public class StacklrExpActivity
 			Item item = children_.get(groupPosition).remove(childPosition);
 			if(nextGroupPosition != REMOVE){
 				item.setLastTouchedTime(System.currentTimeMillis());
-				children_.get(nextGroupPosition).add(0, item);
+				//children_.get(nextGroupPosition).add(0, item);
+				List<Item> lst = children_.get(nextGroupPosition);
+				Util.insertItem(lst, item);
 			}
 			notifyDataSetChanged();
 		}
@@ -293,7 +295,10 @@ public class StacklrExpActivity
 			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
 			if(nextGroupPosition != REMOVE){
 				item.setLastTouchedTime(System.currentTimeMillis());
-				children_.get(nextGroupPosition).add(0, item);
+				//children_.get(nextGroupPosition).add(0, item);
+				List<Item> lst = children_.get(nextGroupPosition);
+				Util.insertItem(lst, item);
+
 			}
 			notifyDataSetChanged();
 		}
@@ -314,7 +319,10 @@ public class StacklrExpActivity
 			//XXXX
 			children_.get(STOCK).remove(item);
 			children_.get(HISTORY).remove(item);
-			children_.get(TO_BUY).add(0, item);
+			//children_.get(TO_BUY).add(0, item);
+			List<Item> lst = children_.get(TO_BUY);
+			Util.insertItem(lst, item);
+
 			notifyDataSetChanged();
 		}
 
@@ -347,7 +355,9 @@ public class StacklrExpActivity
 
 		public void moveToHistory(int groupPosition, int childPosition){
 			Item item = children_.get(groupPosition).remove(childPosition);
-			children_.get(HISTORY).add(0, item);
+			//children_.get(HISTORY).add(0, item);
+			List<Item> lst = children_.get(HISTORY);
+			Util.insertItem(lst, item);
 			notifyDataSetChanged();
 		}
 

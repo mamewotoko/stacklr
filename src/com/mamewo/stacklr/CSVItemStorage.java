@@ -69,14 +69,15 @@ public class CSVItemStorage
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
 			while((row = reader.readNext()) != null){
 				String name = row[1];
-				if(row[0].length() == 0){
-					result.add(new Item(name));
+				long timestamp = 0;
+				if(row[0].length() > 0){
+					timestamp = sdf.parse(row[0]).getTime();
 				}
-				else {
-					long timestamp = sdf.parse(row[0]).getTime();
-					result.add(new Item(name, timestamp));
-				}
+				//result.add(new Item(name, timestamp));
+				//TODO: move method definition
+				Util.insertItem(result, new Item(name, timestamp));
 			}
+			//sort result by timestamp
 		}
 		catch(IOException e){
 			Log.d(TAG, "IOException", e);
