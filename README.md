@@ -38,6 +38,12 @@ TODO
 -----
 - draw icon
 - add dialog to set item property
+   item type
+   button to select next group
+   color?
+- add TODO group
+   add recipe
+   add items to consume
 - add licence file
 - add wording file and support multiple language
 - history list
