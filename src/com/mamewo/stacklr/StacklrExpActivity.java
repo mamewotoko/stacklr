@@ -38,9 +38,12 @@ public class StacklrExpActivity
 	implements TextView.OnEditorActionListener
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+	static final public boolean ASCENDING = false;
+	//static final private String GROUPS[] = R.array.groups;
 	static final private String GROUPS[] = new String[]{
 		"To buy list", "Stock", "History", "Archives"
 	};
+
 	
 	//order of groups
 	static private final int TO_BUY = 0;
@@ -113,6 +116,12 @@ public class StacklrExpActivity
 	protected void onStart(){
 		super.onStart();
 		listView_.requestFocus();
+	}
+
+	@Override
+	protected void onStop() {
+		adapter_.save();
+		super.onStop();
 	}
 	
 	@Override
@@ -285,7 +294,7 @@ public class StacklrExpActivity
 				item.setLastTouchedTime(System.currentTimeMillis());
 				//children_.get(nextGroupPosition).add(0, item);
 				List<Item> lst = children_.get(nextGroupPosition);
-				Util.insertItem(lst, item);
+				Util.insertItem(lst, item, ASCENDING);
 			}
 			notifyDataSetChanged();
 		}
@@ -297,7 +306,7 @@ public class StacklrExpActivity
 				item.setLastTouchedTime(System.currentTimeMillis());
 				//children_.get(nextGroupPosition).add(0, item);
 				List<Item> lst = children_.get(nextGroupPosition);
-				Util.insertItem(lst, item);
+				Util.insertItem(lst, item, ASCENDING);
 
 			}
 			notifyDataSetChanged();
@@ -321,7 +330,7 @@ public class StacklrExpActivity
 			children_.get(HISTORY).remove(item);
 			//children_.get(TO_BUY).add(0, item);
 			List<Item> lst = children_.get(TO_BUY);
-			Util.insertItem(lst, item);
+			Util.insertItem(lst, item, ASCENDING);
 
 			notifyDataSetChanged();
 		}
@@ -357,7 +366,7 @@ public class StacklrExpActivity
 			Item item = children_.get(groupPosition).remove(childPosition);
 			//children_.get(HISTORY).add(0, item);
 			List<Item> lst = children_.get(HISTORY);
-			Util.insertItem(lst, item);
+			Util.insertItem(lst, item, ASCENDING);
 			notifyDataSetChanged();
 		}
 

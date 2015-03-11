@@ -75,7 +75,7 @@ public class CSVItemStorage
 				}
 				//result.add(new Item(name, timestamp));
 				//TODO: move method definition
-				Util.insertItem(result, new Item(name, timestamp));
+				Util.insertItem(result, new Item(name, timestamp), StacklrExpActivity.ASCENDING);
 			}
 			//sort result by timestamp
 		}

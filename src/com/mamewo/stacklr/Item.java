@@ -15,9 +15,13 @@ public class Item
 	private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	static final
-	public int ITEM_TYPE_FOOD = 0;
+	public int ITEM_TYPE_TOP = 0;
 	static final
-	public int ITEM_TYPE_ARTICLE = 1;
+	public int ITEM_TYPE_FOOD = 1;
+	static final
+	public int ITEM_TYPE_ARTICLE = 2;
+	static final
+	public int ITEM_TYPE_BOTTOM = 3;
 
 	public Item(String name){
 		this(name, 0, ITEM_TYPE_FOOD);

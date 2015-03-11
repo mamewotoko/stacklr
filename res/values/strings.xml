@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">StacklrActivity</string>
+    
+    <!-- Item.ITEM_TYPE_XXX -->
+    <string-array name="item_type">
+      <item>Top</item>
+      <item>Food</item>
+      <item>Article</item>
+      <item>Bottom</item>
+    </string-array>
+    
+    <string-array name="groups">
+      <item>To buy list</item>
+      <item>Stock</item>
+      <item>History</item>
+      <item>Archives</item>
+    </string-array>
+
 </resources>
