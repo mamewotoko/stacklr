@@ -39,10 +39,6 @@ public class StacklrExpActivity
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final public boolean ASCENDING = false;
-	//static final private String GROUPS[] = R.array.groups;
-	static final private String GROUPS[] = new String[]{
-		"To buy list", "Stock", "History", "Archives"
-	};
 
 	
 	//order of groups
@@ -72,6 +68,10 @@ public class StacklrExpActivity
 	private Intent speechIntent_;
 	private File datadir_;
 
+	private String[] getGroups(){
+		return getResources().getStringArray(R.array.groups);
+	}
+
 	static String groupNameToFilename(String groupName){
 		return groupName.replaceAll(" ", "_")+".txt";
 	}
@@ -97,7 +97,8 @@ public class StacklrExpActivity
 		} catch (NameNotFoundException e) {
 			Log.w(TAG, "Error Package name not found ", e);
 		}
-		adapter_ = new ExpandableAdapter(GROUPS);
+		String[] groups = getGroups();
+		adapter_ = new ExpandableAdapter(groups);
 		//TODO: show load toast?
 		listView_ = (ExpandableListView) findViewById(R.id.expandableListView1);
 		ItemClickListener listener = new ItemClickListener();
@@ -107,7 +108,7 @@ public class StacklrExpActivity
 		speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 							   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		for(int i = 0; i < GROUPS.length; i++){
+		for(int i = 0; i < groups.length; i++){
 			listView_.expandGroup(i);
 		}
 	}
@@ -158,12 +159,6 @@ public class StacklrExpActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean handled = false;
 		switch (item.getItemId()) {
-// 		case R.id.clear_menu:
-// 			for(int i = 0; i < GROUPS.length; i++){
-// 				adapter_.clearGroup(i);
-// 			}
-// 			handled = true;
-// 			break;
 		case R.id.save_menu:
 			adapter_.save();
 			break;
@@ -276,7 +271,7 @@ public class StacklrExpActivity
 		//long touch -> history or remove
 
 		public ExpandableAdapter(String[] groups){
-			groups_ = groups;
+			groups_ = getGroups();
 			children_ = new LinkedList<List<Item>>();
 			storageList_ = new LinkedList<ItemStorage>();
 			for (int i = 0; i < groups.length; i++) {
