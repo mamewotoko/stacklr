@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
+import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -40,7 +41,6 @@ public class StacklrExpActivity
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final public boolean ASCENDING = false;
 
-	
 	//order of groups
 	static private final int TO_BUY = 0;
 	static private final int STOCK = 1;
@@ -141,10 +141,15 @@ public class StacklrExpActivity
 			if (itemname.isEmpty()) {
 				return;
 			}
-			// TODO: pushitem to TODO group
-			// stackAdapter_.push(itemname);
-			// targetEditText_.setText("");
-			// hide keyboard?
+			Item existing = adapter_.search(itemname);
+			if(existing != null){
+				existing.setLastTouchedTime(System.currentTimeMillis());
+				adapter_.pushToBuy(existing);
+			}
+			else {
+				adapter_.pushToBuyList(itemname);
+			}
+			targetEditText_.setText("");
 		}
 	}
 
@@ -185,7 +190,6 @@ public class StacklrExpActivity
 
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		Log.d(TAG, "onAction " + event + " " + Integer.toHexString(actionId));
 		if (actionId == EditorInfo.IME_ACTION_DONE) {
 			String item = v.getText().toString();
 			//search
@@ -248,12 +252,19 @@ public class StacklrExpActivity
 				int position, long id) {
 			boolean handled = false;
 			if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-				int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-				int childPosition = ExpandableListView.getPackedPositionChild(id);
+				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+				final int childPosition = ExpandableListView.getPackedPositionChild(id);
+
+				//AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
+				//View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
+				//builder.setView(contentView);
+				//TODO: set positive, negative button action
+				//builder.create().show();
+
+
 				//TODO: display context menu
-				Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
+				//Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
 				adapter_.moveToNextGroupLong(groupPosition, childPosition);
-				//adapter_.moveToHistory(groupPosition, childPosition);
 				handled = true;
 			}
 			return handled;
