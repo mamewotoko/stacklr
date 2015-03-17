@@ -26,7 +26,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseExpandableListAdapter;
@@ -266,6 +269,12 @@ public class StacklrExpActivity
 				//set item name
 				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_name);
 				itemnameView.setText(itemname);
+
+				Spinner spinner = (Spinner)contentView.findViewById(R.id.item_type);
+				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
+																					 R.array.item_type, android.R.layout.simple_spinner_item);
+				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				spinner.setAdapter(adapter);
 
 				int initRadioButtonId = -1;
 				switch(groupPosition){
