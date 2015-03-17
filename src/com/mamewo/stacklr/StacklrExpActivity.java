@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
+import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.RadioGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseExpandableListAdapter;
@@ -255,16 +257,82 @@ public class StacklrExpActivity
 				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 				final int childPosition = ExpandableListView.getPackedPositionChild(id);
 
-				//AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
-				//View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
-				//builder.setView(contentView);
+				AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
+				View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
+				builder.setView(contentView);
+				//set default radio
+				
+				String itemname = (String)((TextView)view.findViewById(android.R.id.text1)).getText();
+				//set item name
+				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_name);
+				itemnameView.setText(itemname);
+
+				int initRadioButtonId = -1;
+				switch(groupPosition){
+				case TO_BUY:
+					initRadioButtonId = R.id.radio_to_buy;
+					break;
+				case STOCK:
+					initRadioButtonId = R.id.radio_stock;
+					break;
+				case HISTORY:
+					initRadioButtonId = R.id.radio_history;
+					break;
+				case ARCHIVE:
+					initRadioButtonId = R.id.radio_archive;
+					break;
+				default:
+					break;
+				}
+				
+				RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
+				radioGroup.check(initRadioButtonId);
+
 				//TODO: set positive, negative button action
-				//builder.create().show();
+				//use string resource
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+						@Override
+						public void onClick(DialogInterface dialog, int which){
+							dialog.cancel();
+						}
+					});
+				builder.setPositiveButton("Go", new DialogInterface.OnClickListener(){
+						@Override
+						public void onClick(DialogInterface dialog, int which){
+							//TODO: move to specified group
+							int nextGroupId = -1;
+							//TODO: loop....
+							RadioGroup nextGroup = (RadioGroup)((AlertDialog)dialog).findViewById(R.id.radio_group);
+							switch(nextGroup.getCheckedRadioButtonId()){
+							case R.id.radio_to_buy:
+								nextGroupId = TO_BUY;
+								break;
+							case R.id.radio_stock:
+								nextGroupId = STOCK;
+								break;
+							case R.id.radio_history:
+								nextGroupId = HISTORY;
+								break;
+							case R.id.radio_archive:
+								nextGroupId = ARCHIVE;
+								break;
+								//TODO: add remove?
+							default:
+								break;
+							}
+							//TODO: if moved
+							if(nextGroupId >= 0){
+								adapter_.moveToNextGroupLong(groupPosition, childPosition);
+							}
+							dialog.dismiss();
+						}
+					});
+				
+				builder.create().show();
 
 
 				//TODO: display context menu
 				//Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
-				adapter_.moveToNextGroupLong(groupPosition, childPosition);
 				handled = true;
 			}
 			return handled;
