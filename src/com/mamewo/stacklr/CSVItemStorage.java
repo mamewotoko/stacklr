@@ -27,6 +27,9 @@ public class CSVItemStorage
 	static final
 	private String NAME_COLUMN = "name";
 	static final
+	private String TYPE_COLUMN = "type";
+
+	static final
 	private String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
 	public CSVItemStorage(File f) {
@@ -75,7 +78,12 @@ public class CSVItemStorage
 				}
 				//result.add(new Item(name, timestamp));
 				//TODO: move method definition
-				Util.insertItem(result, new Item(name, timestamp), StacklrExpActivity.ASCENDING);
+				if(row.length == 2){
+					Util.insertItem(result, new Item(name, timestamp), StacklrExpActivity.ASCENDING);
+					continue;
+				}
+				int itemtype = Integer.valueOf(row[2]);
+				Util.insertItem(result, new Item(name, timestamp, itemtype), StacklrExpActivity.ASCENDING);
 			}
 			//sort result by timestamp
 		}
@@ -101,13 +109,14 @@ public class CSVItemStorage
 	@Override
 	public void save(List<Item> data) {
 		CSVWriter writer = null;
-		String[] header = new String[]{ TIMESTAMP_COLUMN, NAME_COLUMN };
+		String[] header = new String[]{ TIMESTAMP_COLUMN, NAME_COLUMN, TYPE_COLUMN };
 		try{
 			writer =  new CSVWriter(new FileWriter(file_));
 			writer.writeNext(header);
 			for (Item item : data) {
 				writer.writeNext(new String[] { item.lastTouchedTimestampStr(),
-												item.getName() });
+												item.getName(),
+												String.valueOf(item.getType())});
 			}
 			writer.close();
 		}

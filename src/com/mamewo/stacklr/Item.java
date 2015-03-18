@@ -46,6 +46,14 @@ public class Item
 	public String getName(){
 		return name_;
 	}
+
+	public int getType(){
+		return type_;
+	}
+
+	public void setType(int t){
+		type_ = t;
+	}
 	
 	public String lastTouchedDateStr(){
 		if(lastTouchedTime_ == 0){
@@ -75,7 +83,18 @@ public class Item
 		// if(diff != 0){
 		// 	return diff;
 		// }
-		return (int)(lastTouchedTime_ - item.lastTouchedTime_);
+		int typediff = type_ - item.type_;
+		if(typediff != 0){
+			return -typediff;
+		}
+		long diff = lastTouchedTime_ - item.lastTouchedTime_;
+		if(diff < 0){
+			return -1;
+		}
+		if(diff > 0){
+			return 1;
+		}
+		return 0;
 	}
 }
 

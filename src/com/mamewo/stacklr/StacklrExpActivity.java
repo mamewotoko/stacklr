@@ -39,6 +39,8 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import static com.mamewo.stacklr.Constant.*;
 
+import android.graphics.Color;
+
 public class StacklrExpActivity
 	extends Activity
 	implements TextView.OnEditorActionListener
@@ -51,7 +53,7 @@ public class StacklrExpActivity
 	static private final int STOCK = 1;
 	static private final int HISTORY = 2;
 	static private final int ARCHIVE = 3;
-	static private final int REMOVE = -1;
+	//static private final int REMOVE = -1;
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
@@ -60,11 +62,18 @@ public class StacklrExpActivity
 		HISTORY //from archive
 	};
 
+	private final int[] RADIO_ID = new int[]{
+		R.id.radio_to_buy,
+		R.id.radio_stock,
+		R.id.radio_history,
+		R.id.radio_archive
+	};
+
 	private final int[] LONG_NEXT_GROUP = new int[]{
 		HISTORY,
 		HISTORY,
 		ARCHIVE,
-		REMOVE
+		ARCHIVE
 	};
 
 	private ExpandableListView listView_;
@@ -259,40 +268,27 @@ public class StacklrExpActivity
 			if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 				final int childPosition = ExpandableListView.getPackedPositionChild(id);
+				final Item item = adapter_.get(groupPosition, childPosition);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
 				View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
 				builder.setView(contentView);
 				//set default radio
 				
-				String itemname = (String)((TextView)view.findViewById(android.R.id.text1)).getText();
+				String itemname = item.getName();
 				//set item name
 				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_name);
 				itemnameView.setText(itemname);
 
-				Spinner spinner = (Spinner)contentView.findViewById(R.id.item_type);
+				final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_type);
 				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
 																					 R.array.item_type, android.R.layout.simple_spinner_item);
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 				spinner.setAdapter(adapter);
+				spinner.setSelection(item.getType());
 
-				int initRadioButtonId = -1;
-				switch(groupPosition){
-				case TO_BUY:
-					initRadioButtonId = R.id.radio_to_buy;
-					break;
-				case STOCK:
-					initRadioButtonId = R.id.radio_stock;
-					break;
-				case HISTORY:
-					initRadioButtonId = R.id.radio_history;
-					break;
-				case ARCHIVE:
-					initRadioButtonId = R.id.radio_archive;
-					break;
-				default:
-					break;
-				}
+				//int initRadioButtonId = RADIO_ID[LONG_NEXT_GROUP[groupPosition]];
+				int initRadioButtonId = RADIO_ID[groupPosition];
 				
 				RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
 				radioGroup.check(initRadioButtonId);
@@ -305,7 +301,14 @@ public class StacklrExpActivity
 							dialog.cancel();
 						}
 					});
-				builder.setPositiveButton("Go", new DialogInterface.OnClickListener(){
+				//set type ...
+				// builder.setNeutoralButton("Stay", new new DialogInterface.OnClickListener(){
+				// 		@Override
+				// 		public void onClick(DialogInterface dialog, int which){
+				// 			dialog.dismiss();
+				// 		}
+				// 	});
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
 						@Override
 						public void onClick(DialogInterface dialog, int which){
 							//TODO: move to specified group
@@ -329,14 +332,12 @@ public class StacklrExpActivity
 							default:
 								break;
 							}
+							item.setType(spinner.getSelectedItemPosition());
 							//TODO: if moved
-							if(nextGroupId >= 0){
-								adapter_.moveToNextGroupLong(groupPosition, childPosition);
-							}
+							adapter_.moveToGroup(groupPosition, childPosition, nextGroupId);
 							dialog.dismiss();
 						}
 					});
-				
 				builder.create().show();
 
 
@@ -373,25 +374,19 @@ public class StacklrExpActivity
 		public void moveToNextGroup(int groupPosition, int childPosition){
 			int nextGroupPosition = NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
-			if(nextGroupPosition != REMOVE){
-				item.setLastTouchedTime(System.currentTimeMillis());
-				//children_.get(nextGroupPosition).add(0, item);
-				List<Item> lst = children_.get(nextGroupPosition);
-				Util.insertItem(lst, item, ASCENDING);
-			}
+			item.setLastTouchedTime(System.currentTimeMillis());
+			//children_.get(nextGroupPosition).add(0, item);
+			List<Item> lst = children_.get(nextGroupPosition);
+			Util.insertItem(lst, item, ASCENDING);
 			notifyDataSetChanged();
 		}
 
-		public void moveToNextGroupLong(int groupPosition, int childPosition){
+		public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){
 			Item item = children_.get(groupPosition).remove(childPosition);
-			int nextGroupPosition = LONG_NEXT_GROUP[groupPosition];
-			if(nextGroupPosition != REMOVE){
-				item.setLastTouchedTime(System.currentTimeMillis());
-				//children_.get(nextGroupPosition).add(0, item);
-				List<Item> lst = children_.get(nextGroupPosition);
-				Util.insertItem(lst, item, ASCENDING);
-
-			}
+			item.setLastTouchedTime(System.currentTimeMillis());
+			//children_.get(nextGroupPosition).add(0, item);
+			List<Item> lst = children_.get(nextGroupPosition);
+			Util.insertItem(lst, item, ASCENDING);
 			notifyDataSetChanged();
 		}
 
@@ -443,6 +438,10 @@ public class StacklrExpActivity
 			Item item = children_.get(group).remove(pos);
 			notifyDataSetChanged();
 			return item;
+		}
+
+		public Item get(int group, int pos){
+			return children_.get(group).get(pos);
 		}
 
 		public void moveToHistory(int groupPosition, int childPosition){
@@ -530,6 +529,19 @@ public class StacklrExpActivity
 				time = " : " + date + String.format(" (%dd)", item.elapsedDays());
 			}
 			text.setText(item.getName() + time);
+			int color = 0;
+			switch(item.getType()){
+			case Item.ITEM_TYPE_TOP:
+				color = Color.rgb(250, 175, 186);
+				break;
+			case Item.ITEM_TYPE_ARTICLE:
+				color = Color.rgb(78, 146, 88);
+				break;
+			default:
+				color = Color.rgb(255, 255, 255);
+				break;
+			}
+			text.setTextColor(color);
 			//TextView time = (TextView) convertView.findViewById(R.id.item_time);
 			//text.setText(children_.get(groupPosition).get(childPosition).getLastTouchedTimeStr());
 			return convertView;
