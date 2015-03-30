@@ -535,7 +535,7 @@ public class StacklrExpActivity
 				color = Color.rgb(250, 175, 186);
 				break;
 			case Item.ITEM_TYPE_ARTICLE:
-				color = Color.rgb(78, 146, 88);
+				color = Color.rgb(65, 163, 23);
 				break;
 			default:
 				color = Color.rgb(255, 255, 255);
