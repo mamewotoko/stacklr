@@ -85,6 +85,10 @@ MEMO
   - Authorizing with Google for REST APIs
     http://developer.android.com/google/auth/http-auth.html
   https://developers.google.com/accounts/docs/OAuth2
+  - Tasks API v1 (Rev. 41) 1.20.0
+    https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/overview-summary.html
+    - Sample code (mercurial repository)
+      https://code.google.com/p/google-api-java-client.samples/
 
 - Add Google Play Services to Your Project
   https://developer.android.com/google/play-services/setup.html#Setup
