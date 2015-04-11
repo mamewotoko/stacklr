@@ -34,6 +34,16 @@ Functions
     ...
 - support due date
 
+Build
+-----
+- copy google-play-service_lib code into libsrc
+  TODO: write detail
+- add libsrc/google-play-services_lib as library project
+- build using ant
+```bash
+ant debug
+```
+
 TODO
 -----
 - draw icon
