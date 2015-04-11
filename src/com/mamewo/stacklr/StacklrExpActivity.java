@@ -15,6 +15,17 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.Context;
+import android.content.SharedPreferences;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.tasks.TasksScopes;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import java.util.Collections;
+
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -55,6 +66,13 @@ public class StacklrExpActivity
 	static private final int ARCHIVE = 3;
 	//static private final int REMOVE = -1;
 
+	//tasks
+	private static final String PREF_ACCOUNT_NAME = "accountName";
+	private com.google.api.services.tasks.Tasks service;
+	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
+	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+	//end of tasks
+
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
 		TO_BUY, //from stock, to buy(click) or history list(long)
@@ -81,6 +99,9 @@ public class StacklrExpActivity
 	private ExpandableAdapter adapter_;
 	private Intent speechIntent_;
 	private File datadir_;
+	private GoogleAccountCredential credential_;
+	private com.google.api.services.tasks.Tasks service_;
+
 
 	private String[] getGroups(){
 		return getResources().getStringArray(R.array.groups);
@@ -90,11 +111,32 @@ public class StacklrExpActivity
 		return groupName.replaceAll(" ", "_")+".txt";
 	}
 
+  /** Check that Google Play services APK is installed and up to date. */
+  private boolean checkGooglePlayServicesAvailable() {
+    final int connectionStatusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+    if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
+		//showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+		//TODO: toast?
+		return false;
+    }
+    return true;
+  }
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_expandable);
+		//---------------
+		//gtasks
+		credential_ =
+			GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		credential_.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+		service_ =
+			new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential_)
+            .setApplicationName("Stacklr/1.0").build();
+		//---------------
 		// line based
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
 		targetEditText_.setOnEditorActionListener(this);
@@ -204,7 +246,8 @@ public class StacklrExpActivity
 
 	@Override
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-		if (actionId == EditorInfo.IME_ACTION_DONE) {
+		if (actionId == EditorInfo.IME_ACTION_DONE
+			|| actionId == EditorInfo.IME_NULL) {
 			String item = v.getText().toString();
 			//search
 			if(item.length() == 0){
