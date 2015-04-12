@@ -46,6 +46,10 @@ ant debug
 
 TODO
 -----
+- sync items with google tasks
+   get list from google
+   merge list
+   update list
 - add last update time
 - draw icon
 - add dialog to set item property

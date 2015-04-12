@@ -487,10 +487,27 @@ public class StacklrExpActivity
 			}
 		}
 
-		public void setStorage(int nth, ItemStorage newStorage){
-			//XXXX design
-			storageList_.set(nth, newStorage);
-			children_.set(nth, storageList_.get(nth).load());
+		public void merge(int nth, List<Item> lst){
+			List<Item> targetChild = children_.get(nth);
+			for(Item item: lst){
+				//Check existance of same name and update
+				//XXXXX
+				String thisName = item.getName();
+				boolean dupExists = false;
+				//TODO: add hash from name -> item
+				for(Item existing: targetChild){
+					if(thisName.equals(existing.getName())){
+						targetChild.remove(existing);
+						targetChild.add(0, existing);
+						dupExists = true;
+						break;
+					}
+				}
+				if(dupExists){
+					continue;
+				}
+				Util.insertItem(targetChild, item, ASCENDING);
+			}
 		}
 
 		public void moveToNextGroup(int groupPosition, int childPosition){
