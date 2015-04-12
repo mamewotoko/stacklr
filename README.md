@@ -46,6 +46,7 @@ ant debug
 
 TODO
 -----
+- add last update time
 - draw icon
 - add dialog to set item property
    item type
@@ -111,3 +112,5 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
 android create project -n stacklr -p . -t android-16 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
 cd libsrc/google-play-services_lib
 android update lib-project -p . -t android-16
+- This code include copies of tasks-android-sample
+    https://code.google.com/p/google-api-java-client.samples/

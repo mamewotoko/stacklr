@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
+import android.app.Dialog;
+
 import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.app.Activity;
@@ -23,6 +25,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tasks.TasksScopes;
+import android.accounts.AccountManager;
+
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import java.util.Collections;
 
@@ -57,21 +61,18 @@ public class StacklrExpActivity
 	implements TextView.OnEditorActionListener
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+
 	static final public boolean ASCENDING = false;
 
-	//order of groups
-	static private final int TO_BUY = 0;
-	static private final int STOCK = 1;
-	static private final int HISTORY = 2;
-	static private final int ARCHIVE = 3;
-	//static private final int REMOVE = -1;
-
+	//TODO: separate gtask code
 	//tasks
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	private com.google.api.services.tasks.Tasks service;
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 	//end of tasks
+
+	public int numAsyncTasks;
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
@@ -96,12 +97,12 @@ public class StacklrExpActivity
 
 	private ExpandableListView listView_;
 	private EditText targetEditText_;
-	private ExpandableAdapter adapter_;
+
+	public ExpandableAdapter adapter_;
 	private Intent speechIntent_;
 	private File datadir_;
 	private GoogleAccountCredential credential_;
-	private com.google.api.services.tasks.Tasks service_;
-
+	public com.google.api.services.tasks.Tasks service_;
 
 	private String[] getGroups(){
 		return getResources().getStringArray(R.array.groups);
@@ -111,16 +112,50 @@ public class StacklrExpActivity
 		return groupName.replaceAll(" ", "_")+".txt";
 	}
 
-  /** Check that Google Play services APK is installed and up to date. */
-  private boolean checkGooglePlayServicesAvailable() {
-    final int connectionStatusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-    if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
-		//showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-		//TODO: toast?
-		return false;
-    }
-    return true;
-  }
+	/** Check that Google Play services APK is installed and up to date. */
+	private boolean checkGooglePlayServicesAvailable() {
+		final int connectionStatusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
+			showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
+			//TODO: toast?
+			return false;
+		}
+		return true;
+	}
+
+	private void haveGooglePlayServices() {
+		// check if there is already an account selected
+		if (credential_.getSelectedAccountName() == null) {
+			// ask user to choose account
+			chooseAccount();
+		} else {
+			// load calendars
+			AsyncLoadTasks.run(this);
+		}
+	}
+
+	void refreshView() {
+		adapter_.notifyDataSetChanged();
+		//adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksList);
+		//listView.setAdapter(adapter);
+		//TODO: update and refresh
+	}
+
+	private void chooseAccount() {
+		startActivityForResult(credential_.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+	}
+
+	void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
+		runOnUiThread(new Runnable(){
+				@Override
+				public void run(){
+					Dialog dialog =
+						GooglePlayServicesUtil.getErrorDialog(connectionStatusCode, StacklrExpActivity.this,
+															  REQUEST_GOOGLE_PLAY_SERVICES);
+					dialog.show();
+				}
+			});
+	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -173,6 +208,14 @@ public class StacklrExpActivity
 	protected void onStart(){
 		super.onStart();
 		listView_.requestFocus();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (checkGooglePlayServicesAvailable()) {
+			haveGooglePlayServices();
+		}
 	}
 
 	@Override
@@ -231,16 +274,47 @@ public class StacklrExpActivity
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == SPEECH_RECOGNITION_REQUEST_CODE) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+		case REQUEST_GOOGLE_PLAY_SERVICES:
+			if (resultCode == Activity.RESULT_OK) {
+				haveGooglePlayServices();
+			} else {
+				checkGooglePlayServicesAvailable();
+			}
+			break;
+		case REQUEST_AUTHORIZATION:
+			if (resultCode == Activity.RESULT_OK) {
+				AsyncLoadTasks.run(this);
+			} else {
+				chooseAccount();
+			}
+			break;
+		case REQUEST_ACCOUNT_PICKER:
+			if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
+				String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
+				if (accountName != null) {
+					credential_.setSelectedAccountName(accountName);
+					SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putString(PREF_ACCOUNT_NAME, accountName);
+					editor.commit();
+					AsyncLoadTasks.run(this);
+				}
+			}
+			break;
+		case SPEECH_RECOGNITION_REQUEST_CODE:
 			if (resultCode != RESULT_OK) {
-				return;
+				break;
 			}
 			// TODO: select good one or display list dialog
 			List<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			if (matches.isEmpty()) {
-				return;
+				break;
 			}
 			targetEditText_.setText(matches.get(0));
+		default:
+			break;
 		}
 	}
 
@@ -278,7 +352,7 @@ public class StacklrExpActivity
 		public boolean onDrawableTouch(MotionEvent event) {
 			// enter by speech
 			startActivityForResult(speechIntent_,
-					SPEECH_RECOGNITION_REQUEST_CODE);
+								   SPEECH_RECOGNITION_REQUEST_CODE);
 			return true;
 		}
 	}
@@ -293,11 +367,11 @@ public class StacklrExpActivity
 
 	private class ItemClickListener
 		implements ExpandableListView.OnChildClickListener,
-		OnItemLongClickListener
+				   OnItemLongClickListener
 	{
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
-				int groupPosition, int childPosition, long id) {
+									int groupPosition, int childPosition, long id) {
 			boolean handled = false;
 			Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
 			adapter_.moveToNextGroup(groupPosition, childPosition);
@@ -306,7 +380,7 @@ public class StacklrExpActivity
 
 		@Override
 		public boolean onItemLongClick(AdapterView<?> parent, View view,
-				int position, long id) {
+									   int position, long id) {
 			boolean handled = false;
 			if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
@@ -392,7 +466,7 @@ public class StacklrExpActivity
 		}
 	}
 
-	private class ExpandableAdapter
+	public class ExpandableAdapter
 		extends BaseExpandableListAdapter
 	{
 		// TODO:Customize?
@@ -401,7 +475,6 @@ public class StacklrExpActivity
 		private String[] groups_;
 
 		//long touch -> history or remove
-
 		public ExpandableAdapter(String[] groups){
 			groups_ = getGroups();
 			children_ = new LinkedList<List<Item>>();
@@ -412,6 +485,12 @@ public class StacklrExpActivity
 				children_.add(storageList_.get(i).load());
 				//modify group name
 			}
+		}
+
+		public void setStorage(int nth, ItemStorage newStorage){
+			//XXXX design
+			storageList_.set(nth, newStorage);
+			children_.set(nth, storageList_.get(nth).load());
 		}
 
 		public void moveToNextGroup(int groupPosition, int childPosition){
@@ -542,10 +621,15 @@ public class StacklrExpActivity
 
 		@Override
 		public View getGroupView(int groupPosition, boolean isExpanded,
-				View convertView, ViewGroup parent) {
+								 View convertView, ViewGroup parent) {
 			if (convertView == null) {
  				convertView = View.inflate(StacklrExpActivity.this,
- 						android.R.layout.simple_expandable_list_item_1, null);
+										   android.R.layout.simple_expandable_list_item_1, null);
+			}
+			//TMP?
+			if(groupPosition >= groups_.length){
+				Log.d(TAG, "*** groupPoslarge " + groupPosition + ", "  + groups_.length);
+				return convertView;
 			}
 			TextView text = (TextView) convertView.findViewById(android.R.id.text1);
 			text.setText(groups_[groupPosition]);
@@ -554,12 +638,12 @@ public class StacklrExpActivity
 
 		@Override
 		public View getChildView(int groupPosition, int childPosition,
-				boolean isLastChild, View convertView, ViewGroup parent) {
+								 boolean isLastChild, View convertView, ViewGroup parent) {
 			if (convertView == null) {
 				//convertView = View.inflate(StacklrExpActivity.this,
 				//R.layout.exp_item, null);
  				convertView = View.inflate(StacklrExpActivity.this,
- 						android.R.layout.simple_expandable_list_item_2, null);
+										   android.R.layout.simple_expandable_list_item_2, null);
 			}
 			// TextView text = (TextView)
 			// convertView.findViewById(R.id.item_name);
