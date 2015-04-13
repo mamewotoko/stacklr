@@ -83,7 +83,7 @@ public class CSVItemStorage
 					continue;
 				}
 				int itemtype = Integer.valueOf(row[2]);
-				Util.insertItem(result, new Item(name, timestamp, itemtype), StacklrExpActivity.ASCENDING);
+				Util.insertItem(result, new Item(name, timestamp, itemtype, null), StacklrExpActivity.ASCENDING);
 			}
 			//sort result by timestamp
 		}

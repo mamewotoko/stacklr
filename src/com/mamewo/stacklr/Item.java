@@ -2,6 +2,8 @@ package com.mamewo.stacklr;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import com.google.api.services.tasks.model.Task;
+import com.google.api.client.util.DateTime;
 
 public class Item
 	implements Comparable
@@ -23,27 +25,56 @@ public class Item
 	static final
 	public int ITEM_TYPE_BOTTOM = 3;
 
+	private Task gtask_;
+	
 	public Item(String name){
-		this(name, 0, ITEM_TYPE_FOOD);
-		name_ = name;
-		lastTouchedTime_ = 0;
+		this(name, 0, ITEM_TYPE_FOOD, null);
 	}
 	
 	public Item(String name, long time){
-		this(name, time, ITEM_TYPE_FOOD);
+		this(name, time, ITEM_TYPE_FOOD, null);
 	}
 	
-	public Item(String name, long time, int type){
+	public Item(String name, long time, int type, Task gtask){
 		name_ = name;
 		lastTouchedTime_ = time;
-		type_ = type;
+		gtask_ = gtask;
+	}
+	
+	//TODO: save item type in gtask
+
+	public Item(Task gtask){
+		//TODO: fix time
+		this(null, 0, ITEM_TYPE_FOOD, gtask);
+	}
+
+	public long getLastTouchedTime(){
+		if(gtask_ != null){
+			DateTime time = gtask_.getUpdated();
+			if(time == null){
+				return System.currentTimeMillis();
+			}
+			return time.getValue();
+		}
+		return lastTouchedTime_;
 	}
 
 	public void setLastTouchedTime(long time){
+		if(gtask_ != null){
+			gtask_.setUpdated(new DateTime(time));
+			return;
+		}
 		lastTouchedTime_ = time;
 	}
 
+	public void setGtask(Task gtask){
+		gtask_ = gtask;
+	}
+
 	public String getName(){
+		if(gtask_ != null){
+			return gtask_.getTitle();
+		}
 		return name_;
 	}
 
@@ -66,7 +97,7 @@ public class Item
 		if(lastTouchedTime_ == 0){
 			return "";
 		}
-		return TIME_FORMAT.format(new Date(lastTouchedTime_));
+		return TIME_FORMAT.format(new Date(getLastTouchedTime()));
 	}
 
 	public int elapsedDays(){
@@ -87,7 +118,7 @@ public class Item
 		if(typediff != 0){
 			return -typediff;
 		}
-		long diff = lastTouchedTime_ - item.lastTouchedTime_;
+		long diff = getLastTouchedTime() - item.getLastTouchedTime();
 		if(diff < 0){
 			return -1;
 		}
@@ -97,4 +128,3 @@ public class Item
 		return 0;
 	}
 }
-

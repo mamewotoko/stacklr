@@ -2,6 +2,9 @@ package com.mamewo.stacklr;
 
 import java.util.LinkedList;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,6 +28,9 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tasks.TasksScopes;
+import com.google.api.services.tasks.model.Task;
+import com.google.api.client.util.DateTime;
+
 import android.accounts.AccountManager;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -67,7 +73,6 @@ public class StacklrExpActivity
 	//TODO: separate gtask code
 	//tasks
 	private static final String PREF_ACCOUNT_NAME = "accountName";
-	private com.google.api.services.tasks.Tasks service;
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 	//end of tasks
@@ -470,43 +475,61 @@ public class StacklrExpActivity
 		extends BaseExpandableListAdapter
 	{
 		// TODO:Customize?
+		//TODO: Design storage
 		private List<List<Item>> children_;
 		private List<ItemStorage> storageList_;
 		private String[] groups_;
+		private Map<String, Item> name2Item_;
 
 		//long touch -> history or remove
 		public ExpandableAdapter(String[] groups){
 			groups_ = getGroups();
 			children_ = new LinkedList<List<Item>>();
 			storageList_ = new LinkedList<ItemStorage>();
+			name2Item_ = new HashMap<String, Item>();
 			for (int i = 0; i < groups.length; i++) {
 				String filename = groupNameToFilename(groups[i]);
 				storageList_.add(new CSVItemStorage(new File(datadir_, filename)));
 				children_.add(storageList_.get(i).load());
+				for(Item child: children_.get(children_.size()-1)){
+					name2Item_.put(child.getName(), child);
+				}
 				//modify group name
 			}
 		}
 
-		public void merge(int nth, List<Item> lst){
+		public void merge(int nth, List<Task> lst){
 			List<Item> targetChild = children_.get(nth);
-			for(Item item: lst){
+			for(Task task: lst){
 				//Check existance of same name and update
 				//XXXXX
-				String thisName = item.getName();
-				boolean dupExists = false;
-				//TODO: add hash from name -> item
-				for(Item existing: targetChild){
-					if(thisName.equals(existing.getName())){
-						targetChild.remove(existing);
-						targetChild.add(0, existing);
-						dupExists = true;
-						break;
+				String thisName = task.getTitle();
+				Item existing = name2Item_.get(thisName);
+				if(existing != null){
+					//TODO: update
+					//TODO: move to ToBuy
+					
+					for(List<Item> child: children_){
+						if(child.remove(existing)){
+							break;
+						}
 					}
-				}
-				if(dupExists){
+					DateTime time = task.getUpdated();
+					long ltime;
+					if(time == null){
+						ltime = System.currentTimeMillis();
+					}
+					else {
+						ltime = time.getValue();
+					}
+					existing.setLastTouchedTime(ltime);
+					existing.setGtask(task);
+					Util.insertItem(targetChild, existing, ASCENDING);
 					continue;
 				}
-				Util.insertItem(targetChild, item, ASCENDING);
+				//new item
+				Item newItem = new Item(task);
+				Util.insertItem(targetChild, newItem, ASCENDING);
 			}
 		}
 
@@ -679,7 +702,7 @@ public class StacklrExpActivity
 				color = Color.rgb(250, 175, 186);
 				break;
 			case Item.ITEM_TYPE_ARTICLE:
-				color = Color.rgb(65, 163, 23);
+				color = Color.rgb(85, 183, 43);
 				break;
 			default:
 				color = Color.rgb(255, 255, 255);
