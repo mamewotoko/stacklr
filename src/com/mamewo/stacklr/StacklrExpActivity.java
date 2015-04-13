@@ -508,7 +508,7 @@ public class StacklrExpActivity
 				DateTime date = task.getUpdated();
 				long time;
 				if(date == null){
-					time = System.currentTimeMillis()/1000;
+					time = System.currentTimeMillis();
 					task.setUpdated(new DateTime(time));
 				}
 				else {

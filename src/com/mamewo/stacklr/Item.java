@@ -52,7 +52,7 @@ public class Item
 		if(gtask_ != null){
 			DateTime time = gtask_.getUpdated();
 			if(time == null){
-				gtask_.setUpdated(new DateTime(System.currentTimeMillis()/1000));
+				gtask_.setUpdated(new DateTime(System.currentTimeMillis()));
 				return System.currentTimeMillis();
 			}
 			return time.getValue();
@@ -62,7 +62,7 @@ public class Item
 
 	public void setLastTouchedTime(long timeMillis){
 		if(gtask_ != null){
-			gtask_.setUpdated(new DateTime(timeMillis/1000));
+			gtask_.setUpdated(new DateTime(timeMillis));
 			return;
 		}
 		lastTouchedTime_ = timeMillis;
@@ -88,10 +88,11 @@ public class Item
 	}
 	
 	public String lastTouchedDateStr(){
-		if(lastTouchedTime_ == 0){
+		long time = getLastTouchedTime();
+		if(time == 0){
 			return "";
 		}
-		return DATE_FORMAT.format(new Date(lastTouchedTime_));
+		return DATE_FORMAT.format(new Date(time));
 	}
 	
 	public String lastTouchedTimestampStr(){
@@ -103,7 +104,7 @@ public class Item
 
 	public int elapsedDays(){
 		long now = System.currentTimeMillis();
-		return (int)((now-lastTouchedTime_)/((double)1000*60*60*24));
+		return (int)((now-getLastTouchedTime())/((double)1000*60*60*24));
 	}
 
 	//ascending order of type
