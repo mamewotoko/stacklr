@@ -505,6 +505,16 @@ public class StacklrExpActivity
 				//XXXXX
 				String thisName = task.getTitle();
 				Item existing = name2Item_.get(thisName);
+				DateTime date = task.getUpdated();
+				long time;
+				if(date == null){
+					time = System.currentTimeMillis()/1000;
+					task.setUpdated(new DateTime(time));
+				}
+				else {
+					time = date.getValue();
+				}
+				
 				if(existing != null){
 					//TODO: update
 					//TODO: move to ToBuy
@@ -514,21 +524,15 @@ public class StacklrExpActivity
 							break;
 						}
 					}
-					DateTime time = task.getUpdated();
-					long ltime;
-					if(time == null){
-						ltime = System.currentTimeMillis();
-					}
-					else {
-						ltime = time.getValue();
-					}
-					existing.setLastTouchedTime(ltime);
+					//TODO: define merge method for item
+					existing.setLastTouchedTime(time);
 					existing.setGtask(task);
 					Util.insertItem(targetChild, existing, ASCENDING);
 					continue;
 				}
 				//new item
 				Item newItem = new Item(task);
+				name2Item_.put(newItem.getName(), newItem);
 				Util.insertItem(targetChild, newItem, ASCENDING);
 			}
 		}

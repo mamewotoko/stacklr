@@ -26,6 +26,13 @@ public class Item
 	public int ITEM_TYPE_BOTTOM = 3;
 
 	private Task gtask_;
+
+	public Item(String name, long time, int type, Task gtask){
+		name_ = name;
+		lastTouchedTime_ = time;
+		type_ = type;
+		gtask_ = gtask;
+	}
 	
 	public Item(String name){
 		this(name, 0, ITEM_TYPE_FOOD, null);
@@ -35,14 +42,7 @@ public class Item
 		this(name, time, ITEM_TYPE_FOOD, null);
 	}
 	
-	public Item(String name, long time, int type, Task gtask){
-		name_ = name;
-		lastTouchedTime_ = time;
-		gtask_ = gtask;
-	}
-	
 	//TODO: save item type in gtask
-
 	public Item(Task gtask){
 		//TODO: fix time
 		this(null, 0, ITEM_TYPE_FOOD, gtask);
@@ -52,6 +52,7 @@ public class Item
 		if(gtask_ != null){
 			DateTime time = gtask_.getUpdated();
 			if(time == null){
+				gtask_.setUpdated(new DateTime(System.currentTimeMillis()/1000));
 				return System.currentTimeMillis();
 			}
 			return time.getValue();
@@ -59,12 +60,12 @@ public class Item
 		return lastTouchedTime_;
 	}
 
-	public void setLastTouchedTime(long time){
+	public void setLastTouchedTime(long timeMillis){
 		if(gtask_ != null){
-			gtask_.setUpdated(new DateTime(time));
+			gtask_.setUpdated(new DateTime(timeMillis/1000));
 			return;
 		}
-		lastTouchedTime_ = time;
+		lastTouchedTime_ = timeMillis;
 	}
 
 	public void setGtask(Task gtask){
