@@ -72,6 +72,18 @@ public class Item
 		gtask_ = gtask;
 	}
 
+	public void merge(Task gtask){
+		DateTime date = gtask.getUpdated();
+		long time;
+		if(date == null){
+			time = System.currentTimeMillis();
+		}
+		else {
+			time = date.getValue();
+		}
+		setLastTouchedTime(time);
+	}
+
 	public String getName(){
 		if(gtask_ != null){
 			return gtask_.getTitle();

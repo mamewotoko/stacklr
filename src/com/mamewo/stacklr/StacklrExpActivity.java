@@ -501,32 +501,17 @@ public class StacklrExpActivity
 		public void merge(int nth, List<Task> lst){
 			List<Item> targetChild = children_.get(nth);
 			for(Task task: lst){
-				//Check existance of same name and update
-				//XXXXX
 				String thisName = task.getTitle();
 				Item existing = name2Item_.get(thisName);
-				DateTime date = task.getUpdated();
-				long time;
-				if(date == null){
-					time = System.currentTimeMillis();
-					task.setUpdated(new DateTime(time));
-				}
-				else {
-					time = date.getValue();
-				}
 				
 				if(existing != null){
 					//TODO: update
-					//TODO: move to ToBuy
-					
 					for(List<Item> child: children_){
 						if(child.remove(existing)){
 							break;
 						}
 					}
-					//TODO: define merge method for item
-					existing.setLastTouchedTime(time);
-					existing.setGtask(task);
+					existing.merge(task);
 					Util.insertItem(targetChild, existing, ASCENDING);
 					continue;
 				}
