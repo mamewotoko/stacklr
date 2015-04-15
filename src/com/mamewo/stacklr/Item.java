@@ -72,7 +72,7 @@ public class Item
 		gtask_ = gtask;
 	}
 
-	public void merge(Task gtask){
+	public void update(Task gtask){
 		DateTime date = gtask.getUpdated();
 		long time;
 		if(date == null){

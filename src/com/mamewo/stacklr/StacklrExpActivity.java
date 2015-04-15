@@ -460,6 +460,14 @@ public class StacklrExpActivity
 							dialog.dismiss();
 						}
 					});
+				builder.setNeutralButton("Remove", new DialogInterface.OnClickListener(){
+						@Override
+						public void onClick(DialogInterface dialog, int which){
+							//TODO: show confirm dialog?
+							adapter_.remove(groupPosition, childPosition);
+							dialog.dismiss();
+						}
+					});
 				builder.create().show();
 
 
@@ -506,13 +514,16 @@ public class StacklrExpActivity
 				
 				if(existing != null){
 					//TODO: update
-					for(List<Item> child: children_){
-						if(child.remove(existing)){
-							break;
+					DateTime gtaskTime = task.getUpdated();
+					if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
+						for(List<Item> child: children_){
+							if(child.remove(existing)){
+								break;
+							}
 						}
+						existing.update(task);
+						Util.insertItem(targetChild, existing, ASCENDING);
 					}
-					existing.merge(task);
-					Util.insertItem(targetChild, existing, ASCENDING);
 					continue;
 				}
 				//new item

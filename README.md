@@ -46,10 +46,16 @@ ant debug
 
 TODO
 -----
+- update google task
+- add loading icon
+- add sync config
+- add clear menu
+- add touch menu, which is just update timestamp
 - sync items with google tasks
    get list from google
    merge list
    update list
+- use new menu design
 - add last update time
 - draw icon
 - add dialog to set item property
