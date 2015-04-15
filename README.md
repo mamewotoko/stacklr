@@ -47,6 +47,7 @@ ant debug
 TODO
 -----
 - add promote group (stock items to use first)
+- avoid frequent load by managing last update time
 - update google task
 - add sync config
 - add clear menu
