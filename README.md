@@ -46,8 +46,8 @@ ant debug
 
 TODO
 -----
+- add promote group (stock items to use first)
 - update google task
-- add loading icon
 - add sync config
 - add clear menu
 - add touch menu, which is just update timestamp

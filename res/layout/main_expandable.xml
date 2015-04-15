@@ -17,14 +17,20 @@
             android:ems="10"
             android:imeOptions="actionDone"
             android:singleLine="true" />
-
+	<ProgressBar
+	    android:id="@+id/loading_icon"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="38dp"
+	    android:visibility="invisible"
+            android:gravity="right"
+            android:layout_height="fill_parent" />
         <Button
             android:id="@+id/push_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:text="Push">
-    	<requestFocus />
+    	  <requestFocus />
     	</Button>
     </LinearLayout>
 

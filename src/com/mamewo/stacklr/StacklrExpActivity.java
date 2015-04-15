@@ -102,6 +102,7 @@ public class StacklrExpActivity
 
 	private ExpandableListView listView_;
 	private EditText targetEditText_;
+	private View loadingIcon_;
 
 	public ExpandableAdapter adapter_;
 	private Intent speechIntent_;
@@ -135,15 +136,14 @@ public class StacklrExpActivity
 			chooseAccount();
 		} else {
 			// load calendars
+			loadingIcon_.setVisibility(View.VISIBLE);
 			AsyncLoadTasks.run(this);
 		}
 	}
 
 	void refreshView() {
+		loadingIcon_.setVisibility(View.INVISIBLE);
 		adapter_.notifyDataSetChanged();
-		//adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, tasksList);
-		//listView.setAdapter(adapter);
-		//TODO: update and refresh
 	}
 
 	private void chooseAccount() {
@@ -181,6 +181,7 @@ public class StacklrExpActivity
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
 		targetEditText_.setOnEditorActionListener(this);
 		targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
+		loadingIcon_ = findViewById(R.id.loading_icon);
 
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
@@ -270,6 +271,12 @@ public class StacklrExpActivity
 		switch (item.getItemId()) {
 		case R.id.save_menu:
 			adapter_.save();
+			handled = true;
+			break;
+		case R.id.reload_menu:
+			loadingIcon_.setVisibility(View.VISIBLE);
+			AsyncLoadTasks.run(this);
+			handled = true;
 			break;
 		default:
 			break;
@@ -290,6 +297,7 @@ public class StacklrExpActivity
 			break;
 		case REQUEST_AUTHORIZATION:
 			if (resultCode == Activity.RESULT_OK) {
+				loadingIcon_.setVisibility(View.VISIBLE);
 				AsyncLoadTasks.run(this);
 			} else {
 				chooseAccount();
@@ -304,6 +312,7 @@ public class StacklrExpActivity
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
+					loadingIcon_.setVisibility(View.VISIBLE);
 					AsyncLoadTasks.run(this);
 				}
 			}
