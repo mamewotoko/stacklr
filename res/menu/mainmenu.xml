@@ -4,5 +4,6 @@
 	  android:icon="@android:drawable/ic_menu_save"
 	  android:title="save"></item>
     <item android:id="@+id/reload_menu"
+	  android:icon="@drawable/ic_action_refresh"
 	  android:title="reload"></item>
 </menu>
