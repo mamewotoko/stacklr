@@ -7,7 +7,7 @@ gen
 *~
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.ear
 
