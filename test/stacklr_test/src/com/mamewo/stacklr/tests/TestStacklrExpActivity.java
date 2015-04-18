@@ -5,15 +5,16 @@ import android.test.ActivityInstrumentationTestCase2;
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
 import com.robotium.solo.Solo.Config.ScreenshotFileType;
+import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ExpandableListView;
 import junit.framework.Assert;
 import com.mamewo.stacklr.*;
 import com.mamewo.stacklr.R;
-
 /**
  * This is a simple framework for a test of an Application.  See
  * {@link android.test.ApplicationTestCase ApplicationTestCase} for more information on
@@ -29,6 +30,7 @@ import com.mamewo.stacklr.R;
 public class TestStacklrExpActivity
 	extends ActivityInstrumentationTestCase2<StacklrExpActivity>
 {
+	static final private String TAG = "stacklr_test";
 	private Solo solo_;
 
     public TestStacklrExpActivity() {
@@ -39,9 +41,9 @@ public class TestStacklrExpActivity
 	public void setUp(){
 		Config config = new Config();
 		config.screenshotFileType = ScreenshotFileType.PNG;
-		config.screenshotSavePath = "/sdcard/Pictures/robotium/";
+		//config.screenshotSavePath = "/sdcard/";
+		config.screenshotSavePath = "/mnt/shell/emulated/0/Robotium-Screenshots/";
 		config.shouldScroll = false;
-		
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	
@@ -63,25 +65,21 @@ public class TestStacklrExpActivity
 	@Smoke
 	public void testAddNewItem(){
 		String egg = "Egg";
-		solo_.startScreenshotSequence("testAddNewItem");
 		solo_.enterText(0, egg);
-		solo_.takeScreenshot();
 		solo_.clickOnButton(0);
 		try{
 			Thread.sleep(500);
 		}
 		catch(InterruptedException e){
 		}
-		solo_.takeScreenshot();
 		ExpandableListView list = (ExpandableListView)solo_.getView(R.id.expandableListView1);
-		View v = list.getChildAt(0);
+		//0: group
+		//1: first item
+		View v = list.getChildAt(1);
 		TextView text = (TextView)v.findViewById(android.R.id.text1);
 		String label = text.getText().toString();
-		solo_.takeScreenshot();
-		System.out.println("label: "+ label);
 		Assert.assertTrue("item name", label.startsWith(egg+" "));
-		String afterText = solo_.getText(0).getText().toString();
+		String afterText = solo_.getEditText(0).getText().toString();
 		Assert.assertTrue("after text", "".equals(afterText));
-		solo_.stopScreenshotSequence();
 	}
 }
