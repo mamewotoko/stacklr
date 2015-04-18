@@ -48,6 +48,7 @@ ant debug
 
 TODO
 -----
+- add test operation to interact with google service UI
 - add promote group (stock items to use first)
 - avoid frequent load by managing last update time
 - update google task
