@@ -1,5 +1,6 @@
 package com.mamewo.stacklr.tests;
 
+import java.io.File;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.robotium.solo.Solo;
@@ -12,7 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ExpandableListView;
-import junit.framework.Assert;
+import static junit.framework.Assert.*;
 import com.mamewo.stacklr.*;
 import com.mamewo.stacklr.R;
 /**
@@ -39,10 +40,11 @@ public class TestStacklrExpActivity
 
 	@Override
 	public void setUp(){
+		Log.d(TAG, "setup started");
+
 		Config config = new Config();
 		config.screenshotFileType = ScreenshotFileType.PNG;
-		//config.screenshotSavePath = "/sdcard/";
-		config.screenshotSavePath = "/mnt/shell/emulated/0/Robotium-Screenshots/";
+		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
 		config.shouldScroll = false;
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
@@ -51,6 +53,9 @@ public class TestStacklrExpActivity
 	public void tearDown(){
 		try{
 			solo_.finalize();
+			getActivity().finish();
+			super.tearDown();
+			Log.d(TAG, "tearDown finished");
 		}
 		catch(Throwable t){
 			t.printStackTrace();
@@ -67,19 +72,43 @@ public class TestStacklrExpActivity
 		String egg = "Egg";
 		solo_.enterText(0, egg);
 		solo_.clickOnButton(0);
-		try{
-			Thread.sleep(500);
-		}
-		catch(InterruptedException e){
-		}
+		solo_.sleep(500);
+		Log.d(TAG, "0");
+
 		ExpandableListView list = (ExpandableListView)solo_.getView(R.id.expandableListView1);
+		
 		//0: group
 		//1: first item
 		View v = list.getChildAt(1);
+		Log.d(TAG, "1");
 		TextView text = (TextView)v.findViewById(android.R.id.text1);
 		String label = text.getText().toString();
-		Assert.assertTrue("item name", label.startsWith(egg+" "));
+		Log.d(TAG, "2");
+		assertTrue("item name", label.startsWith(egg+" "));
 		String afterText = solo_.getEditText(0).getText().toString();
-		Assert.assertTrue("after text", "".equals(afterText));
+		assertTrue("after text", "".equals(afterText));
+		Log.d(TAG, "takeScreenshot: testAddNewItem");
+		solo_.takeScreenshot("testAddNewItem");
+		Log.d(TAG, "takeScreenshot: last sleep");
+	}
+
+	@Smoke
+	public void testClickFirstChild(){
+		Log.d(TAG, "testClickFirstChild");
+		solo_.clickInList(2);
+		solo_.sleep(500);
+		//TODO: assert that first item goto "Stock" group
+		solo_.takeScreenshot("testClickFirstChild");
+	}
+
+	@Smoke
+	public void testLongClickFirstChild(){
+		Log.d(TAG, "testLongClickFirstChild");
+		solo_.clickLongInList(2);
+		solo_.sleep(1000);
+		//TODO: assert that first item goto "Stock" group
+		assertTrue("dilogOpen", solo_.waitForDialogToOpen(1000));
+		//TODO:assert
+		solo_.takeScreenshot("testLongClickFirstChild");
 	}
 }
