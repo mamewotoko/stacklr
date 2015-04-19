@@ -15,8 +15,6 @@ class AsyncLoadTasks
 	extends CommonAsyncTask
 {
 	//TODO: get id by list API
-	static final
-	private String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
 
 	public AsyncLoadTasks(StacklrExpActivity activity) {
 		super(activity);

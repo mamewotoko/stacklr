@@ -14,10 +14,6 @@ import static com.mamewo.stacklr.Constant.*;
 class AsyncUploadTasks
 	extends CommonAsyncTask
 {
-	//TODO: get id by list API
-	static final
-	private String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
-
 	private List<Item> lst_;
 
 	public AsyncUploadTasks(StacklrExpActivity activity, List<Item> lst) {
@@ -29,7 +25,15 @@ class AsyncUploadTasks
 	protected void doInBackground()
 		throws IOException
 	{
-		
+		//TODO: use batch?
+		//BatchRequest batch = client_.batch();
+		for(Item item: lst_){
+			client_.tasks().insert(TO_BUY_GTASK_ID, item.toGtask()).execute();
+		}
 	}
-	
+
+	static
+	public void run(StacklrExpActivity activity, List<Item> lst) {
+		new AsyncUploadTasks(activity, lst).execute();
+	}
 }

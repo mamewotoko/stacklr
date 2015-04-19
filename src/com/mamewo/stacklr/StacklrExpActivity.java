@@ -523,6 +523,9 @@ public class StacklrExpActivity
 				
 				if(existing != null){
 					//TODO: update
+					if(existing.getGtask() == null){
+						existing.setGtask(task);
+					}
 					DateTime gtaskTime = task.getUpdated();
 					if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
 						for(List<Item> child: children_){
@@ -540,13 +543,21 @@ public class StacklrExpActivity
 				name2Item_.put(newItem.getName(), newItem);
 				Util.insertItem(targetChild, newItem, ASCENDING);
 			}
+			List<Item> localItemList = new ArrayList<Item>();
+			for(Item item: targetChild){
+				//TODO: modify condition: "updated in local"
+				if(item.getGtask() == null){
+					localItemList.add(item);
+				}
+			}
+			//TODO: remove from task list which is gone to other list
+			AsyncUploadTasks.run(StacklrExpActivity.this, localItemList);
 		}
 
 		public void moveToNextGroup(int groupPosition, int childPosition){
 			int nextGroupPosition = NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
 			item.setLastTouchedTime(System.currentTimeMillis());
-			//children_.get(nextGroupPosition).add(0, item);
 			List<Item> lst = children_.get(nextGroupPosition);
 			Util.insertItem(lst, item, ASCENDING);
 			notifyDataSetChanged();

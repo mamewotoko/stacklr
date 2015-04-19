@@ -72,6 +72,18 @@ public class Item
 		gtask_ = gtask;
 	}
 
+	public Task getGtask(){
+		return gtask_;
+	}
+
+	public Task toGtask(){
+		if(gtask_ == null){
+			gtask_ = new Task().setTitle(name_)
+				.setUpdated(new DateTime(lastTouchedTime_));
+		}
+		return gtask_;
+	}
+
 	public void update(Task gtask){
 		DateTime date = gtask.getUpdated();
 		long time;
