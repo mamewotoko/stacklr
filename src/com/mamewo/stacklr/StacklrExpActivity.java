@@ -67,6 +67,7 @@ public class StacklrExpActivity
 	implements TextView.OnEditorActionListener
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
+	static final private long LOAD_MIN_INTERVAL = 180*1000;
 
 	static final public boolean ASCENDING = false;
 
@@ -78,6 +79,7 @@ public class StacklrExpActivity
 	//end of tasks
 
 	public int numAsyncTasks;
+	private long lastLoadTime_;
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
@@ -135,9 +137,8 @@ public class StacklrExpActivity
 			// ask user to choose account
 			chooseAccount();
 		} else {
-			// load calendars
-			loadingIcon_.setVisibility(View.VISIBLE);
-			AsyncLoadTasks.run(this);
+			// load tasks
+			startLoadTask();
 		}
 	}
 
@@ -166,6 +167,8 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//TODO: load from file or savedInstanceState
+		lastLoadTime_ = 0;
 		setContentView(R.layout.main_expandable);
 		//---------------
 		//gtasks
@@ -274,8 +277,7 @@ public class StacklrExpActivity
 			handled = true;
 			break;
 		case R.id.reload_menu:
-			loadingIcon_.setVisibility(View.VISIBLE);
-			AsyncLoadTasks.run(this);
+			startLoadTask(true);
 			handled = true;
 			break;
 		default:
@@ -297,8 +299,7 @@ public class StacklrExpActivity
 			break;
 		case REQUEST_AUTHORIZATION:
 			if (resultCode == Activity.RESULT_OK) {
-				loadingIcon_.setVisibility(View.VISIBLE);
-				AsyncLoadTasks.run(this);
+				startLoadTask();
 			} else {
 				chooseAccount();
 			}
@@ -312,8 +313,7 @@ public class StacklrExpActivity
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					loadingIcon_.setVisibility(View.VISIBLE);
-					AsyncLoadTasks.run(this);
+					startLoadTask();
 				}
 			}
 			break;
@@ -738,5 +738,18 @@ public class StacklrExpActivity
 		public boolean isChildSelectable(int groupPosition, int childPosition) {
 			return true;
 		}
+	}
+
+	private void startLoadTask(){
+		startLoadTask(false);
+	}
+
+	private void startLoadTask(boolean force){
+		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
+			return;
+		}
+		lastLoadTime_ = System.currentTimeMillis();
+		loadingIcon_.setVisibility(View.VISIBLE);
+		AsyncLoadTasks.run(this);
 	}
 }
