@@ -36,6 +36,7 @@ public class CSVItemStorage
 		super(f);
 	}
 
+	//TODO: simplify (use CSV only)
 	@Override
 	public List<Item> load() {
 		CSVReader reader = null;

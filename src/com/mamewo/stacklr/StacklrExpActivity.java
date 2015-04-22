@@ -29,6 +29,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
+import com.google.api.services.tasks.model.TaskList;
 import com.google.api.client.util.DateTime;
 
 import android.accounts.AccountManager;
@@ -76,10 +77,12 @@ public class StacklrExpActivity
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-	//end of tasks
-
+	List<Group> groups_;
 	public int numAsyncTasks;
 	private long lastLoadTime_;
+
+	private boolean groupLoaded_ = false;
+	//end of tasks
 
 	private final int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
@@ -112,8 +115,8 @@ public class StacklrExpActivity
 	private GoogleAccountCredential credential_;
 	public com.google.api.services.tasks.Tasks service_;
 
-	private String[] getGroups(){
-		return getResources().getStringArray(R.array.groups);
+	private List<Group> getGroups(){
+		return groups_;
 	}
 
 	static String groupNameToFilename(String groupName){
@@ -170,6 +173,15 @@ public class StacklrExpActivity
 		//TODO: load from file or savedInstanceState
 		lastLoadTime_ = 0;
 		setContentView(R.layout.main_expandable);
+		PackageManager m = getPackageManager();
+		String s = getPackageName();
+		try {
+			PackageInfo p = m.getPackageInfo(s, 0);
+			datadir_ = new File(p.applicationInfo.dataDir);
+		}
+		catch (NameNotFoundException e) {
+			Log.w(TAG, "Error Package name not found ", e);
+		}
 		//---------------
 		//gtasks
 		credential_ =
@@ -179,6 +191,15 @@ public class StacklrExpActivity
 		service_ =
 			new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential_)
             .setApplicationName("Stacklr/1.0").build();
+		groups_ = Group.load(datadir_);
+		if(groups_ == null){
+			String[] groupNames = getResources().getStringArray(R.array.groups);
+			groups_ = new ArrayList<Group>();
+			for(String name: groupNames){
+				groups_.add(new Group(name, null));
+			}
+		}
+		//TODO: sync group(upload)
 		//---------------
 		// line based
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
@@ -189,16 +210,7 @@ public class StacklrExpActivity
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
 
-		PackageManager m = getPackageManager();
-		String s = getPackageName();
-		try {
-			PackageInfo p = m.getPackageInfo(s, 0);
-			datadir_ = new File(p.applicationInfo.dataDir);
-		} catch (NameNotFoundException e) {
-			Log.w(TAG, "Error Package name not found ", e);
-		}
-		String[] groups = getGroups();
-		adapter_ = new ExpandableAdapter(groups);
+		adapter_ = new ExpandableAdapter(groups_);
 		//TODO: show load toast?
 		listView_ = (ExpandableListView) findViewById(R.id.expandableListView1);
 		ItemClickListener listener = new ItemClickListener();
@@ -208,7 +220,8 @@ public class StacklrExpActivity
 		speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 							   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		for(int i = 0; i < groups.length; i++){
+		//TODO: add option
+		for(int i = 0; i < groups_.size(); i++){
 			listView_.expandGroup(i);
 		}
 	}
@@ -230,6 +243,7 @@ public class StacklrExpActivity
 	@Override
 	protected void onStop() {
 		adapter_.save();
+		Group.save(datadir_, groups_);
 		super.onStop();
 	}
 	
@@ -245,7 +259,6 @@ public class StacklrExpActivity
 		@Override
 		public void onClick(View v) {
 			String itemname = targetEditText_.getText().toString();
-			// TODO: search
 			if (itemname.isEmpty()) {
 				return;
 			}
@@ -277,7 +290,8 @@ public class StacklrExpActivity
 			handled = true;
 			break;
 		case R.id.reload_menu:
-			startLoadTask(true);
+			startLoadGroupTask();
+			//startLoadTask(true);
 			handled = true;
 			break;
 		default:
@@ -495,17 +509,17 @@ public class StacklrExpActivity
 		//TODO: Design storage
 		private List<List<Item>> children_;
 		private List<ItemStorage> storageList_;
-		private String[] groups_;
+		private List<Group> groups_;
 		private Map<String, Item> name2Item_;
 
 		//long touch -> history or remove
-		public ExpandableAdapter(String[] groups){
-			groups_ = getGroups();
+		public ExpandableAdapter(List<Group> groups){
+			groups_ = groups;
 			children_ = new LinkedList<List<Item>>();
 			storageList_ = new LinkedList<ItemStorage>();
 			name2Item_ = new HashMap<String, Item>();
-			for (int i = 0; i < groups.length; i++) {
-				String filename = groupNameToFilename(groups[i]);
+			for (int i = 0; i < groups_.size(); i++) {
+				String filename = groupNameToFilename(groups_.get(i).getName());
 				storageList_.add(new CSVItemStorage(new File(datadir_, filename)));
 				children_.add(storageList_.get(i).load());
 				for(Item child: children_.get(children_.size()-1)){
@@ -552,6 +566,16 @@ public class StacklrExpActivity
 			}
 			//TODO: remove from task list which is gone to other list
 			AsyncUploadTasks.run(StacklrExpActivity.this, localItemList);
+		}
+		
+		public void updateGroup(Map<String, TaskList> result){
+			for(Group group: groups_){
+				TaskList gtasklist = result.get(group.getName());
+				if(gtasklist != null){
+					Log.d(TAG, "updateGroup: " + gtasklist.getTitle() + " " + gtasklist.getId());
+					group.setGtaskListId(gtasklist.getId());
+				}
+			}
 		}
 
 		public void moveToNextGroup(int groupPosition, int childPosition){
@@ -656,7 +680,7 @@ public class StacklrExpActivity
 
 		@Override
 		public Object getGroup(int groupPosition) {
-			return groups_[groupPosition];
+			return groups_.get(groupPosition).getName();
 		}
 
 		@Override
@@ -687,12 +711,11 @@ public class StacklrExpActivity
 										   android.R.layout.simple_expandable_list_item_1, null);
 			}
 			//TMP?
-			if(groupPosition >= groups_.length){
-				Log.d(TAG, "*** groupPoslarge " + groupPosition + ", "  + groups_.length);
+			if(groupPosition >= groups_.size()){
 				return convertView;
 			}
 			TextView text = (TextView) convertView.findViewById(android.R.id.text1);
-			text.setText(groups_[groupPosition]);
+			text.setText(groups_.get(groupPosition).getName());
 			return convertView;
 		}
 
@@ -751,5 +774,11 @@ public class StacklrExpActivity
 		lastLoadTime_ = System.currentTimeMillis();
 		loadingIcon_.setVisibility(View.VISIBLE);
 		AsyncLoadTasks.run(this);
+	}
+	
+	private void startLoadGroupTask(){
+		Log.d(TAG, "startLoadGroupTask");
+		loadingIcon_.setVisibility(View.VISIBLE);
+		AsyncListTask.run(this);
 	}
 }

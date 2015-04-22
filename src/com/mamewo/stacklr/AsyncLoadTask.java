@@ -14,8 +14,6 @@ import static com.mamewo.stacklr.Constant.*;
 class AsyncLoadTasks
 	extends CommonAsyncTask
 {
-	//TODO: get id by list API
-
 	public AsyncLoadTasks(StacklrExpActivity activity) {
 		super(activity);
 	}
@@ -26,17 +24,8 @@ class AsyncLoadTasks
 	{
 		List<Task> result = new ArrayList<Task>();
 		//TODO: get task id, updated time
-		List<Task> tasks =
-			client_.tasks().list(TO_BUY_GTASK_ID).setFields("items/title,items/updated").execute().getItems();
-		if(tasks == null){
-			return;
-		}
-		//filter empty item
-		for(Task task: tasks){
-			if(task.getTitle().length() > 0){
-				result.add(task);
-			}
-		}
+		List<Task> tasklists =
+			client_.tasks().list(TO_BUY_GTASK_ID).setFields("items/id,items/title").execute().getItems();
 		activity_.adapter_.merge(TO_BUY, result);
 	}
 
