@@ -14,11 +14,13 @@ import static com.mamewo.stacklr.Constant.*;
 class AsyncUploadTasks
 	extends CommonAsyncTask
 {
+	private String gid_;
 	private List<Item> lst_;
 
-	public AsyncUploadTasks(StacklrExpActivity activity, List<Item> lst) {
+	public AsyncUploadTasks(StacklrExpActivity activity, String gid, List<Item> lst) {
 		super(activity);
 		lst_ = lst;
+		gid_ = gid;
 	}
 
 	@Override
@@ -28,12 +30,12 @@ class AsyncUploadTasks
 		//TODO: use batch?
 		//BatchRequest batch = client_.batch();
 		for(Item item: lst_){
-			client_.tasks().insert(TO_BUY_GTASK_ID, item.toGtask()).execute();
+			client_.tasks().insert(gid_, item.toGtask()).execute();
 		}
 	}
 
 	static
-	public void run(StacklrExpActivity activity, List<Item> lst) {
-		new AsyncUploadTasks(activity, lst).execute();
+	public void run(StacklrExpActivity activity, String gid, List<Item> lst) {
+		new AsyncUploadTasks(activity, gid, lst).execute();
 	}
 }

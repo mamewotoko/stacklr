@@ -529,43 +529,46 @@ public class StacklrExpActivity
 			}
 		}
 
-		public void merge(int nth, List<Task> lst){
-			List<Item> targetChild = children_.get(nth);
-			for(Task task: lst){
-				String thisName = task.getTitle();
-				Item existing = name2Item_.get(thisName);
+		public void merge(List<List<Task>> lst){
+			for(int nth = 0; nth < lst.size(); nth++){
+				List<Item> targetChild = children_.get(nth);
+				for(Task task: lst.get(nth)){
+					String thisName = task.getTitle();
+					Item existing = name2Item_.get(thisName);
 				
-				if(existing != null){
-					//TODO: update
-					if(existing.getGtask() == null){
-						existing.setGtask(task);
-					}
-					DateTime gtaskTime = task.getUpdated();
-					if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
-						for(List<Item> child: children_){
-							if(child.remove(existing)){
-								break;
-							}
+					if(existing != null){
+						//TODO: update
+						if(existing.getGtask() == null){
+							existing.setGtask(task);
 						}
-						existing.update(task);
-						Util.insertItem(targetChild, existing, ASCENDING);
+						DateTime gtaskTime = task.getUpdated();
+						if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
+							for(List<Item> child: children_){
+								if(child.remove(existing)){
+									break;
+								}
+							}
+							existing.update(task);
+							Util.insertItem(targetChild, existing, ASCENDING);
+						}
+						continue;
 					}
-					continue;
+					//new item
+					Item newItem = new Item(task, nth);
+					name2Item_.put(newItem.getName(), newItem);
+					Util.insertItem(targetChild, newItem, ASCENDING);
 				}
-				//new item
-				Item newItem = new Item(task, nth);
-				name2Item_.put(newItem.getName(), newItem);
-				Util.insertItem(targetChild, newItem, ASCENDING);
-			}
-			List<Item> localItemList = new ArrayList<Item>();
-			for(Item item: targetChild){
-				//TODO: modify condition: "updated in local"
-				if(item.getGtask() == null){
-					localItemList.add(item);
+				List<Item> localItemList = new ArrayList<Item>();
+				for(Item item: targetChild){
+					//TODO: modify condition: "updated in local"
+					if(item.getGtask() == null){
+						localItemList.add(item);
+					}
 				}
+				//TODO: remove from task list which is gone to other list
+				String groupId = groups_.get(nth).getGtaskListId(); 
+				AsyncUploadTasks.run(StacklrExpActivity.this, groupId, localItemList);
 			}
-			//TODO: remove from task list which is gone to other list
-			AsyncUploadTasks.run(StacklrExpActivity.this, localItemList);
 		}
 		
 		public void updateGroup(Map<String, TaskList> result){
@@ -776,7 +779,15 @@ public class StacklrExpActivity
 		}
 		lastLoadTime_ = System.currentTimeMillis();
 		loadingIcon_.setVisibility(View.VISIBLE);
-		AsyncLoadTasks.run(this);
+		List<String> gidList = new ArrayList<String>();
+		for(Group group: groups_){
+			String gid = group.getGtaskListId();
+			if(gid == null){
+				gid = "";
+			}
+			gidList.add(gid);
+		}
+		AsyncLoadTasks.run(this, gidList);
 	}
 	
 	private void startLoadGroupTask(){

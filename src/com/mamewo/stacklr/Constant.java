@@ -13,6 +13,6 @@ public class Constant {
 	static protected final int ARCHIVE = 3;
 	//static protected final int REMOVE = -1;
 
-	static final
-	protected String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
+	// static final
+	// protected String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
 }

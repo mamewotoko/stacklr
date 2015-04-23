@@ -14,23 +14,34 @@ import static com.mamewo.stacklr.Constant.*;
 class AsyncLoadTasks
 	extends CommonAsyncTask
 {
-	public AsyncLoadTasks(StacklrExpActivity activity) {
+	List<String> groupIdList_;
+
+	public AsyncLoadTasks(StacklrExpActivity activity, List<String> groupIdList) {
 		super(activity);
+		groupIdList_ = groupIdList;
 	}
 
 	@Override
 	protected void doInBackground()
 		throws IOException
 	{
-		List<Task> result = new ArrayList<Task>();
+		List<List<Task>> result = new ArrayList<List<Task>>();
 		//TODO: get task id, updated time
-		List<Task> tasklists =
-			client_.tasks().list(TO_BUY_GTASK_ID).setFields("items/id,items/title").execute().getItems();
-		activity_.adapter_.merge(TO_BUY, result);
+		for(String groupId: groupIdList_){
+			List<Task> tasklist = null;
+			if(groupId.length() > 0){
+				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title").execute().getItems();
+			}
+			else {
+				tasklist = new ArrayList<Task>();
+			}
+			result.add(tasklist);
+		}
+		activity_.adapter_.merge(result);
 	}
 
 	static
-	public void run(StacklrExpActivity activity) {
-		new AsyncLoadTasks(activity).execute();
+	public void run(StacklrExpActivity activity, List<String> groupIdList) {
+		new AsyncLoadTasks(activity, groupIdList).execute();
 	}
 }
