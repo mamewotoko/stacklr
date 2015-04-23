@@ -23,14 +23,14 @@ public class FileItemStorage
 	}
 
 	@Override
-	public List<Item> load() {
+	public List<Item> load(int group) {
 		List<Item> result = new LinkedList<Item>();
 		BufferedReader br = null;
 		try{
 			br = new BufferedReader(new FileReader(file_));
 			String line;
 			while((line = br.readLine()) != null){
-				result.add(new Item(line));
+				result.add(new Item(line, group));
 			}
 		}
 		catch(IOException e){

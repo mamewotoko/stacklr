@@ -521,7 +521,7 @@ public class StacklrExpActivity
 			for (int i = 0; i < groups_.size(); i++) {
 				String filename = groupNameToFilename(groups_.get(i).getName());
 				storageList_.add(new CSVItemStorage(new File(datadir_, filename)));
-				children_.add(storageList_.get(i).load());
+				children_.add(storageList_.get(i).load(i));
 				for(Item child: children_.get(children_.size()-1)){
 					name2Item_.put(child.getName(), child);
 				}
@@ -553,7 +553,7 @@ public class StacklrExpActivity
 					continue;
 				}
 				//new item
-				Item newItem = new Item(task);
+				Item newItem = new Item(task, nth);
 				name2Item_.put(newItem.getName(), newItem);
 				Util.insertItem(targetChild, newItem, ASCENDING);
 			}
@@ -581,6 +581,7 @@ public class StacklrExpActivity
 		public void moveToNextGroup(int groupPosition, int childPosition){
 			int nextGroupPosition = NEXT_GROUP[groupPosition];
 			Item item = children_.get(groupPosition).remove(childPosition);
+			item.setGroup(nextGroupPosition);
 			item.setLastTouchedTime(System.currentTimeMillis());
 			List<Item> lst = children_.get(nextGroupPosition);
 			Util.insertItem(lst, item, ASCENDING);
@@ -632,7 +633,7 @@ public class StacklrExpActivity
 					//TODO: if entered from text box
 					
 					//TODO: date
-					pushToBuy(new Item(itemname, System.currentTimeMillis()));
+					pushToBuy(new Item(itemname, TO_BUY));
 				}
 			} catch (IOException e) {
 				Log.d(TAG, "IOException", e);
@@ -653,6 +654,8 @@ public class StacklrExpActivity
 		public void moveToHistory(int groupPosition, int childPosition){
 			Item item = children_.get(groupPosition).remove(childPosition);
 			//children_.get(HISTORY).add(0, item);
+			//mmmm
+			item.setGroup(HISTORY);
 			List<Item> lst = children_.get(HISTORY);
 			Util.insertItem(lst, item, ASCENDING);
 			notifyDataSetChanged();

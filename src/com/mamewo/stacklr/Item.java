@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.client.util.DateTime;
+import static com.mamewo.stacklr.Constant.*;
 
 public class Item
 	implements Comparable
@@ -15,6 +16,7 @@ public class Item
 	private SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd");
 	static final
 	private SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	private int group_;
 
 	static final
 	public int ITEM_TYPE_TOP = 0;
@@ -27,25 +29,23 @@ public class Item
 
 	private Task gtask_;
 
-	public Item(String name, long time, int type, Task gtask){
+	public Item(String name, long time, int type, Task gtask, int group){
 		name_ = name;
 		lastTouchedTime_ = time;
 		type_ = type;
 		gtask_ = gtask;
+		group_ = group;
+		//group ~ tasklist
 	}
-	
-	public Item(String name){
-		this(name, 0, ITEM_TYPE_FOOD, null);
-	}
-	
-	public Item(String name, long time){
-		this(name, time, ITEM_TYPE_FOOD, null);
+
+	public Item(String name, int group){
+		this(name, 0, ITEM_TYPE_FOOD, null, group);
 	}
 	
 	//TODO: save item type in gtask
-	public Item(Task gtask){
+	public Item(Task gtask, int group){
 		//TODO: fix time
-		this(null, 0, ITEM_TYPE_FOOD, gtask);
+		this(null, 0, ITEM_TYPE_FOOD, gtask, group);
 	}
 
 	public long getLastTouchedTime(){
@@ -74,6 +74,14 @@ public class Item
 
 	public Task getGtask(){
 		return gtask_;
+	}
+
+	public int getGroup(){
+		return group_;
+	}
+
+	public void setGroup(int group){
+		group_ = group;
 	}
 
 	public Task toGtask(){

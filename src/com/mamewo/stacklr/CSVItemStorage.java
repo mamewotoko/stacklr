@@ -38,7 +38,7 @@ public class CSVItemStorage
 
 	//TODO: simplify (use CSV only)
 	@Override
-	public List<Item> load() {
+	public List<Item> load(int group) {
 		CSVReader reader = null;
 		List<Item> result = new LinkedList<Item>();
 		try {
@@ -59,15 +59,6 @@ public class CSVItemStorage
 		if(header == null){
 			return result;
 		}
-		if(!header[0].equals(TIMESTAMP_COLUMN)){
-			try{
-				reader.close();
-			}
-			catch (IOException e){
-				Log.d(TAG, "IOException", e);
-			}
-			return super.load();
-		}
 		try{
 			String[] row;
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
@@ -79,12 +70,8 @@ public class CSVItemStorage
 				}
 				//result.add(new Item(name, timestamp));
 				//TODO: move method definition
-				if(row.length == 2){
-					Util.insertItem(result, new Item(name, timestamp), StacklrExpActivity.ASCENDING);
-					continue;
-				}
 				int itemtype = Integer.valueOf(row[2]);
-				Util.insertItem(result, new Item(name, timestamp, itemtype, null), StacklrExpActivity.ASCENDING);
+				Util.insertItem(result, new Item(name, timestamp, itemtype, null, group), StacklrExpActivity.ASCENDING);
 			}
 			//sort result by timestamp
 		}

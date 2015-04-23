@@ -11,7 +11,7 @@ public class ListItemStorage
 		list_ = lst;
 	}
 
-	public List<Item> load(){
+	public List<Item> load(int group){
 		return list_;
 	}
 
