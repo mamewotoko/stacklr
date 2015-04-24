@@ -69,6 +69,12 @@ public class Group
 			}
 		}
 	}
+
+	@Override
+	public String toString(){
+		return "group: "+name_+" "+gtaskListId_;
+	}
+
 	
 	static
 	public List<Group> load(File dataDir){

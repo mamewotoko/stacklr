@@ -525,7 +525,12 @@ public class StacklrExpActivity
 		}
 
 		public void merge(List<List<Task>> lst){
-			List<TasksRequest<Task>> operationList = new ArrayList<TasksRequest<Task>>();
+			List<TasksRequest> operationList = new ArrayList<TasksRequest>();
+			//debug
+			for(Group group: groups_){
+				Log.d(TAG, "merge: "+group.toString());
+			}
+
 			for(int nth = 0; nth < lst.size(); nth++){
 				List<Item> targetChild = children_.get(nth);
 				//TODO: detect remove item
@@ -561,9 +566,17 @@ public class StacklrExpActivity
 						else if(gtaskTime != null) {
 							//update task
 							String destId = groups_.get(existing.getGroup()).getGtaskListId();
+							String oldGroupId = groups_.get(nth).getGtaskListId();
 							try{
-								operationList.add(service_.tasks().move(destId, task.getId()));
-								Log.d(TAG, "feature: move opeartion: " + task + " " + existing.getGroup());
+								//operationList.add(service_.tasks().move(destId, task.getId()));
+								//side effect
+								Log.d(TAG, "feature: move (add): " + task + " " + destId);
+								String oldTaskId = task.getId();
+								task.setId(null);
+								operationList.add(service_.tasks().insert(destId, task));
+								Log.d(TAG, "feature: move (delete): " + task + " " + oldGroupId);
+								operationList.add(service_.tasks().delete(oldGroupId, oldTaskId));
+
 							}
 							catch(IOException e){
 								Log.d(TAG, "IOException", e);
@@ -587,7 +600,7 @@ public class StacklrExpActivity
 				//String groupId = groups_.get(nth).getGtaskListId(); 
 				//AsyncUploadTasks.run(StacklrExpActivity.this, groupId, localItemList);
 			}
-			//AsyncExecOperationTask.run(StacklrExpActivity.this, operationList);
+			AsyncExecOperationTask.run(StacklrExpActivity.this, operationList);
 		}
 		
 		public void updateGroup(Map<String, TaskList> result){
