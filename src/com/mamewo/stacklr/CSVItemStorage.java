@@ -64,6 +64,9 @@ public class CSVItemStorage
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
 			while((row = reader.readNext()) != null){
 				String name = row[1];
+				if(name.isEmpty()){
+					continue;
+				}
 				long timestamp = 0;
 				if(row[0].length() > 0){
 					timestamp = sdf.parse(row[0]).getTime();

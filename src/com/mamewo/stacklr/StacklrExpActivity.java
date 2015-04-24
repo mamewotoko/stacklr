@@ -30,6 +30,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
+import com.google.api.services.tasks.TasksRequest;
 import com.google.api.client.util.DateTime;
 
 import android.accounts.AccountManager;
@@ -290,8 +291,9 @@ public class StacklrExpActivity
 			handled = true;
 			break;
 		case R.id.reload_menu:
-			startLoadGroupTask();
-			//startLoadTask(true);
+			//TODO: load group
+			//startLoadGroupTask();
+			startLoadTask(true);
 			handled = true;
 			break;
 		default:
@@ -446,13 +448,6 @@ public class StacklrExpActivity
 							dialog.cancel();
 						}
 					});
-				//set type ...
-				// builder.setNeutoralButton("Stay", new new DialogInterface.OnClickListener(){
-				// 		@Override
-				// 		public void onClick(DialogInterface dialog, int which){
-				// 			dialog.dismiss();
-				// 		}
-				// 	});
 				builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
 						@Override
 						public void onClick(DialogInterface dialog, int which){
@@ -530,10 +525,16 @@ public class StacklrExpActivity
 		}
 
 		public void merge(List<List<Task>> lst){
+			List<TasksRequest<Task>> operationList = new ArrayList<TasksRequest<Task>>();
 			for(int nth = 0; nth < lst.size(); nth++){
 				List<Item> targetChild = children_.get(nth);
+				//TODO: detect remove item
+				//move, load new, upload new
 				for(Task task: lst.get(nth)){
 					String thisName = task.getTitle();
+					if(thisName.isEmpty()){
+						continue;
+					}
 					Item existing = name2Item_.get(thisName);
 				
 					if(existing != null){
@@ -543,13 +544,30 @@ public class StacklrExpActivity
 						}
 						DateTime gtaskTime = task.getUpdated();
 						if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
+							
 							for(List<Item> child: children_){
 								if(child.remove(existing)){
 									break;
 								}
 							}
+							//TODO: sync group
 							existing.update(task);
-							Util.insertItem(targetChild, existing, ASCENDING);
+							List<Item> targetList = targetChild;
+							if(COMPLETED_STATUS.equals(task.getStatus())){
+								targetList = children_.get(STOCK);
+							}
+							Util.insertItem(targetList, existing, ASCENDING);
+						}
+						else if(gtaskTime != null) {
+							//update task
+							String destId = groups_.get(existing.getGroup()).getGtaskListId();
+							try{
+								operationList.add(service_.tasks().move(destId, task.getId()));
+								Log.d(TAG, "feature: move opeartion: " + task + " " + existing.getGroup());
+							}
+							catch(IOException e){
+								Log.d(TAG, "IOException", e);
+							}
 						}
 						continue;
 					}
@@ -566,9 +584,10 @@ public class StacklrExpActivity
 					}
 				}
 				//TODO: remove from task list which is gone to other list
-				String groupId = groups_.get(nth).getGtaskListId(); 
-				AsyncUploadTasks.run(StacklrExpActivity.this, groupId, localItemList);
+				//String groupId = groups_.get(nth).getGtaskListId(); 
+				//AsyncUploadTasks.run(StacklrExpActivity.this, groupId, localItemList);
 			}
+			//AsyncExecOperationTask.run(StacklrExpActivity.this, operationList);
 		}
 		
 		public void updateGroup(Map<String, TaskList> result){

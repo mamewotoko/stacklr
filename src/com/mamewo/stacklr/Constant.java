@@ -15,4 +15,5 @@ public class Constant {
 
 	// static final
 	// protected String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
+	static String COMPLETED_STATUS = "completed";
 }

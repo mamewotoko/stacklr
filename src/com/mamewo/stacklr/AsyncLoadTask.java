@@ -30,7 +30,7 @@ class AsyncLoadTasks
 		for(String groupId: groupIdList_){
 			List<Task> tasklist = null;
 			if(groupId.length() > 0){
-				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title").execute().getItems();
+				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title,items/updated,items/status").execute().getItems();
 			}
 			else {
 				tasklist = new ArrayList<Task>();
