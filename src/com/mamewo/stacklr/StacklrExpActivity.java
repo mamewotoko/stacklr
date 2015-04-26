@@ -147,7 +147,6 @@ public class StacklrExpActivity
 	}
 
 	void refreshView() {
-		loadingIcon_.setVisibility(View.INVISIBLE);
 		adapter_.notifyDataSetChanged();
 	}
 
@@ -824,7 +823,14 @@ public class StacklrExpActivity
 	
 	private void startLoadGroupTask(){
 		Log.d(TAG, "startLoadGroupTask");
-		loadingIcon_.setVisibility(View.VISIBLE);
 		AsyncListTask.run(this);
 	}
+
+	public void showLoadingIcon(){
+		loadingIcon_.setVisibility(View.VISIBLE);
+	}
+	public void hideLoadingIcon(){
+		loadingIcon_.setVisibility(View.INVISIBLE);
+	}
+	
 }

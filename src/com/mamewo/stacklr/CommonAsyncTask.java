@@ -14,17 +14,20 @@ abstract class CommonAsyncTask
 {
 	final StacklrExpActivity activity_;
 	final com.google.api.services.tasks.Tasks client_;
+	private CommonAsyncTask postTask_;
 	//	private final View progressBar;
 
 	CommonAsyncTask(StacklrExpActivity activity) {
 		activity_ = activity;
 		client_ = activity.service_;
-		//progressBar = activity.findViewById(R.id.title_refresh_progress);
+		postTask_ = null;
+		activity_.showLoadingIcon();
 	}
 
 	@Override
 		protected void onPreExecute() {
 		super.onPreExecute();
+		//TODO: synchronize?
 		activity_.numAsyncTasks++;
 		//progressBar.setVisibility(View.VISIBLE);
 	}
@@ -50,14 +53,18 @@ abstract class CommonAsyncTask
 	}
 
 	@Override
-		protected final void onPostExecute(Boolean success) {
+		protected void onPostExecute(Boolean success) {
 		super.onPostExecute(success);
-		--activity_.numAsyncTasks;
-		// if (0 == --activity.numAsyncTasks) {
-		// 	progressBar.setVisibility(View.GONE);
-		// }
+		
+		//TODO: synchronize?
+		if (0 == --activity_.numAsyncTasks) {
+			activity_.hideLoadingIcon();
+		 }
 		if (success) {
 			activity_.refreshView();
+		}
+		if(postTask_ != null){
+			postTask_.execute();
 		}
 	}
 
