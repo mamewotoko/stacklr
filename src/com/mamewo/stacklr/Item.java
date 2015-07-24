@@ -44,8 +44,15 @@ public class Item
 	
 	//TODO: save item type in gtask
 	public Item(Task gtask, int group){
-		//TODO: fix time
-		this(null, 0, ITEM_TYPE_FOOD, gtask, group);
+		name_ = gtask.getTitle();
+		DateTime time = gtask.getUpdated();
+		lastTouchedTime_ = 0;
+		type_ = ITEM_TYPE_FOOD;
+		if(time != null){
+			lastTouchedTime_ = time.getValue();
+		}
+		gtask_ = gtask;
+		group_ = group;
 	}
 
 	public long getLastTouchedTime(){
@@ -72,7 +79,7 @@ public class Item
 		gtask_ = gtask;
 	}
 
-	public Task getGtask(){
+	public com.google.api.services.tasks.model.Task getGtask(){
 		return gtask_;
 	}
 

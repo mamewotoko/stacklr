@@ -48,7 +48,12 @@ ant debug
 
 TODO
 -----
+* create group if absent
+* task chain
+   load groups -> load tasks -> upload tasks
+* avoid loading group
 * add test
+   * install -> permit oauth -> load groups and tasks first time
    * start stacklr, push home button, start stacklr again (loading icon is not displayed)
    * reload by menu (loading icon is displayed)
 * add test operation to interact with google service UI

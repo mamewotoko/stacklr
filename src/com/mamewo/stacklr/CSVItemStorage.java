@@ -41,6 +41,9 @@ public class CSVItemStorage
 	public List<Item> load(int group) {
 		CSVReader reader = null;
 		List<Item> result = new LinkedList<Item>();
+		if(!file_.exists()){
+			return result;
+		}
 		try {
 			reader = new CSVReader(new FileReader(file_));
 		}

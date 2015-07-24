@@ -44,4 +44,12 @@ class AsyncLoadTasks
 	public void run(StacklrExpActivity activity, List<String> groupIdList) {
 		new AsyncLoadTasks(activity, groupIdList).execute();
 	}
+
+	@Override
+	protected void onPostExecute(Boolean success) {
+		super.onPostExecute(success);
+		if (success) {
+			activity_.refreshView();
+		}
+	}
 }

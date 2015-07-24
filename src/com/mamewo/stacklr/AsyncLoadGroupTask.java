@@ -13,13 +13,13 @@ import static com.mamewo.stacklr.Constant.*;
 import android.util.Log;
 
 /**
- * Asynchronously load the tasks.
+ * list groups, fetch group id
  * 
  */
-class AsyncListTask
+class AsyncLoadGroupTask
 	extends CommonAsyncTask
 {
-	public AsyncListTask(StacklrExpActivity activity) {
+	public AsyncLoadGroupTask(StacklrExpActivity activity) {
 		super(activity);
 	}
 
@@ -27,8 +27,6 @@ class AsyncListTask
 	protected void doInBackground()
 		throws IOException
 	{
-		Log.d(TAG, "startLinkTask.doInBackground");
-
 		Map<String, TaskList> result = new HashMap<String, TaskList>();
 		//TODO: get task id, updated time
 		List<TaskList> tasklists =
@@ -41,13 +39,11 @@ class AsyncListTask
 		for(TaskList tasklist: tasklists){
 			result.put(tasklist.getTitle(), tasklist);
 		}
-		Log.d(TAG, "startLinkTask tasklist: " + result.toString());
-
-		activity_.adapter_.updateGroup(result);
+		activity_.adapter_.updateGroup(result, true);
 	}
 
 	static
 	public void run(StacklrExpActivity activity) {
-		new AsyncListTask(activity).execute();
+		new AsyncLoadGroupTask(activity).execute();
 	}
 }

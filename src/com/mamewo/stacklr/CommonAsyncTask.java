@@ -5,6 +5,8 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 
 import android.os.AsyncTask;
 import android.view.View;
+import android.util.Log;
+
 import static com.mamewo.stacklr.Constant.*;
 
 import java.io.IOException;
@@ -14,14 +16,11 @@ abstract class CommonAsyncTask
 {
 	final StacklrExpActivity activity_;
 	final com.google.api.services.tasks.Tasks client_;
-	private CommonAsyncTask postTask_;
 	//	private final View progressBar;
 
-	CommonAsyncTask(StacklrExpActivity activity) {
+	public CommonAsyncTask(StacklrExpActivity activity) {
 		activity_ = activity;
 		client_ = activity.service_;
-		postTask_ = null;
-		activity_.showLoadingIcon();
 	}
 
 	@Override
@@ -29,7 +28,7 @@ abstract class CommonAsyncTask
 		super.onPreExecute();
 		//TODO: synchronize?
 		activity_.numAsyncTasks++;
-		//progressBar.setVisibility(View.VISIBLE);
+		activity_.showLoadingIcon();
 	}
 
 	@Override
@@ -53,19 +52,14 @@ abstract class CommonAsyncTask
 	}
 
 	@Override
-		protected void onPostExecute(Boolean success) {
+	protected void onPostExecute(Boolean success) {
 		super.onPostExecute(success);
-		
+
 		//TODO: synchronize?
 		if (0 == --activity_.numAsyncTasks) {
 			activity_.hideLoadingIcon();
-		 }
-		if (success) {
-			activity_.refreshView();
 		}
-		if(postTask_ != null){
-			postTask_.execute();
-		}
+		Log.d(TAG, "onPostExecute: " + this.getClass().getName());
 	}
 
 	abstract protected void doInBackground() throws IOException;

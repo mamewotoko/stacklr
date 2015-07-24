@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import android.app.Dialog;
+import java.util.Date;
 
 import android.content.DialogInterface;
 import android.app.AlertDialog;
@@ -141,8 +142,7 @@ public class StacklrExpActivity
 			// ask user to choose account
 			chooseAccount();
 		} else {
-			// load tasks
-			startLoadTask();
+			startLoadGroupTask();
 		}
 	}
 
@@ -292,7 +292,7 @@ public class StacklrExpActivity
 		case R.id.reload_menu:
 			//TODO: load group
 			//startLoadGroupTask();
-			startLoadTask(true);
+			startLoadGroupTask();
 			handled = true;
 			break;
 		default:
@@ -314,7 +314,7 @@ public class StacklrExpActivity
 			break;
 		case REQUEST_AUTHORIZATION:
 			if (resultCode == Activity.RESULT_OK) {
-				startLoadTask();
+				startLoadGroupTask();
 			} else {
 				chooseAccount();
 			}
@@ -328,7 +328,7 @@ public class StacklrExpActivity
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					startLoadTask();
+					startLoadGroupTask();
 				}
 			}
 			break;
@@ -523,62 +523,96 @@ public class StacklrExpActivity
 			}
 		}
 
-		public void merge(List<List<Task>> lst){
+		/**
+		 * @param lst list of gtask for each group
+		 */
+		public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 			List<TasksRequest> operationList = new ArrayList<TasksRequest>();
 			//debug
 			for(Group group: groups_){
 				Log.d(TAG, "merge: "+group.toString());
 			}
 
+			//remove dup old items
 			for(int nth = 0; nth < lst.size(); nth++){
 				List<Item> targetChild = children_.get(nth);
 				//TODO: detect remove item
 				//move, load new, upload new
+				String currentTime = new Date(System.currentTimeMillis()).toString();
 				for(Task task: lst.get(nth)){
 					String thisName = task.getTitle();
 					if(thisName.isEmpty()){
 						continue;
 					}
 					Item existing = name2Item_.get(thisName);
-				
 					if(existing != null){
+						Log.d(TAG, "gtask exists: " + task);
 						//TODO: update
 						if(existing.getGtask() == null){
 							existing.setGtask(task);
 						}
 						DateTime gtaskTime = task.getUpdated();
-						if(gtaskTime == null || existing.getLastTouchedTime() < gtaskTime.getValue()){
-							
-							for(List<Item> child: children_){
-								if(child.remove(existing)){
-									break;
+						if(gtaskTime != null){
+							//TODO: handle case that local timestamp is empty
+							//net is new or equal
+							if(existing.getLastTouchedTime() == gtaskTime.getValue()){
+								continue;
+							}
+							// if(nth == existing.getGroup() || nth == STOCK && COMPLETED_STATUS.equals(task.getStatus())){
+							// 	//TODO: update time?
+							// 	continue;
+							// }
+							if(existing.getLastTouchedTime() < gtaskTime.getValue()){
+								Log.d(TAG, "gtask is new: " + task);
+								//remove old item
+								existing.update(task);
+								Task oldGtask = existing.getGtask();
+								//old group id
+								if(!oldGtask.getId().equals(task.getId())){
+									try{
+										String oldGroupId = groups_.get(existing.getGroup()).getGtaskListId();
+										operationList.add(service_.tasks().delete(oldGroupId, oldGtask.getId()));
+									}
+									catch(IOException e){
+										Log.d(TAG, "IOException", e);
+									}
 								}
+								children_.get(existing.getGroup()).remove(existing);
+								//TODO: sync group
+								List<Item> targetList = targetChild;
+								if(COMPLETED_STATUS.equals(task.getStatus())){
+									targetList = children_.get(STOCK);
+								}
+								Util.insertItem(targetList, existing, ASCENDING);
 							}
-							//TODO: sync group
-							existing.update(task);
-							List<Item> targetList = targetChild;
-							if(COMPLETED_STATUS.equals(task.getStatus())){
-								targetList = children_.get(STOCK);
-							}
-							Util.insertItem(targetList, existing, ASCENDING);
-						}
-						else if(gtaskTime != null) {
-							//update task
-							String destId = groups_.get(existing.getGroup()).getGtaskListId();
-							String oldGroupId = groups_.get(nth).getGtaskListId();
-							try{
-								//operationList.add(service_.tasks().move(destId, task.getId()));
-								//side effect
-								Log.d(TAG, "feature: move (add): " + task + " " + destId);
-								String oldTaskId = task.getId();
-								task.setId(null);
-								operationList.add(service_.tasks().insert(destId, task));
-								Log.d(TAG, "feature: move (delete): " + task + " " + oldGroupId);
-								operationList.add(service_.tasks().delete(oldGroupId, oldTaskId));
-
-							}
-							catch(IOException e){
-								Log.d(TAG, "IOException", e);
+							else {
+								Log.d(TAG, "gtask is old: " + task);
+								//net is old
+								//update task
+								//TODO: check diff?
+								String destId = groups_.get(existing.getGroup()).getGtaskListId();
+								if(destId == null){
+									continue;
+								}
+								String oldGroupId = groups_.get(nth).getGtaskListId();
+								try{
+									//operationList.add(service_.tasks().move(destId, task.getId()));
+									//side effect
+									//check time
+									Task existingGtask = existing.getGtask();
+									Task localGtask = existing.toGtask().clone();
+									localGtask.setId(null);
+									localGtask.setNotes("moved " + currentTime);
+									//Log.d(TAG, "feature: move (add): local " + " " + localGtask + " " + destId);
+									//Log.d(TAG, "feature: move (add): gtask" + " " + task + " " + destId);
+									String oldTaskId = task.getId();
+									//TODO: update id?
+									//operationList.add(service_.tasks().insert(destId, localGtask));
+									operationList.add(service_.tasks().delete(oldGroupId, oldTaskId));
+								}
+								catch(IOException e){
+									Log.d(TAG, "IOException", e);
+								}
 							}
 						}
 						continue;
@@ -588,28 +622,31 @@ public class StacklrExpActivity
 					name2Item_.put(newItem.getName(), newItem);
 					Util.insertItem(targetChild, newItem, ASCENDING);
 				}
-				List<Item> localItemList = new ArrayList<Item>();
-				for(Item item: targetChild){
-					//TODO: modify condition: "updated in local"
-					if(item.getGtask() == null){
-						localItemList.add(item);
-					}
-				}
-				//TODO: remove from task list which is gone to other list
-				//String groupId = groups_.get(nth).getGtaskListId(); 
-				//AsyncUploadTasks.run(StacklrExpActivity.this, groupId, localItemList);
 			}
 			AsyncExecOperationTask.run(StacklrExpActivity.this, operationList);
 		}
 		
-		public void updateGroup(Map<String, TaskList> result){
+		public void updateGroup(Map<String, TaskList> result, boolean first){
+			List<String> absentGroup = new ArrayList<String>();
 			for(Group group: groups_){
 				TaskList gtasklist = result.get(group.getName());
 				if(gtasklist != null){
 					Log.d(TAG, "updateGroup: " + gtasklist.getTitle() + " " + gtasklist.getId());
 					group.setGtaskListId(gtasklist.getId());
 				}
+				else {
+					//create tasklist
+					if(first){
+						absentGroup.add(group.getName());
+					}
+				}
 			}
+			//TODO: add condition to load
+			if(first && !absentGroup.isEmpty()){
+				AsyncAddGroupTask.run(StacklrExpActivity.this, absentGroup);
+				return;
+			}
+			startLoadTask(true);
 		}
 
 		public void moveToNextGroup(int groupPosition, int childPosition){
@@ -809,7 +846,6 @@ public class StacklrExpActivity
 			return;
 		}
 		lastLoadTime_ = System.currentTimeMillis();
-		loadingIcon_.setVisibility(View.VISIBLE);
 		List<String> gidList = new ArrayList<String>();
 		for(Group group: groups_){
 			String gid = group.getGtaskListId();
@@ -823,7 +859,7 @@ public class StacklrExpActivity
 	
 	private void startLoadGroupTask(){
 		Log.d(TAG, "startLoadGroupTask");
-		AsyncListTask.run(this);
+		AsyncLoadGroupTask.run(this);
 	}
 
 	public void showLoadingIcon(){

@@ -75,7 +75,6 @@ public class Group
 		return "group: "+name_+" "+gtaskListId_;
 	}
 
-	
 	static
 	public List<Group> load(File dataDir){
 		File f = new File(dataDir, FILENAME);
