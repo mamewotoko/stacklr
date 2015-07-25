@@ -16,4 +16,12 @@ public class Constant {
 	// static final
 	// protected String TO_BUY_GTASK_ID = "MTMwNzA3NjMyODY2ODMxNjg0NDQ6MjA4MTcxOTAzNzow";
 	static String COMPLETED_STATUS = "completed";
+	static final public boolean ASCENDING = false;
+
+	static public final int[] NEXT_GROUP = new int[]{
+		STOCK, //from to buy
+		TO_BUY, //from stock, to buy(click) or history list(long)
+		TO_BUY, //from history
+		HISTORY //from archive
+	};
 }

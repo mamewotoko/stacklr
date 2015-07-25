@@ -15,7 +15,7 @@ import java.io.File;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import static com.mamewo.stacklr.Constant.TAG;
+import static com.mamewo.stacklr.Constant.*;
 
 //csv representation
 //timestamp, itemname
@@ -77,7 +77,7 @@ public class CSVItemStorage
 				//result.add(new Item(name, timestamp));
 				//TODO: move method definition
 				int itemtype = Integer.valueOf(row[2]);
-				Util.insertItem(result, new Item(name, timestamp, itemtype, null, group), StacklrExpActivity.ASCENDING);
+				Util.insertItem(result, new Item(name, timestamp, itemtype, null, group), ASCENDING);
 			}
 			//sort result by timestamp
 		}
