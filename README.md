@@ -49,6 +49,9 @@ ant debug
 TODO
 -----
 * create group if absent
+* add following groups as default
+   * waiting (net shopping)
+   * wish list (not buy, but want to buy lator)
 * task chain
    load groups -> load tasks -> upload tasks
 * avoid loading group
