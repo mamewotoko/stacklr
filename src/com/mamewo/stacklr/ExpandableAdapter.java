@@ -58,20 +58,22 @@ public class ExpandableAdapter
 		}
 	}
 
+	
 	/**
 	 * @param lst list of gtask for each group
 	 */
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
 		//debug
-		for(Group group: groups_){
-			Log.d(TAG, "merge: "+group.toString());
-		}
-
-		//remove dup old items
+		// for(Group group: groups_){
+		// 	Log.d(TAG, "merge: "+group.toString());
+		// }
+		Log.d(TAG, "merge list size: "+lst.size());
+		//TODO: lock?
+		//remove/move duplicate old items
 		for(int nth = 0; nth < lst.size(); nth++){
 			List<Item> targetChild = children_.get(nth);
-			//TODO: detect remove item
+			//TODO: detect removed item
 			//move, load new, upload new
 			String currentTime = new Date(System.currentTimeMillis()).toString();
 			for(Task task: lst.get(nth)){
@@ -79,9 +81,25 @@ public class ExpandableAdapter
 				if(thisName.isEmpty()){
 					continue;
 				}
+				Log.d(TAG, "merge item name: "+thisName);
+
 				Item existing = name2Item_.get(thisName);
-				if(existing != null){
-					Log.d(TAG, "gtask exists: " + task);
+				if(existing == null){
+					if(!isTaskCompleted(task)){
+						//new item
+						Item newItem = new Item(task, nth);
+						name2Item_.put(newItem.getName(), newItem);
+						Util.insertItem(targetChild, newItem, ASCENDING);
+					}
+				}
+				else {
+					Log.d(TAG, "gtask exists: " + task + " " + isTaskCompleted(task));
+					if(isTaskCompleted(task)){
+						//remove existing
+						//TODO: check completed time of gtask
+						children_.get(existing.getGroup()).remove(existing);
+						continue;
+					}
 					//TODO: update
 					if(existing.getGtask() == null){
 						existing.setGtask(task);
@@ -93,10 +111,6 @@ public class ExpandableAdapter
 						if(existing.getLastTouchedTime() == gtaskTime.getValue()){
 							continue;
 						}
-						// if(nth == existing.getGroup() || nth == STOCK && COMPLETED_STATUS.equals(task.getStatus())){
-						// 	//TODO: update time?
-						// 	continue;
-						// }
 						if(existing.getLastTouchedTime() < gtaskTime.getValue()){
 							Log.d(TAG, "gtask is new: " + task);
 							//remove old item
@@ -115,9 +129,6 @@ public class ExpandableAdapter
 							children_.get(existing.getGroup()).remove(existing);
 							//TODO: sync group
 							List<Item> targetList = targetChild;
-							if(COMPLETED_STATUS.equals(task.getStatus())){
-								targetList = children_.get(STOCK);
-							}
 							Util.insertItem(targetList, existing, ASCENDING);
 						}
 						else {
@@ -150,17 +161,12 @@ public class ExpandableAdapter
 							}
 						}
 					}
-					continue;
 				}
-				//new item
-				Item newItem = new Item(task, nth);
-				name2Item_.put(newItem.getName(), newItem);
-				Util.insertItem(targetChild, newItem, ASCENDING);
 			}
 		}
 		AsyncExecOperationTask.run(activity_, operationList);
 	}
-		
+
 	public void updateGroup(Map<String, TaskList> result, boolean first){
 		List<String> absentGroup = new ArrayList<String>();
 		for(Group group: groups_){
@@ -247,11 +253,16 @@ public class ExpandableAdapter
 		}
 	}
 
-	public Item remove(int group, int pos) {
-		///debugList(children_.get(HISTORY));
+	public Item remove(int group, int pos, boolean updateUI) {
 		Item item = children_.get(group).remove(pos);
-		notifyDataSetChanged();
+		if(updateUI){
+			notifyDataSetChanged();
+		}
 		return item;
+	}
+
+	public Item remove(int group, int pos) {
+		return remove(group, pos, true);
 	}
 
 	public Item get(int group, int pos){
@@ -360,8 +371,6 @@ public class ExpandableAdapter
 			break;
 		}
 		text.setTextColor(color);
-		//TextView time = (TextView) convertView.findViewById(R.id.item_time);
-		//text.setText(children_.get(groupPosition).get(childPosition).getLastTouchedTimeStr());
 		return convertView;
 	}
 
@@ -372,5 +381,10 @@ public class ExpandableAdapter
 
 	static String groupNameToFilename(String groupName){
 		return groupName.replaceAll(" ", "_")+".txt";
+	}
+
+	//TODO: 定義するクラスを考える
+	static boolean isTaskCompleted(com.google.api.services.tasks.model.Task task){
+		return COMPLETED_STATUS.equals(task.getStatus());
 	}
 }

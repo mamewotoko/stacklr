@@ -11,13 +11,13 @@ import static com.mamewo.stacklr.Constant.*;
  * Asynchronously load the tasks.
  * 
  */
-class AsyncUploadTasks
+class AsyncAddTasks
 	extends CommonAsyncTask
 {
 	private String gid_;
 	private List<Item> lst_;
 
-	public AsyncUploadTasks(StacklrExpActivity activity, String gid, List<Item> lst) {
+	public AsyncAddTasks(StacklrExpActivity activity, String gid, List<Item> lst) {
 		super(activity);
 		lst_ = lst;
 		gid_ = gid;
@@ -36,6 +36,6 @@ class AsyncUploadTasks
 
 	static
 	public void run(StacklrExpActivity activity, String gid, List<Item> lst) {
-		new AsyncUploadTasks(activity, gid, lst).execute();
+		new AsyncAddTasks(activity, gid, lst).execute();
 	}
 }

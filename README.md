@@ -48,10 +48,12 @@ ant debug
 
 TODO
 -----
+* pop item by google calender
+  * pop items loaded from previous browse
 * create group if absent
 * add following groups as default
-   * waiting (net shopping)
-   * wish list (not buy, but want to buy lator)
+   * waiting (e.g. internet shopping)
+   * wish list (not buy, but want to buy lator, display lower)
 * task chain
    load groups -> load tasks -> upload tasks
 * avoid loading group

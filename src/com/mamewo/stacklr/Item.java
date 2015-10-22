@@ -28,18 +28,25 @@ public class Item
 	public int ITEM_TYPE_BOTTOM = 3;
 
 	private Task gtask_;
+	private String gtaskId_;
 
-	public Item(String name, long time, int type, Task gtask, int group){
+	public Item(String name, String gtaskId, long time, int type, int group){
 		name_ = name;
 		lastTouchedTime_ = time;
 		type_ = type;
-		gtask_ = gtask;
+
+		gtaskId_ = gtaskId;
 		group_ = group;
 		//group ~ tasklist
+		gtask_ = null;
+		//umm...
+		if(gtaskId_ != null && !gtaskId_.isEmpty()){
+			gtask_ = toGtask();
+		}
 	}
 
 	public Item(String name, int group){
-		this(name, 0, ITEM_TYPE_FOOD, null, group);
+		this(name, "", 0, ITEM_TYPE_FOOD, group);
 	}
 	
 	//TODO: save item type in gtask
@@ -95,6 +102,9 @@ public class Item
 		if(gtask_ == null){
 			gtask_ = new Task().setTitle(name_)
 				.setUpdated(new DateTime(lastTouchedTime_));
+			if(gtaskId_ != null && !gtaskId_.isEmpty()){
+				gtask_.setId(gtaskId_);
+			}
 		}
 		return gtask_;
 	}

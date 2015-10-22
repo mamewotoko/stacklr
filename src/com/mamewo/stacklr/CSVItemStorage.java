@@ -28,6 +28,11 @@ public class CSVItemStorage
 	private String NAME_COLUMN = "name";
 	static final
 	private String TYPE_COLUMN = "type";
+	static final
+	private String GTASK_ID_COLUMN = "gtask_id";
+
+	static final
+	private String[] CSV_HEADER = new String[]{ TIMESTAMP_COLUMN, NAME_COLUMN, TYPE_COLUMN, GTASK_ID_COLUMN };
 
 	static final
 	private String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
@@ -74,10 +79,14 @@ public class CSVItemStorage
 				if(row[0].length() > 0){
 					timestamp = sdf.parse(row[0]).getTime();
 				}
-				//result.add(new Item(name, timestamp));
 				//TODO: move method definition
 				int itemtype = Integer.valueOf(row[2]);
-				Util.insertItem(result, new Item(name, timestamp, itemtype, null, group), ASCENDING);
+				//TODO: remove this code later
+				String gtaskId = "";
+				if(row.length == 4){
+					gtaskId = row[3];
+				}
+				Util.insertItem(result, new Item(name, gtaskId, timestamp, itemtype, group), ASCENDING);
 			}
 			//sort result by timestamp
 		}
@@ -103,14 +112,18 @@ public class CSVItemStorage
 	@Override
 	public void save(List<Item> data) {
 		CSVWriter writer = null;
-		String[] header = new String[]{ TIMESTAMP_COLUMN, NAME_COLUMN, TYPE_COLUMN };
 		try{
 			writer =  new CSVWriter(new FileWriter(file_));
-			writer.writeNext(header);
-			for (Item item : data) {
+			writer.writeNext(CSV_HEADER);
+			for (Item item: data) {
+				String gtaskId = "";
+				if(item.getGtask() != null && item.getGtask().getId() != null){
+					gtaskId = item.getGtask().getId();
+				}
 				writer.writeNext(new String[] { item.lastTouchedTimestampStr(),
 												item.getName(),
-												String.valueOf(item.getType())});
+												String.valueOf(item.getType()),
+												gtaskId});
 			}
 			writer.close();
 		}
