@@ -36,11 +36,15 @@ Functions
 
 Build
 -----
-* copy google-play-service_lib code into libsrc
+* copy google-play-service_lib code into libsrc directory
 ```bash
+mkdir libsrc
 cp $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib libsrc/
 ```
 * add libsrc/google-play-services_lib as library project
+```
+android update lib-project -p libsrc/google-play-services_lib -t 16
+```
 * build using ant
 ```bash
 ant debug
