@@ -15,6 +15,10 @@ import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.TasksRequest;
 
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.CalendarScopes;
+
 import com.google.api.client.util.DateTime;
 import java.util.Date;
 
@@ -167,6 +171,34 @@ public class ExpandableAdapter
 		AsyncExecOperationTask.run(activity_, operationList);
 	}
 
+	//move to async task
+	public void pushEvents(List<Event> events){
+		//push
+		for(Event e: events){
+			String name = e.getSummary();
+			EventDateTime start = e.getStart();
+			DateTime startDt = start.getDate();
+			if(startDt == null){
+				startDt = start.getDateTime();
+			}			
+			Log.d(TAG, "event from calendar(start,dt,date): "+e.getSummary()+" "+start+" "+start.getDateTime()+" "+start.getDate()+" "+startDt.getValue());
+			Item existing = name2Item_.get(name);
+			Item item;
+			//XXX
+			if(existing != null){
+				if(startDt.getValue() <= existing.getLastTouchedTime()){
+					continue;
+				}
+				item = existing;
+				item.setLastTouchedTime(startDt.getValue());
+			}
+			else{
+				item = new Item(name, "", startDt.getValue(), Item.ITEM_TYPE_TOP, TO_BUY);
+			}
+			pushToBuy(item);
+		}
+	}
+
 	public void updateGroup(Map<String, TaskList> result, boolean first){
 		List<String> absentGroup = new ArrayList<String>();
 		for(Group group: groups_){
@@ -222,10 +254,12 @@ public class ExpandableAdapter
 	}
 
 	public void pushToBuy(Item item) {
-		children_.get(TO_BUY).remove(item);
-		//XXXX
-		children_.get(STOCK).remove(item);
-		children_.get(HISTORY).remove(item);
+		Item existing = name2Item_.get(item.getName());
+		if(existing != null){
+			children_.get(existing.getGroup()).remove(existing);
+		}
+		//xxx
+		item.setGroup(TO_BUY);
 		//children_.get(TO_BUY).add(0, item);
 		List<Item> lst = children_.get(TO_BUY);
 		Util.insertItem(lst, item, ASCENDING);

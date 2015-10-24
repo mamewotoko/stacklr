@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Arrays;
 
 import java.io.File;
 
@@ -25,6 +26,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.tasks.TasksScopes;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
 
 import android.accounts.AccountManager;
 
@@ -91,6 +94,7 @@ public class StacklrExpActivity
 	private GoogleAccountCredential credential_;
 	//TODO: move to expandable adapter
 	public com.google.api.services.tasks.Tasks service_;
+	public com.google.api.services.calendar.Calendar calendarService_;
 
 	private List<Group> getGroups(){
 		return groups_;
@@ -112,7 +116,9 @@ public class StacklrExpActivity
 		if (credential_.getSelectedAccountName() == null) {
 			// ask user to choose account
 			chooseAccount();
-		} else {
+		}
+		else {
+			Log.d(TAG, "haveGooglePlayServices");
 			startLoadGroupTask();
 		}
 	}
@@ -154,14 +160,21 @@ public class StacklrExpActivity
 			Log.w(TAG, "Error Package name not found ", e);
 		}
 		//---------------
-		//gtasks
+		//gtasks & google calendar
+		// credential_ =
+		// 	GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
 		credential_ =
-			GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
+		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR_READONLY));
+		
 		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
 		credential_.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
+		//TODO: rename
 		service_ =
 			new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential_)
-            .setApplicationName("Stacklr/1.0").build();
+            .setApplicationName("Stacklr/0.01").build();
+		calendarService_ =
+			new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential_)
+			.setApplicationName("Stacklr/0.01").build();
 		groups_ = Group.load(datadir_);
 		if(groups_ == null){
 			String[] groupNames = getResources().getStringArray(R.array.groups);
@@ -262,7 +275,6 @@ public class StacklrExpActivity
 			break;
 		case R.id.reload_menu:
 			//TODO: load group
-			//startLoadGroupTask();
 			startLoadGroupTask();
 			handled = true;
 			break;
@@ -299,7 +311,7 @@ public class StacklrExpActivity
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					startLoadGroupTask();
+					//startLoadGroupTask();
 				}
 			}
 			break;
@@ -485,6 +497,9 @@ public class StacklrExpActivity
 			gidList.add(gid);
 		}
 		AsyncLoadTasks.run(this, gidList);
+		//
+		//AsyncLoadGoogleCalendarTask.run(this);
+		AsyncLoadGoogleCalendarListTask.run(this);
 	}
 	
 	private void startLoadGroupTask(){

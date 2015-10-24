@@ -48,8 +48,9 @@ public class Item
 	public Item(String name, int group){
 		this(name, "", 0, ITEM_TYPE_FOOD, group);
 	}
-	
+
 	//TODO: save item type in gtask
+	//TODO: remove task dependency
 	public Item(Task gtask, int group){
 		name_ = gtask.getTitle();
 		DateTime time = gtask.getUpdated();

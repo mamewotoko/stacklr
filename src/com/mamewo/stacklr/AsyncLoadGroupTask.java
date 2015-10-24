@@ -35,7 +35,6 @@ class AsyncLoadGroupTask
 			return;
 		}
 		//filter empty item
-
 		for(TaskList tasklist: tasklists){
 			result.put(tasklist.getTitle(), tasklist);
 		}

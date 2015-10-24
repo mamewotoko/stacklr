@@ -16,11 +16,14 @@ abstract class CommonAsyncTask
 {
 	final StacklrExpActivity activity_;
 	final com.google.api.services.tasks.Tasks client_;
-	//	private final View progressBar;
+	//XXX
+	final com.google.api.services.calendar.Calendar calendarClient_;
 
+	//	private final View progressBar;
 	public CommonAsyncTask(StacklrExpActivity activity) {
 		activity_ = activity;
 		client_ = activity.service_;
+		calendarClient_ = activity.calendarService_;
 	}
 
 	@Override
@@ -38,12 +41,10 @@ abstract class CommonAsyncTask
 			return true;
 		}
 		catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-			activity_.showGooglePlayServicesAvailabilityErrorDialog(
-																   availabilityException.getConnectionStatusCode());
+			activity_.showGooglePlayServicesAvailabilityErrorDialog(availabilityException.getConnectionStatusCode());
 		}
 		catch (UserRecoverableAuthIOException userRecoverableException) {
-			activity_.startActivityForResult(
-											 userRecoverableException.getIntent(), REQUEST_AUTHORIZATION);
+			activity_.startActivityForResult(userRecoverableException.getIntent(), REQUEST_AUTHORIZATION);
 		}
 		catch (IOException e) {
 			Utils.logAndShow(activity_, TAG, e);

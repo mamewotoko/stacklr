@@ -52,9 +52,11 @@ ant debug
 
 TODO
 -----
-* pop item by google calender
-  * pop items loaded from previous browse
+* add manual
+  calendar named "stacklr" is loaded
+* update google task
 * create group if absent
+* use gradle to build project and fetch libraries
 * add following groups as default
    * waiting (e.g. internet shopping)
    * wish list (not buy, but want to buy lator, display lower)
@@ -68,24 +70,18 @@ TODO
 * add test operation to interact with google service UI
 * add promote group (stock items to use first)
 * avoid frequent load by managing last update time
-* update google task
 * add sync config
-* add clear menu
 * add touch menu, which is just update timestamp
 * sync items with google tasks
    get list from google
    merge list
    update list
 * use new menu design
-* add last update time
 * draw icon
 * add dialog to set item property
    item type
    button to select next group
    color?
-* add TODO group
-   add recipe
-   add items to consume
 * add licence file
 * add wording file and support multiple language
 * history list

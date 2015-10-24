@@ -1,5 +1,6 @@
 package com.mamewo.stacklr;
 
+import static com.mamewo.stacklr.Constant.TAG;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -65,6 +66,7 @@ public class Utils {
     activity.runOnUiThread(new Runnable() {
       public void run() {
         Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
+		Log.d(TAG, "error: "+errorMessage);
       }
     });
   }
