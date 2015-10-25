@@ -16,11 +16,4 @@ public class Constant {
 	static String COMPLETED_STATUS = "completed";
 	//static String NOT_COMPLETED_STATUS = "needsAction";
 	static final public boolean ASCENDING = false;
-
-	static public final int[] NEXT_GROUP = new int[]{
-		STOCK, //from to buy
-		TO_BUY, //from stock, to buy(click) or history list(long)
-		TO_BUY, //from history
-		HISTORY //from archive
-	};
 }

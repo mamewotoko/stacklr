@@ -384,10 +384,11 @@ public class StacklrExpActivity
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
 									int groupPosition, int childPosition, long id) {
-			boolean handled = false;
+			//boolean handled = false;
 			Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
 			adapter_.moveToNextGroup(groupPosition, childPosition);
-			return handled;
+			//return handled;
+			return true;
 		}
 
 		@Override

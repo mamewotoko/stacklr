@@ -9,6 +9,14 @@ import static com.mamewo.stacklr.Constant.*;
 public class Item
 	implements Comparable
 {
+	static final
+	private int[] NEXT_GROUP = new int[]{
+		STOCK, //from to buy
+		TO_BUY, //from stock, to buy(click) or history list(long)
+		TO_BUY, //from history
+		HISTORY //from archive
+	};
+
 	private String name_;
 	private int type_;
 	private long lastTouchedTime_;
@@ -29,6 +37,7 @@ public class Item
 
 	private Task gtask_;
 	private String gtaskId_;
+	private boolean isEvent_;
 
 	public Item(String name, String gtaskId, long time, int type, int group){
 		name_ = name;
@@ -43,6 +52,7 @@ public class Item
 		if(gtaskId_ != null && !gtaskId_.isEmpty()){
 			gtask_ = toGtask();
 		}
+		isEvent_ = false;
 	}
 
 	public Item(String name, int group){
@@ -61,8 +71,13 @@ public class Item
 		}
 		gtask_ = gtask;
 		group_ = group;
+		isEvent_ = false;
 	}
 
+	public void setIsEvent(boolean isEvent){
+		isEvent_ = isEvent;
+	}
+	
 	public long getLastTouchedTime(){
 		if(gtask_ != null){
 			DateTime time = gtask_.getUpdated();
@@ -178,5 +193,12 @@ public class Item
 			return 1;
 		}
 		return 0;
+	}
+
+	public int nextGroup(){
+		if(isEvent_ && group_ == TO_BUY){
+			return HISTORY;
+		}
+		return NEXT_GROUP[group_];
 	}
 }

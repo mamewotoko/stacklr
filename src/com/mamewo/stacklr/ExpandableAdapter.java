@@ -194,6 +194,7 @@ public class ExpandableAdapter
 			}
 			else{
 				item = new Item(name, "", startDt.getValue(), Item.ITEM_TYPE_TOP, TO_BUY);
+				item.setIsEvent(true);
 			}
 			pushToBuy(item);
 		}
@@ -224,8 +225,9 @@ public class ExpandableAdapter
 	}
 
 	public void moveToNextGroup(int groupPosition, int childPosition){
-		int nextGroupPosition = NEXT_GROUP[groupPosition];
+		//int nextGroupPosition = NEXT_GROUP[groupPosition];
 		Item item = children_.get(groupPosition).remove(childPosition);
+		int nextGroupPosition = item.nextGroup();
 		item.setGroup(nextGroupPosition);
 		item.setLastTouchedTime(System.currentTimeMillis());
 		List<Item> lst = children_.get(nextGroupPosition);
@@ -236,7 +238,6 @@ public class ExpandableAdapter
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){
 		Item item = children_.get(groupPosition).remove(childPosition);
 		item.setLastTouchedTime(System.currentTimeMillis());
-		//children_.get(nextGroupPosition).add(0, item);
 		List<Item> lst = children_.get(nextGroupPosition);
 		Util.insertItem(lst, item, ASCENDING);
 		notifyDataSetChanged();
