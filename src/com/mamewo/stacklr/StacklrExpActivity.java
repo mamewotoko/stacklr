@@ -32,6 +32,7 @@ import com.google.api.services.calendar.CalendarScopes;
 import android.accounts.AccountManager;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
 import android.os.Bundle;
@@ -107,18 +108,19 @@ public class StacklrExpActivity
 			showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
 			//TODO: toast?
 			return false;
+        } else if (connectionStatusCode != ConnectionResult.SUCCESS) {
+            return false;
 		}
 		return true;
 	}
 
-	private void haveGooglePlayServices() {
+	private void refreshTasks() {
 		// check if there is already an account selected
 		if (credential_.getSelectedAccountName() == null) {
 			// ask user to choose account
 			chooseAccount();
 		}
 		else {
-			Log.d(TAG, "haveGooglePlayServices");
 			startLoadGroupTask();
 		}
 	}
@@ -220,7 +222,7 @@ public class StacklrExpActivity
 	protected void onResume() {
 		super.onResume();
 		if (checkGooglePlayServicesAvailable()) {
-			haveGooglePlayServices();
+			refreshTasks();
 		}
 	}
 
@@ -289,16 +291,15 @@ public class StacklrExpActivity
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 		case REQUEST_GOOGLE_PLAY_SERVICES:
-			if (resultCode == Activity.RESULT_OK) {
-				haveGooglePlayServices();
-			} else {
+			// if (resultCode == Activity.RESULT_OK) {
+			// 	haveGooglePlayServices();
+			// } else {
+			if(resultCode != RESULT_OK){
 				checkGooglePlayServicesAvailable();
 			}
 			break;
 		case REQUEST_AUTHORIZATION:
-			if (resultCode == Activity.RESULT_OK) {
-				startLoadGroupTask();
-			} else {
+			if(resultCode != RESULT_OK) {
 				chooseAccount();
 			}
 			break;
@@ -311,7 +312,6 @@ public class StacklrExpActivity
 					SharedPreferences.Editor editor = settings.edit();
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
-					//startLoadGroupTask();
 				}
 			}
 			break;

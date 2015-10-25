@@ -52,6 +52,7 @@ ant debug
 
 TODO
 -----
+* check flow of google account checker
 * add manual
   calendar named "stacklr" is loaded
 * update google task
