@@ -13,6 +13,14 @@ public class Constant {
 	static protected final int ARCHIVE = 3;
 	//static protected final int REMOVE = -1;
 
+	//move to preference
+	static boolean[] DEFAULT_GROUP_OPEN = {
+		true,
+		true,
+		false,
+		false
+	};
+
 	static String COMPLETED_STATUS = "completed";
 	//static String NOT_COMPLETED_STATUS = "needsAction";
 	static final public boolean ASCENDING = false;

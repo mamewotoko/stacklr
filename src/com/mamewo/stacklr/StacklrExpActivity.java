@@ -208,7 +208,12 @@ public class StacklrExpActivity
 							   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		//TODO: add option
 		for(int i = 0; i < groups_.size(); i++){
-			listView_.expandGroup(i);
+			if(Constant.DEFAULT_GROUP_OPEN[i]){
+				listView_.expandGroup(i);
+			}
+			else {
+				listView_.collapseGroup(i);
+			}
 		}
 	}
 
@@ -291,9 +296,6 @@ public class StacklrExpActivity
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 		case REQUEST_GOOGLE_PLAY_SERVICES:
-			// if (resultCode == Activity.RESULT_OK) {
-			// 	haveGooglePlayServices();
-			// } else {
 			if(resultCode != RESULT_OK){
 				checkGooglePlayServicesAvailable();
 			}
