@@ -83,10 +83,12 @@ public class CSVItemStorage
 				int itemtype = Integer.valueOf(row[2]);
 				//TODO: remove this code later
 				String gtaskId = "";
-				if(row.length == 4){
-					gtaskId = row[3];
-				}
-				Util.insertItem(result, new Item(name, gtaskId, timestamp, itemtype, group), ASCENDING);
+				gtaskId = row[3];
+				boolean isEvent = row[4] == "true";
+				
+				Item item = new Item(name, gtaskId, timestamp, itemtype, group);
+				item.setIsEvent(isEvent);
+				Util.insertItem(result, item, ASCENDING);
 			}
 			//sort result by timestamp
 		}
@@ -120,10 +122,12 @@ public class CSVItemStorage
 				if(item.getGtask() != null && item.getGtask().getId() != null){
 					gtaskId = item.getGtask().getId();
 				}
+				//TODO: move to Item.java
 				writer.writeNext(new String[] { item.lastTouchedTimestampStr(),
 												item.getName(),
 												String.valueOf(item.getType()),
-												gtaskId});
+												gtaskId,
+												Boolean.toString(item.isEvent())});
 			}
 			writer.close();
 		}

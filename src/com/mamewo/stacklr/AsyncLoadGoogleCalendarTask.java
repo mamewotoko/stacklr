@@ -7,6 +7,9 @@ import com.google.api.client.util.DateTime;
 import java.io.IOException;
 import java.util.List;
 
+import static com.mamewo.stacklr.Constant.TAG;
+import android.util.Log;
+
 public class AsyncLoadGoogleCalendarTask
 	extends CommonAsyncTask
 {
@@ -23,6 +26,7 @@ public class AsyncLoadGoogleCalendarTask
 	protected void doInBackground()
 		throws IOException
 	{
+		//TODO: use last loaded time as minTime
 		events_ = calendarClient_.events().list(calendarId_)
 			.setTimeMin(ONE_WEEK_AGO)
 			.setTimeMax(new DateTime(System.currentTimeMillis()))
@@ -30,6 +34,7 @@ public class AsyncLoadGoogleCalendarTask
 			.setSingleEvents(true)
 			.execute()
 			.getItems();
+		//Log.d(TAG, "AsyncLoadGoogleCalendarTask.doInBackground: " + events_);
 	}
 
 	static

@@ -78,6 +78,10 @@ public class Item
 		isEvent_ = isEvent;
 	}
 	
+	public boolean isEvent(){
+		return isEvent_;
+	}
+
 	public long getLastTouchedTime(){
 		if(gtask_ != null){
 			DateTime time = gtask_.getUpdated();
@@ -200,5 +204,10 @@ public class Item
 			return HISTORY;
 		}
 		return NEXT_GROUP[group_];
+	}
+
+	@Override
+	public String toString(){
+		return name_ + " " + type_ + " " + isEvent_ + " " + group_;
 	}
 }
