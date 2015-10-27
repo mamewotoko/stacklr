@@ -21,6 +21,8 @@ import com.google.api.services.calendar.CalendarScopes;
 
 import com.google.api.client.util.DateTime;
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 
 import android.util.Log;
 
@@ -425,5 +427,25 @@ public class ExpandableAdapter
 	//TODO: 定義するクラスを考える
 	static boolean isTaskCompleted(com.google.api.services.tasks.model.Task task){
 		return COMPLETED_STATUS.equals(task.getStatus());
+	}
+
+	public Map<Group, List<Item>> getLocalTasks(){
+		Map<Group, List<Item>> result = new HashMap<Group, List<Item>>();
+
+		for(int i = 0; i < children_.size(); i++){
+			List<Item> itemlist = new ArrayList<Item>();
+			List<Item> itemsOfGroup = children_.get(i);
+			Group group = groups_.get(i);
+			for(int j = 0; j < itemsOfGroup.size(); j++){
+				Item item = itemsOfGroup.get(i);
+				if((!item.isEvent()) && item.getGtask() == null){
+					itemlist.add(item);
+				}
+			}
+			if(!itemlist.isEmpty()){
+				result.put(group, itemlist);
+			}
+		}
+		return result;
 	}
 }

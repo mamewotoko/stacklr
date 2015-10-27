@@ -62,14 +62,15 @@ TODO
    * wish list (not buy, but want to buy lator, display lower)
 * task chain
    load groups -> load tasks -> upload tasks
-* avoid loading group
+* avoid frequent load
+   * by managing last update time
+   * avoid loading group
 * add test
    * install -> permit oauth -> load groups and tasks first time
    * start stacklr, push home button, start stacklr again (loading icon is not displayed)
    * reload by menu (loading icon is displayed)
 * add test operation to interact with google service UI
 * add promote group (stock items to use first)
-* avoid frequent load by managing last update time
 * add sync config
 * add touch menu, which is just update timestamp
 * sync items with google tasks
@@ -84,9 +85,6 @@ TODO
    color?
 * add licence file
 * add wording file and support multiple language
-* history list
-  add timestamp
-* add "stock" group?
 * UI with Action bar
   http://developer.android.com/guide/topics/ui/actionbar.html
 * implement "push to history list"
@@ -95,22 +93,18 @@ TODO
       https://github.com/47deg/android-swipelistview
       http://www.tutecentral.com/android-swipe-listview/
 * implement "enter text by speech"
-* add items in history as suggestion
+* add items in history as input suggestion
 * Data storage design
   Write data storage interface
     integrate with cursor adapter?
   Support multiple storage
-    e.g. Google tasks API
     e.g. Redmine ticket
     e.g. Github issue?
   Save items to local database
-  Sync with google tasks/clendar/spreadsheet?
 * localize
    English
    Japanese
    Chinese?
-* 2 listview UI (old)
-  change height correspnding to number of stack items
 
 MEMO
 ----

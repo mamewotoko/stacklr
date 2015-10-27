@@ -11,12 +11,12 @@ import static com.mamewo.stacklr.Constant.*;
  * Asynchronously load the tasks.
  * 
  */
-class AsyncLoadTasks
+class AsyncLoadTask
 	extends CommonAsyncTask
 {
 	List<String> groupIdList_;
 
-	public AsyncLoadTasks(StacklrExpActivity activity, List<String> groupIdList) {
+	public AsyncLoadTask(StacklrExpActivity activity, List<String> groupIdList) {
 		super(activity);
 		groupIdList_ = groupIdList;
 	}
@@ -42,7 +42,7 @@ class AsyncLoadTasks
 
 	static
 	public void run(StacklrExpActivity activity, List<String> groupIdList) {
-		new AsyncLoadTasks(activity, groupIdList).execute();
+		new AsyncLoadTask(activity, groupIdList).execute();
 	}
 
 	@Override
@@ -51,5 +51,6 @@ class AsyncLoadTasks
 		if (success) {
 			activity_.refreshView();
 		}
+		activity_.uploadTasks();
 	}
 }

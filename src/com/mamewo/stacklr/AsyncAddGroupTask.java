@@ -13,7 +13,7 @@ import static com.mamewo.stacklr.Constant.*;
 import android.util.Log;
 
 /**
- * Asynchronously load the tasks.
+ * Asynchronously add todo list
  * 
  */
 class AsyncAddGroupTask

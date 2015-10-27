@@ -30,9 +30,15 @@ public class CSVItemStorage
 	private String TYPE_COLUMN = "type";
 	static final
 	private String GTASK_ID_COLUMN = "gtask_id";
+	static final
+	private String IS_EVENT_COLUMN = "is_event";
 
 	static final
-	private String[] CSV_HEADER = new String[]{ TIMESTAMP_COLUMN, NAME_COLUMN, TYPE_COLUMN, GTASK_ID_COLUMN };
+	private String[] CSV_HEADER = new String[]{ TIMESTAMP_COLUMN,
+												NAME_COLUMN,
+												TYPE_COLUMN,
+												GTASK_ID_COLUMN,
+												IS_EVENT_COLUMN };
 
 	static final
 	private String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
@@ -70,21 +76,15 @@ public class CSVItemStorage
 		try{
 			String[] row;
 			SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT);
+			//TODO: move method definition
 			while((row = reader.readNext()) != null){
-				String name = row[1];
-				if(name.isEmpty()){
-					continue;
-				}
 				long timestamp = 0;
-				if(row[0].length() > 0){
-					timestamp = sdf.parse(row[0]).getTime();
-				}
-				//TODO: move method definition
+				timestamp = sdf.parse(row[0]).getTime();
+				String name = row[1];
 				int itemtype = Integer.valueOf(row[2]);
-				//TODO: remove this code later
 				String gtaskId = "";
 				gtaskId = row[3];
-				boolean isEvent = row[4] == "true";
+				boolean isEvent = Boolean.valueOf(row[4]);
 				
 				Item item = new Item(name, gtaskId, timestamp, itemtype, group);
 				item.setIsEvent(isEvent);

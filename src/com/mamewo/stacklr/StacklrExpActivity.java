@@ -121,7 +121,7 @@ public class StacklrExpActivity
 			chooseAccount();
 		}
 		else {
-			startLoadGroupTask();
+			AsyncLoadGroupTask.run(this);
 		}
 	}
 
@@ -281,8 +281,7 @@ public class StacklrExpActivity
 			handled = true;
 			break;
 		case R.id.reload_menu:
-			//TODO: load group
-			startLoadGroupTask();
+			AsyncLoadGroupTask.run(this);
 			handled = true;
 			break;
 		default:
@@ -481,11 +480,13 @@ public class StacklrExpActivity
 		}
 	}
 
-	//TODO: move to adapter?
-	protected void startLoadTask(){
-		startLoadTask(false);
+	//call: POST load
+	public void uploadTasks(){
+		Map<Group, List<Item>> local = adapter_.getLocalTasks();
+		AsyncAddTask.run(this, local);
 	}
 
+	//group is already loaded
 	protected void startLoadTask(boolean force){
 		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
 			return;
@@ -499,17 +500,10 @@ public class StacklrExpActivity
 			}
 			gidList.add(gid);
 		}
-		AsyncLoadTasks.run(this, gidList);
-		//
-		//AsyncLoadGoogleCalendarTask.run(this);
+		AsyncLoadTask.run(this, gidList);
 		AsyncLoadGoogleCalendarListTask.run(this);
 	}
 	
-	private void startLoadGroupTask(){
-		Log.d(TAG, "startLoadGroupTask");
-		AsyncLoadGroupTask.run(this);
-	}
-
 	public void showLoadingIcon(){
 		loadingIcon_.setVisibility(View.VISIBLE);
 	}
