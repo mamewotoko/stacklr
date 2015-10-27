@@ -74,7 +74,6 @@ public class ExpandableAdapter
 		// for(Group group: groups_){
 		// 	Log.d(TAG, "merge: "+group.toString());
 		// }
-		Log.d(TAG, "merge list size: "+lst.size());
 		//TODO: lock?
 		//remove/move duplicate old items
 		for(int nth = 0; nth < lst.size(); nth++){
@@ -250,14 +249,7 @@ public class ExpandableAdapter
 	}
 
 	public Item search(String itemname){
-		for(List<Item> itemlist: children_){
-			for(int i = 0; i < itemlist.size(); i++){
-				if(itemname.equals(itemlist.get(i).getName())){
-					return itemlist.remove(i);
-				}
-			}
-		}
-		return null;
+		return name2Item_.get(itemname);
 	}
 
 	public void pushToBuy(Item item) {
@@ -286,8 +278,7 @@ public class ExpandableAdapter
 				//TODO: find existing item
 				//TODO: if entered from text box
 					
-				//TODO: date
-				pushToBuy(new Item(itemname, TO_BUY));
+				pushToBuy(new Item(itemname, null, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
 			}
 		} catch (IOException e) {
 			Log.d(TAG, "IOException", e);
@@ -439,6 +430,7 @@ public class ExpandableAdapter
 			for(int j = 0; j < itemsOfGroup.size(); j++){
 				Item item = itemsOfGroup.get(i);
 				if((!item.isEvent()) && item.getGtask() == null){
+					Log.d(TAG, "local task: "+item.getName() + " " + item.isEvent());
 					itemlist.add(item);
 				}
 			}

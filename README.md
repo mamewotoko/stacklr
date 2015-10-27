@@ -52,6 +52,7 @@ ant debug
 
 TODO
 -----
+* bug: event flag is lost
 * add manual
   calendar named "stacklr" is loaded
 * update google task
