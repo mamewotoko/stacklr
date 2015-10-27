@@ -23,16 +23,11 @@ Functions
    bought item but not consumed
 * move stock to shopping list
    no stock
+* upload to google task
+* load google calendar (named "stacklr" or primary calender if no stacklr calendar exists)
+  * e.g. list recorded TV shows
+  * e.g. weekly TODO like clean my room
 * move history item to shopping list
-* add timestamp to each list item
-* undo?
-* search item?
-* recommend new item?
-* customize push order
-    simple list
-    sort by frequency of touch
-    ...
-* support due date
 
 Build
 -----
@@ -42,7 +37,7 @@ mkdir libsrc
 cp $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib libsrc/
 ```
 * add libsrc/google-play-services_lib as library project
-```
+```bash
 android update lib-project -p libsrc/google-play-services_lib -t 16
 ```
 * build using ant
@@ -52,10 +47,16 @@ ant debug
 
 TODO
 -----
-* bug: event flag is lost
-* add manual
-  calendar named "stacklr" is loaded
+* undo?
+* search item?
+* recommend new item?
+* customize push order
+    simple list
+    sort by frequency of touch
+    ...
+* support due date?
 * update google task
+  * move group
 * create group if absent
 * use gradle to build project and fetch libraries
 * add following groups as default

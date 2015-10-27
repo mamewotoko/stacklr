@@ -64,16 +64,11 @@ public class ExpandableAdapter
 		}
 	}
 
-	
 	/**
 	 * @param lst list of gtask for each group
 	 */
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
-		//debug
-		// for(Group group: groups_){
-		// 	Log.d(TAG, "merge: "+group.toString());
-		// }
 		//TODO: lock?
 		//remove/move duplicate old items
 		for(int nth = 0; nth < lst.size(); nth++){
@@ -182,7 +177,12 @@ public class ExpandableAdapter
 			if(startDt == null){
 				startDt = start.getDateTime();
 			}			
-			Log.d(TAG, "event from calendar(start,dt,date): "+e.getSummary()+" "+start+" "+start.getDateTime()+" "+start.getDate()+" "+startDt.getValue());
+			Log.d(TAG, "event from calendar(start,dt,date): "
+				  +e.getSummary()+" "
+				  +start+" "
+				  +start.getDateTime()+" "
+				  +start.getDate()+" "
+				  +startDt.getValue());
 			Item existing = name2Item_.get(name);
 			Item item;
 			//XXX
@@ -252,10 +252,14 @@ public class ExpandableAdapter
 		return name2Item_.get(itemname);
 	}
 
+	//TODO: remove this method
 	public void pushToBuy(Item item) {
 		Item existing = name2Item_.get(item.getName());
 		if(existing != null){
 			children_.get(existing.getGroup()).remove(existing);
+		}
+		else {
+			name2Item_.put(item.getName(), item);
 		}
 		//xxx
 		item.setGroup(TO_BUY);
@@ -277,7 +281,6 @@ public class ExpandableAdapter
 				}
 				//TODO: find existing item
 				//TODO: if entered from text box
-					
 				pushToBuy(new Item(itemname, null, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
 			}
 		} catch (IOException e) {
