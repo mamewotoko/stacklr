@@ -83,9 +83,14 @@ public class CSVItemStorage
 				String name = row[1];
 				int itemtype = Integer.valueOf(row[2]);
 				String gtaskId = "";
-				gtaskId = row[3];
-				boolean isEvent = Boolean.valueOf(row[4]);
-				//XXXX
+				if(row.length >= 4){
+					gtaskId = row[3];
+				}
+				boolean isEvent = false;
+				if(row.length >= 5){
+					Boolean.valueOf(row[4]);
+				}
+				//XXX
 				Item item = new Item(name, gtaskId, timestamp, itemtype, group);
 				item.setIsEvent(isEvent);
 				Util.insertItem(result, item, ASCENDING);

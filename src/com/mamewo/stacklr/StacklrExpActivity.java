@@ -423,8 +423,7 @@ public class StacklrExpActivity
 				RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
 				radioGroup.check(initRadioButtonId);
 
-				//TODO: set positive, negative button action
-				//use string resource
+				//TODO: use string resource
 				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 						@Override
 						public void onClick(DialogInterface dialog, int which){
@@ -471,7 +470,6 @@ public class StacklrExpActivity
 					});
 				builder.create().show();
 
-
 				//TODO: display context menu
 				//Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
 				handled = true;
@@ -483,6 +481,7 @@ public class StacklrExpActivity
 	//call: POST load
 	public void uploadTasks(){
 		Map<Group, List<Item>> local = adapter_.getLocalTasks();
+		Log.d(TAG, "uploadTasks: " + local.size());
 		AsyncAddTask.run(this, local);
 	}
 

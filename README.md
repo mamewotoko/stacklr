@@ -47,9 +47,23 @@ ant debug
 
 TODO
 -----
+* later
+  * assign specific date (scheduled, move to calender)
+  * remind later(e.g. 3 days later)
+* widget
+* add classify label to each item
+  importance
+  urgent/not urgent
+* add url to item 
+  podplayer (push new item)
+  amazon (waiting/wish list..)
+    books
+    DVD
+  movies
+  feedly
+* recommend new item?
 * undo?
 * search item?
-* recommend new item?
 * customize push order
     simple list
     sort by frequency of touch
@@ -57,6 +71,8 @@ TODO
 * support due date?
 * update google task
   * move group
+* sync with google task
+  * item corresponding google task is removed
 * create group if absent
 * use gradle to build project and fetch libraries
 * add following groups as default

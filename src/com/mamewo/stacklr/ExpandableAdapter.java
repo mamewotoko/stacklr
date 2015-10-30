@@ -431,7 +431,7 @@ public class ExpandableAdapter
 			List<Item> itemsOfGroup = children_.get(i);
 			Group group = groups_.get(i);
 			for(int j = 0; j < itemsOfGroup.size(); j++){
-				Item item = itemsOfGroup.get(i);
+				Item item = itemsOfGroup.get(j);
 				if((!item.isEvent()) && item.getGtask() == null){
 					Log.d(TAG, "local task: "+item.getName() + " " + item.isEvent());
 					itemlist.add(item);
