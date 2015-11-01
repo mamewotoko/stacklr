@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import static com.mamewo.stacklr.Constant.*;
+import android.util.Log;
 
 /**
  * Asynchronously load the tasks.
@@ -30,10 +31,8 @@ class AsyncLoadTask
 		for(String groupId: groupIdList_){
 			List<Task> tasklist = null;
 			if(groupId.length() > 0){
+				//tasklist is null, if list is empty
 				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title,items/updated,items/status").execute().getItems();
-			}
-			else {
-				tasklist = new ArrayList<Task>();
 			}
 			result.add(tasklist);
 		}

@@ -47,16 +47,19 @@ ant debug
 
 TODO
 -----
+* shopping mode (filter)
+  food/article, not event
 * later
   * assign specific date (scheduled, move to calender)
   * remind later(e.g. 3 days later)
+* checklist
 * widget
 * add classify label to each item
   importance
-  urgent/not urgent
+  urgency
 * add url to item 
   podplayer (push new item)
-  amazon (waiting/wish list..)
+  amazon (waiting/wish list/watch list..)
     books
     DVD
   movies
@@ -64,16 +67,13 @@ TODO
 * recommend new item?
 * undo?
 * search item?
-* customize push order
-    simple list
-    sort by frequency of touch
-    ...
-* support due date?
-* update google task
+* sync items with google tasks
   * move group
+* support due date?
 * sync with google task
   * item corresponding google task is removed
-* create group if absent
+* bug
+  * fix duplicate google task list is created
 * use gradle to build project and fetch libraries
 * add following groups as default
    * waiting (e.g. internet shopping)
@@ -90,12 +90,7 @@ TODO
 * add test operation to interact with google service UI
 * add promote group (stock items to use first)
 * add sync config
-* add touch menu, which is just update timestamp
-* sync items with google tasks
-   get list from google
-   merge list
-   update list
-* use new menu design
+* add touch menu, which is just update timestamp (or push button for each item)
 * draw icon
 * add dialog to set item property
    item type
@@ -111,6 +106,7 @@ TODO
       https://github.com/47deg/android-swipelistview
       http://www.tutecentral.com/android-swipe-listview/
 * implement "enter text by speech"
+  * without dialog?
 * add items in history as input suggestion
 * Data storage design
   Write data storage interface

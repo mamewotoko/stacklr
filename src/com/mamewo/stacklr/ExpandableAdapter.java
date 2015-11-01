@@ -72,6 +72,9 @@ public class ExpandableAdapter
 		//TODO: lock?
 		//remove/move duplicate old items
 		for(int nth = 0; nth < lst.size(); nth++){
+			if(lst.get(nth) == null){
+				continue;
+			}
 			List<Item> targetChild = children_.get(nth);
 			//TODO: detect removed item
 			//move, load new, upload new
