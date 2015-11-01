@@ -165,8 +165,6 @@ public class StacklrExpActivity
 		}
 		//---------------
 		//gtasks & google calendar
-		// credential_ =
-		// 	GoogleAccountCredential.usingOAuth2(this, Collections.singleton(TasksScopes.TASKS));
 		credential_ =
 		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR_READONLY));
 		
