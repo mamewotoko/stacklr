@@ -121,6 +121,8 @@ public class StacklrExpActivity
 			chooseAccount();
 		}
 		else {
+			//TODO: use string resource for title
+			setTitle("stacklr "+credential_.getSelectedAccountName());
 			AsyncLoadGroupTask.run(this);
 		}
 	}
