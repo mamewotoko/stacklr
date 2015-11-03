@@ -32,7 +32,7 @@ class AsyncLoadTask
 			List<Task> tasklist = null;
 			if(groupId.length() > 0){
 				//tasklist is null, if list is empty
-				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title,items/updated,items/status").execute().getItems();
+				tasklist = client_.tasks().list(groupId).setFields("items/id,items/title,items/updated,items/status,items/notes").execute().getItems();
 			}
 			result.add(tasklist);
 		}

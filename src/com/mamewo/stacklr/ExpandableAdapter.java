@@ -14,6 +14,7 @@ import java.io.StringReader;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.TasksRequest;
+import com.google.api.services.tasks.Tasks;
 
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -37,7 +38,7 @@ import static com.mamewo.stacklr.Constant.*;
 public class ExpandableAdapter
 	extends BaseExpandableListAdapter
 {
-	// TODO:Customize?
+	//TODO:Customize?
 	//TODO: Design storage
 	private List<List<Item>> children_;
 	private List<ItemStorage> storageList_;
@@ -64,11 +65,24 @@ public class ExpandableAdapter
 		}
 	}
 
+	private int gtaskListId2gid(String gtaskListId){
+		for(int i = 0; i < groups_.size(); i++){
+			Group group = groups_.get(i);
+			if(gtaskListId.equals(group.getGtaskListId())){
+				return i;
+			}
+		}
+		//TODO: throw exception
+		return -1;
+	}
+
 	/**
 	 * @param lst list of gtask for each group
 	 */
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
+		com.google.api.services.tasks.Tasks client = activity_.getTasksService();
+
 		//TODO: lock?
 		//remove/move duplicate old items
 		for(int nth = 0; nth < lst.size(); nth++){
@@ -76,6 +90,8 @@ public class ExpandableAdapter
 				continue;
 			}
 			List<Item> targetChild = children_.get(nth);
+			String targetChildTaskListId = groups_.get(nth).getGtaskListId();
+
 			//TODO: detect removed item
 			//move, load new, upload new
 			String currentTime = new Date(System.currentTimeMillis()).toString();
@@ -103,7 +119,6 @@ public class ExpandableAdapter
 						children_.get(existing.getGroup()).remove(existing);
 						continue;
 					}
-					//TODO: update
 					if(existing.getGtask() == null){
 						existing.setGtask(task);
 					}
@@ -123,7 +138,9 @@ public class ExpandableAdapter
 							if(!oldGtask.getId().equals(task.getId())){
 								try{
 									String oldGroupId = groups_.get(existing.getGroup()).getGtaskListId();
-									operationList.add(activity_.getTasksService().tasks().delete(oldGroupId, oldGtask.getId()));
+									existing.setGtask(task);
+									//may fail, if task is removed on gtask
+									operationList.add(client.tasks().delete(oldGroupId, oldGtask.getId()));
 								}
 								catch(IOException e){
 									Log.d(TAG, "IOException", e);
@@ -131,11 +148,14 @@ public class ExpandableAdapter
 							}
 							children_.get(existing.getGroup()).remove(existing);
 							//TODO: sync group
+							//List<Item> targetList = targetChild;
 							List<Item> targetList = targetChild;
+							//if(!targetChildTaskListId.equals()
+							
 							Util.insertItem(targetList, existing, ASCENDING);
 						}
 						else {
-							Log.d(TAG, "gtask is old: " + task);
+							Log.d(TAG, "remote gtask is old: " + task);
 							//net is old
 							//update task
 							//TODO: check diff?
@@ -143,21 +163,24 @@ public class ExpandableAdapter
 							if(destId == null){
 								continue;
 							}
-							String oldGroupId = groups_.get(nth).getGtaskListId();
+							String oldTaskListId = groups_.get(nth).getGtaskListId();
 							try{
-								//operationList.add(service_.tasks().move(destId, task.getId()));
+								//update group/link ....
 								//side effect
 								//check time
 								Task existingGtask = existing.getGtask();
-								Task localGtask = existing.toGtask().clone();
-								localGtask.setId(null);
-								localGtask.setNotes("moved " + currentTime);
-								//Log.d(TAG, "feature: move (add): local " + " " + localGtask + " " + destId);
-								//Log.d(TAG, "feature: move (add): gtask" + " " + task + " " + destId);
-								String oldTaskId = task.getId();
-								//TODO: update id?
-								//operationList.add(service_.tasks().insert(destId, localGtask));
-								operationList.add(activity_.getTasksService().tasks().delete(oldGroupId, oldTaskId));
+
+								//for now update group (tasklist)
+								if(nth != existing.getGroup()){
+									//tasks.move api just move task position in the tasklist
+									//remove & add (then update gtask)
+									Task newTask = existingGtask.clone();
+									newTask.setId(null);
+									
+									operationList.add(client.tasks().delete(oldTaskListId, existingGtask.getId()));
+									//TODO: add to new tasklist
+									existing.setGtask(null);
+								}
 							}
 							catch(IOException e){
 								Log.d(TAG, "IOException", e);
@@ -167,7 +190,9 @@ public class ExpandableAdapter
 				}
 			}
 		}
-		AsyncExecOperationTask.run(activity_, operationList);
+		if(!operationList.isEmpty()){
+			AsyncExecOperationTask.run(activity_, operationList);
+		}
 	}
 
 	//move to async task
@@ -381,14 +406,17 @@ public class ExpandableAdapter
 	@Override
 	public View getChildView(int groupPosition, int childPosition,
 							 boolean isLastChild, View convertView, ViewGroup parent) {
+		//int name_id = android.R.id.text1;
+		int name_id = R.id.item_name;
+		
 		if (convertView == null) {
-			convertView = View.inflate(activity_,
-									   android.R.layout.simple_expandable_list_item_2, null);
+			// convertView = View.inflate(activity_,
+			// 						   android.R.layout.simple_expandable_list_item_2, null);
+			convertView = View.inflate(activity_, R.layout.exp_item, null);
 		}
 		// TextView text = (TextView)
 		// convertView.findViewById(R.id.item_name);
-		TextView text = (TextView) convertView.findViewById(android.R.id.text1);
-		//TextView text = (TextView) convertView.findViewById(R.id.item_name);
+		TextView text = (TextView) convertView.findViewById(name_id);
 		Item item = children_.get(groupPosition).get(childPosition);
 		String time = "";
 		String date = item.lastTouchedDateStr();
@@ -409,6 +437,19 @@ public class ExpandableAdapter
 			break;
 		}
 		text.setTextColor(color);
+		TextView note = (TextView) convertView.findViewById(R.id.item_note0);
+		String noteContents = item.getNotes();
+		if(noteContents == null){
+			note.setVisibility(View.GONE);
+		}
+		else {
+			//limit lines of displayed note
+			note.setVisibility(View.VISIBLE);
+			note.setText(noteContents);
+		}
+
+		//TextView note1 = (TextView) convertView.findViewById(R.id.item_note0);
+		//note1.setText("note2 here");
 		return convertView;
 	}
 

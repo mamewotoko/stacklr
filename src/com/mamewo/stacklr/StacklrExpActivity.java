@@ -370,14 +370,6 @@ public class StacklrExpActivity
 		}
 	}
 	
-	static
-	private void debugList(List<String> lst){
-		Log.d(TAG, "size: "+lst.size());
-		for(String item : lst){
-			Log.d(TAG, " "+item);
-		}
-	}
-
 	private class ItemClickListener
 		implements ExpandableListView.OnChildClickListener,
 				   OnItemLongClickListener
@@ -408,10 +400,11 @@ public class StacklrExpActivity
 				
 				String itemname = item.getName();
 				//set item name
-				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_name);
+				//TODO: change id
+				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_dialog_name);
 				itemnameView.setText(itemname);
 
-				final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_type);
+				final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_dialog_type);
 				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
 																					 R.array.item_type, android.R.layout.simple_spinner_item);
 				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

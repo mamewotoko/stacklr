@@ -28,7 +28,6 @@ class AsyncAddTask
 	protected void doInBackground()
 		throws IOException
 	{
-		//client_.tasks();
 		//TODO: use batch?
 		//BatchRequest batch = client_.batch();
 		for(Map.Entry<Group, List<Item>> entry: group2Items_.entrySet()){

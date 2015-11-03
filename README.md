@@ -49,6 +49,11 @@ TODO
 -----
 * shopping mode (filter)
   food/article, not event
+* payment item
+  fill amount
+  add url
+* save items as JSON (dump gtask)
+* switch google account (for testing only?)
 * later
   * assign specific date (scheduled, move to calender)
   * remind later(e.g. 3 days later)

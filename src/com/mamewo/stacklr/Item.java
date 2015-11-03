@@ -135,6 +135,7 @@ public class Item
 			time = date.getValue();
 		}
 		setLastTouchedTime(time);
+		gtask_ = gtask;
 	}
 
 	public String getName(){
@@ -146,6 +147,13 @@ public class Item
 
 	public int getType(){
 		return type_;
+	}
+
+	public String getNotes(){
+		if(gtask_ == null){
+			return null;
+		}
+		return gtask_.getNotes();
 	}
 
 	public void setType(int t){

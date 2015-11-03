@@ -13,7 +13,7 @@ import java.io.File;
 import static com.mamewo.stacklr.Constant.TAG;
 
 //Line based text representation
-public class FileItemStorage
+abstract public class FileItemStorage
 	implements ItemStorage
 {
 	protected File file_;
@@ -22,50 +22,50 @@ public class FileItemStorage
 		file_ = f;
 	}
 
-	@Override
-	public List<Item> load(int group) {
-		List<Item> result = new LinkedList<Item>();
-		BufferedReader br = null;
-		try{
-			br = new BufferedReader(new FileReader(file_));
-			String line;
-			while((line = br.readLine()) != null){
-				result.add(new Item(line, group));
-			}
-		}
-		catch(IOException e){
-			Log.d(TAG, "IOException", e);
-		}
-		finally {
-			if(br != null){
-				try{
-					br.close();
-				}
-				catch(Exception e){
+	// @Override
+	// public List<Item> load(int group) {
+	// 	List<Item> result = new LinkedList<Item>();
+	// 	BufferedReader br = null;
+	// 	try{
+	// 		br = new BufferedReader(new FileReader(file_));
+	// 		String line;
+	// 		while((line = br.readLine()) != null){
+	// 			result.add(new Item(line, group));
+	// 		}
+	// 	}
+	// 	catch(IOException e){
+	// 		Log.d(TAG, "IOException", e);
+	// 	}
+	// 	finally {
+	// 		if(br != null){
+	// 			try{
+	// 				br.close();
+	// 			}
+	// 			catch(Exception e){
 
-				}
+	// 			}
 
-			}
-		}
-		return result;
-	}
+	// 		}
+	// 	}
+	// 	return result;
+	// }
 
-	@Override
-	public void save(List<Item> data) {
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(file_);
-			for (Item item : data) {
-				pw.println(item.getName());
-			}
-		}
-		catch (IOException e) {
-			Log.d(TAG, "IOException", e);
-		}
-		finally {
-			if (pw != null) {
-				pw.close();
-			}
-		}
-	}
+	// @Override
+	// public void save(List<Item> data) {
+	// 	PrintWriter pw = null;
+	// 	try {
+	// 		pw = new PrintWriter(file_);
+	// 		for (Item item : data) {
+	// 			pw.println(item.getName());
+	// 		}
+	// 	}
+	// 	catch (IOException e) {
+	// 		Log.d(TAG, "IOException", e);
+	// 	}
+	// 	finally {
+	// 		if (pw != null) {
+	// 			pw.close();
+	// 		}
+	// 	}
+	// }
 }
