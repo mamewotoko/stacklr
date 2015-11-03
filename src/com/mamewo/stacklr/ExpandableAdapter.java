@@ -39,7 +39,6 @@ public class ExpandableAdapter
 	extends BaseExpandableListAdapter
 {
 	//TODO:Customize?
-	//TODO: Design storage
 	private List<List<Item>> children_;
 	private List<ItemStorage> storageList_;
 	private List<Group> groups_;
@@ -197,7 +196,6 @@ public class ExpandableAdapter
 
 	//move to async task
 	public void pushEvents(List<Event> events){
-		//push
 		for(Event e: events){
 			String name = e.getSummary();
 			EventDateTime start = e.getStart();
@@ -414,8 +412,7 @@ public class ExpandableAdapter
 			// 						   android.R.layout.simple_expandable_list_item_2, null);
 			convertView = View.inflate(activity_, R.layout.exp_item, null);
 		}
-		// TextView text = (TextView)
-		// convertView.findViewById(R.id.item_name);
+		// TextView text = (TextView) convertView.findViewById(R.id.item_name);
 		TextView text = (TextView) convertView.findViewById(name_id);
 		Item item = children_.get(groupPosition).get(childPosition);
 		String time = "";
@@ -439,17 +436,15 @@ public class ExpandableAdapter
 		text.setTextColor(color);
 		TextView note = (TextView) convertView.findViewById(R.id.item_note0);
 		String noteContents = item.getNotes();
+		Log.d(TAG, "note: " + noteContents + " " + item.getName());
 		if(noteContents == null){
 			note.setVisibility(View.GONE);
 		}
 		else {
-			//limit lines of displayed note
+			//TODO: limit lines of displayed note
 			note.setVisibility(View.VISIBLE);
 			note.setText(noteContents);
 		}
-
-		//TextView note1 = (TextView) convertView.findViewById(R.id.item_note0);
-		//note1.setText("note2 here");
 		return convertView;
 	}
 

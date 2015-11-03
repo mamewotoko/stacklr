@@ -47,6 +47,7 @@ ant debug
 
 TODO
 -----
+* log item transition
 * shopping mode (filter)
   food/article, not event
 * payment item
@@ -62,8 +63,7 @@ TODO
 * add classify label to each item
   importance
   urgency
-* add url to item 
-  podplayer (push new item)
+* podplayer (push new item)
   amazon (waiting/wish list/watch list..)
     books
     DVD
