@@ -1,4 +1,4 @@
-stacklr - Stack based shopping/TODO list
+stacklr - Stack based shopping/TODO list [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
 ========================================
 Concept
 -------
