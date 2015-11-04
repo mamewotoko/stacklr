@@ -38,7 +38,7 @@ cp $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-servi
 ```
 * add libsrc/google-play-services_lib as library project
 ```bash
-android update lib-project -p libsrc/google-play-services_lib -t 16
+android update lib-project -p libsrc/google-play-services_lib -t android-16
 ```
 * build using ant
 ```bash
