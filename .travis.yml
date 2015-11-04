@@ -4,7 +4,7 @@ android:
         - build-tools-19.1.0
         - android-16
         - extra-google-google_play_services
-    before_script:
+    before_install:
         - cp -r /extras/google/google_play_services/libproject/google-play-services_lib libsrc/
         - android update lib-project -p libsrc/google-play-services_lib -t 16
     licences:
