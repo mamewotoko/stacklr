@@ -47,22 +47,32 @@ ant debug
 
 TODO
 -----
+* wifi only mode
 * log item transition
+  file
+  local database
+  to google calendar?
+* lib-project? (google task list data adapter)
+  * add to malarm
+* fork simple app project
+  * use one task list
+  * parent/child 
 * shopping mode (filter)
   food/article, not event
 * payment item
   fill amount
   add url
-* save items as JSON (dump gtask)
-* switch google account (for testing only?)
+* switch to other google account (for testing only?)
 * later
   * assign specific date (scheduled, move to calender)
   * remind later(e.g. 3 days later)
 * checklist
+  * e.g. daily routine
+  * e.g. have wallet, phone, bag, note before going shopping (do before)
 * widget
-* add classify label to each item
-  importance
-  urgency
+* add classify label to each item (add to item notes/save locally?)
+  * importance
+  * urgency
 * podplayer (push new item)
   amazon (waiting/wish list/watch list..)
     books
@@ -92,7 +102,7 @@ TODO
    * install -> permit oauth -> load groups and tasks first time
    * start stacklr, push home button, start stacklr again (loading icon is not displayed)
    * reload by menu (loading icon is displayed)
-* add test operation to interact with google service UI
+   * operation to interact with google service UI
 * add promote group (stock items to use first)
 * add sync config
 * add touch menu, which is just update timestamp (or push button for each item)
@@ -114,12 +124,13 @@ TODO
   * without dialog?
 * add items in history as input suggestion
 * Data storage design
-  Write data storage interface
-    integrate with cursor adapter?
-  Support multiple storage
-    e.g. Redmine ticket
-    e.g. Github issue?
-  Save items to local database
+  * save items as JSON (dump gtask)
+  * Write data storage interface
+    * integrate with cursor adapter?
+  * Support multiple storage
+    * e.g. Redmine ticket
+    * e.g. Github issue?
+  * Save items to local database
 * localize
    English
    Japanese

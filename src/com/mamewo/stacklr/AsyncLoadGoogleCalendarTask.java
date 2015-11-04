@@ -46,7 +46,7 @@ public class AsyncLoadGoogleCalendarTask
 	protected void onPostExecute(Boolean success) {
 		super.onPostExecute(success);
 		if(events_ != null){
-			activity_.adapter_.pushEvents(events_);
+			activity_.adapter_.pushCalendarEvents(events_);
 		}
 	}
 }

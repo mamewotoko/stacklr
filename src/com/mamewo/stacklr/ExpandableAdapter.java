@@ -99,7 +99,7 @@ public class ExpandableAdapter
 				if(thisName.isEmpty()){
 					continue;
 				}
-				Log.d(TAG, "merge item name: "+thisName);
+				Log.d(TAG, "merge item: "+thisName);
 
 				Item existing = name2Item_.get(thisName);
 				if(existing == null){
@@ -122,11 +122,14 @@ public class ExpandableAdapter
 						existing.setGtask(task);
 					}
 					DateTime gtaskTime = task.getUpdated();
+					Log.d(TAG, "  exists with same timestamp: " + task);
 					if(gtaskTime != null){
 						//TODO: handle case that local timestamp is empty
 						//net is new or equal
 						if(existing.getLastTouchedTime() == gtaskTime.getValue()){
+							Log.d(TAG, "  exists with same timestamp: " + task);
 							continue;
+
 						}
 						if(existing.getLastTouchedTime() < gtaskTime.getValue()){
 							Log.d(TAG, "gtask is new: " + task);
@@ -195,7 +198,7 @@ public class ExpandableAdapter
 	}
 
 	//move to async task
-	public void pushEvents(List<Event> events){
+	public void pushCalendarEvents(List<Event> events){
 		for(Event e: events){
 			String name = e.getSummary();
 			EventDateTime start = e.getStart();
@@ -217,11 +220,12 @@ public class ExpandableAdapter
 					Log.d(TAG, "pushToEvent: skip " + name);
 					continue;
 				}
-				Log.d(TAG, "pushToEvent: pop " + name);
+				Log.d(TAG, "pushToEvent: pop " + name + " " + startDt);
 				item = existing;
 				item.setLastTouchedTime(startDt.getValue());
 			}
 			else{
+				Log.d(TAG, "pushToEvent: new " + name + " " + startDt);
 				item = new Item(name, "", startDt.getValue(), Item.ITEM_TYPE_TOP, TO_BUY);
 			}
 			item.setIsEvent(true);

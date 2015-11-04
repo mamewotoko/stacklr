@@ -240,6 +240,8 @@ public class StacklrExpActivity
 	
 	@Override
 	protected void onDestroy() {
+		//TODO: save only if updated
+		//TODO: save after update
 		adapter_.save();
 		super.onDestroy();
 	}
@@ -377,10 +379,8 @@ public class StacklrExpActivity
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
 									int groupPosition, int childPosition, long id) {
-			//boolean handled = false;
 			Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
 			adapter_.moveToNextGroup(groupPosition, childPosition);
-			//return handled;
 			return true;
 		}
 
@@ -475,7 +475,9 @@ public class StacklrExpActivity
 	public void uploadTasks(){
 		Map<Group, List<Item>> local = adapter_.getLocalTasks();
 		Log.d(TAG, "uploadTasks: " + local.size());
-		AsyncAddTask.run(this, local);
+		if(local.size() > 0){
+			AsyncAddTask.run(this, local);
+		}
 	}
 
 	//group is already loaded

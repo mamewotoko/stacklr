@@ -1,0 +1,6 @@
+language: android
+android:
+    components:
+        - build-tools-19.1.0
+        - android-16
+        - extra-gooogle_play_services
