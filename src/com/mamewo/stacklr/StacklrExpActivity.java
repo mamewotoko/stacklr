@@ -69,6 +69,8 @@ public class StacklrExpActivity
 	//TODO: separate gtask code
 	//tasks
 	private static final String PREF_ACCOUNT_NAME = "accountName";
+	private static final String PREF_LAST_LOADTASK_TIME = "lastLoadTaskTime";
+
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 	List<Group> groups_;
@@ -494,8 +496,18 @@ public class StacklrExpActivity
 			}
 			gidList.add(gid);
 		}
-		AsyncLoadTask.run(this, gidList);
+		long lastTaskLoadTime = -1;
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		if(!force){
+			lastTaskLoadTime = settings.getLong(PREF_LAST_LOADTASK_TIME, -1);
+		}
+		AsyncLoadTask.run(this, gidList, lastTaskLoadTime);
 		AsyncLoadGoogleCalendarListTask.run(this);
+		long now = System.currentTimeMillis();
+		SharedPreferences.Editor editor = settings.edit();
+		//TODO: latest item time in gtask
+		editor.putLong(PREF_LAST_LOADTASK_TIME, now);
+		editor.commit();
 	}
 	
 	public void showLoadingIcon(){

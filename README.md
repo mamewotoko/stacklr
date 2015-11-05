@@ -48,6 +48,8 @@ ant debug
 TODO
 -----
 * wifi only mode
+* add test using Espresso
+* move next position if task is completed in gtask
 * log item transition
   file
   local database

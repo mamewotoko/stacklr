@@ -6,4 +6,9 @@
     <item android:id="@+id/reload_menu"
 	  android:icon="@drawable/ic_action_refresh"
 	  android:title="reload"></item>
+<!--
+    <item android:id="@+id/preference_menu"
+	  android:icon="@drawable/ic_action_refresh"
+	  android:title="reload"></item>
+-->
 </menu>
