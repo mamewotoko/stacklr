@@ -13,7 +13,7 @@ before_script:
         - ls libsrc/google-play-services_lib
         - android update lib-project -p libsrc/google-play-services_lib -t android-16
         - echo setup emulator
-	- echo no | android create avd --force -n test2 -t "Google Inc.:Google APIs (x86 System Image):19"
+        - echo no | android create avd --force -n test2 -t "Google Inc.:Google APIs (x86 System Image):19"
         - emulator -avd test -no-skin -no-audio -no-window &
         - android-wait-for-emulator
         - adb shell input keyevent 82 &
