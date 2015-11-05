@@ -2,7 +2,7 @@ language: android
 android:
     components:
         - build-tools-19.1.0
-        - android-16
+        - android-19
         - extra-google-google_play_services
     licences:
         - '.+'
@@ -11,7 +11,7 @@ before_script:
         - mkdir libsrc
         - cp -r /usr/local/android-sdk/extras/google/google_play_services/libproject/google-play-services_lib libsrc/
         - ls libsrc/google-play-services_lib
-        - android update lib-project -p libsrc/google-play-services_lib -t android-16
+        - android update lib-project -p libsrc/google-play-services_lib -t android-19
         - echo setup emulator
         - echo no | android create avd --force -n test2 -t "Google Inc.:Google APIs (x86 System Image):19"
         - emulator -avd test -no-skin -no-audio -no-window &
