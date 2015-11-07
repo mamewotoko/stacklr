@@ -36,7 +36,7 @@ import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
 //import android.os.Debug;
-
+import android.os.Handler;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -78,6 +78,8 @@ public class StacklrExpActivity
 	public int numAsyncTasks;
 	private long lastLoadTime_;
 
+	//private Handler handler_;
+	//private Runnable fileSaver_;
 	private boolean groupLoaded_ = false;
 	//end of tasks
 
@@ -221,6 +223,24 @@ public class StacklrExpActivity
 				listView_.collapseGroup(i);
 			}
 		}
+		// handler_ = new Handler();
+		// fileSaver_ = new Runnable(){
+		// 		@Override
+		// 		public void run(){
+		// 			Log.d(TAG, "saver run");
+		// 			long now = System.currentTimeMillis();
+		// 			//nearly idle 
+		// 			//count modified items and large enough
+		// 			long lastModifiedTime = adapter_.lastModifiedTime();
+		// 			long lastSavedTime = adapter_.lastSavedTime();
+		// 			if(lastSavedTime < lastModifiedTime && now-adapter_.lastModifiedTime() >= 3000){
+		// 				Log.d(TAG, "save data to file");
+		// 				adapter_.save();
+		// 			}
+		// 			handler_.postDelayed(fileSaver_, 3000);
+		// 		}
+		// 	};
+		// handler_.postDelayed(fileSaver_, 8000);
 	}
 
 	@Override
@@ -240,18 +260,20 @@ public class StacklrExpActivity
 
 	@Override
 	protected void onStop() {
-		adapter_.save();
+		long lastModifiedTime = adapter_.lastModifiedTime();
+		long lastSavedTime = adapter_.lastSavedTime();
+		if(lastSavedTime < lastModifiedTime){
+			adapter_.save();
+		}
+		//TODO: if group changed?
 		Group.save(datadir_, groups_);
 		super.onStop();
 	}
 	
-	@Override
-	protected void onDestroy() {
-		//TODO: save only if updated
-		//TODO: save after update
-		adapter_.save();
-		super.onDestroy();
-	}
+	// @Override
+	// protected void onDestroy() {
+	// 	super.onDestroy();
+	// }
 
 	public class PushButtonListener
 		implements View.OnClickListener

@@ -44,6 +44,8 @@ public class ExpandableAdapter
 	private List<Group> groups_;
 	private Map<String, Item> name2Item_;
 	private StacklrExpActivity activity_;
+	private long lastModifiedTime_;
+	private long lastSavedTime_;
 
 	//long touch -> history or remove
 	public ExpandableAdapter(StacklrExpActivity activity, List<Group> groups){
@@ -62,6 +64,7 @@ public class ExpandableAdapter
 			}
 			//modify group name
 		}
+		lastModifiedTime_ = System.currentTimeMillis();
 	}
 
 	private int gtaskListId2gid(String gtaskListId){
@@ -195,6 +198,7 @@ public class ExpandableAdapter
 		if(!operationList.isEmpty()){
 			AsyncExecOperationTask.run(activity_, operationList);
 		}
+		updated();
 	}
 
 	//move to async task
@@ -231,6 +235,7 @@ public class ExpandableAdapter
 			item.setIsEvent(true);
 			pushToBuy(item);
 		}
+		updated();
 	}
 
 	public void updateGroup(Map<String, TaskList> result, boolean first){
@@ -258,24 +263,20 @@ public class ExpandableAdapter
 	}
 
 	public void moveToNextGroup(int groupPosition, int childPosition){
-		//int nextGroupPosition = NEXT_GROUP[groupPosition];
-		Item item = children_.get(groupPosition).remove(childPosition);
-		int nextGroupPosition = item.nextGroup();
-		Log.d(TAG, "moveToNextGroup: "+ item.toString() + " next: " + nextGroupPosition);
-		item.setGroup(nextGroupPosition);
-		item.setLastTouchedTime(System.currentTimeMillis());
-		List<Item> lst = children_.get(nextGroupPosition);
-		Util.insertItem(lst, item, ASCENDING);
-		notifyDataSetChanged();
+ 		Item item = children_.get(groupPosition).get(childPosition);
+ 		int nextGroupPosition = item.nextGroup();
+		moveToGroup(groupPosition, childPosition, nextGroupPosition);
 	}
 
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){
+		Log.d(TAG, "moveToGroup" + groupPosition + " "+childPosition);
 		Item item = children_.get(groupPosition).remove(childPosition);
 		item.setGroup(nextGroupPosition);
 		item.setLastTouchedTime(System.currentTimeMillis());
 		List<Item> lst = children_.get(nextGroupPosition);
 		Util.insertItem(lst, item, ASCENDING);
 		notifyDataSetChanged();
+		updated();
 	}
 
 	public Item search(String itemname){
@@ -296,7 +297,7 @@ public class ExpandableAdapter
 		//children_.get(TO_BUY).add(0, item);
 		List<Item> lst = children_.get(TO_BUY);
 		Util.insertItem(lst, item, ASCENDING);
-
+		updated();
 		notifyDataSetChanged();
 	}
 
@@ -316,6 +317,7 @@ public class ExpandableAdapter
 		} catch (IOException e) {
 			Log.d(TAG, "IOException", e);
 		}
+		updated();
 	}
 
 	public Item remove(int group, int pos, boolean updateUI) {
@@ -323,10 +325,12 @@ public class ExpandableAdapter
 		if(updateUI){
 			notifyDataSetChanged();
 		}
+		updated();
 		return item;
 	}
 
 	public Item remove(int group, int pos) {
+		updated();
 		return remove(group, pos, true);
 	}
 
@@ -341,17 +345,15 @@ public class ExpandableAdapter
 		item.setGroup(HISTORY);
 		List<Item> lst = children_.get(HISTORY);
 		Util.insertItem(lst, item, ASCENDING);
+		updated();
 		notifyDataSetChanged();
-	}
-
-	public void clearGroup(int groupPos){
-		children_.get(groupPos).clear();
 	}
 
 	public void save() {
 		for (int i = 0; i < storageList_.size(); i++) {
 			storageList_.get(i).save(children_.get(i));
 		}
+		lastSavedTime_ = System.currentTimeMillis();
 	}
 
 	@Override
@@ -440,7 +442,6 @@ public class ExpandableAdapter
 		text.setTextColor(color);
 		TextView note = (TextView) convertView.findViewById(R.id.item_note0);
 		String noteContents = item.getNotes();
-		Log.d(TAG, "note: " + noteContents + " " + item.getName());
 		if(noteContents == null){
 			note.setVisibility(View.GONE);
 		}
@@ -485,5 +486,18 @@ public class ExpandableAdapter
 			}
 		}
 		return result;
+	}
+
+	public long lastSavedTime(){
+		return lastSavedTime_;
+	}
+
+	public long lastModifiedTime(){
+		return lastModifiedTime_;
+	}
+
+	//limit update group?
+	public void updated(){
+		lastModifiedTime_ = System.currentTimeMillis();
 	}
 }

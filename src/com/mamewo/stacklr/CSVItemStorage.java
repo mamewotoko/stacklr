@@ -20,7 +20,7 @@ import static com.mamewo.stacklr.Constant.*;
 //csv representation
 //timestamp, itemname
 public class CSVItemStorage
-	extends FileItemStorage
+	implements ItemStorage
 {
 	static final
 	private String TIMESTAMP_COLUMN = "timestamp";
@@ -42,9 +42,10 @@ public class CSVItemStorage
 
 	static final
 	private String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
+	private File file_;
 
 	public CSVItemStorage(File f) {
-		super(f);
+		file_ = f;
 	}
 
 	//TODO: simplify (use CSV only)
