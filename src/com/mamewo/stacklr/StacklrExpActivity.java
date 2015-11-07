@@ -270,11 +270,6 @@ public class StacklrExpActivity
 		super.onStop();
 	}
 	
-	// @Override
-	// protected void onDestroy() {
-	// 	super.onDestroy();
-	// }
-
 	public class PushButtonListener
 		implements View.OnClickListener
 	{
