@@ -47,9 +47,11 @@ ant debug
 
 TODO
 -----
-* wifi only mode
+* add preference
+  * wifi only mode
+  * move checked item to next group option
+* merge podplayer
 * add test using Espresso
-* move next position if task is completed in gtask
 * log item transition
   file
   local database
@@ -75,7 +77,7 @@ TODO
 * add classify label to each item (add to item notes/save locally?)
   * importance
   * urgency
-* podplayer (push new item)
+* items link to EC site
   amazon (waiting/wish list/watch list..)
     books
     DVD

@@ -2,10 +2,15 @@
 <resources>
     <string name="app_name">stacklr</string>
     
-    <!-- from tasks sample -->
+    <!-- task error -->
     <string name="error">Error</string>
     <string name="error_format">[Error] %s</string>
-    <!-- -->
+
+    <!-- preference -->
+    <string name="not_wifi_only">Use Wi-Fi or mobile network</string>
+    <string name="wifi_only">Use Wi-Fi only</string>
+    <string name="pref_wifi_only">Use Wi-Fi only</string>
+    <string name="pref_version">Version</string>
     
     <!-- Item.ITEM_TYPE_XXX -->
     <string-array name="item_type">

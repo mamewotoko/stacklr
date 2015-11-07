@@ -67,6 +67,8 @@ public class StacklrExpActivity
 {
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final private long LOAD_MIN_INTERVAL = 180*1000;
+	final static
+	public String PACKAGE_NAME = StacklrExpActivity.class.getPackage().getName();
 
 	//pref
 	private static final String PREF_ACCOUNT_NAME = "accountName";
@@ -309,6 +311,9 @@ public class StacklrExpActivity
 		case R.id.reload_menu:
 			AsyncLoadGroupTask.run(this);
 			handled = true;
+			break;
+		case R.id.preference_menu:
+			startActivity(new Intent(this, StacklrPreference.class));
 			break;
 		default:
 			break;
