@@ -254,7 +254,7 @@ public class ExpandableAdapter
 			return;
 		}
 		//TODO: modify
-		activity_.startLoadTask(true);
+		activity_.startLoadTask(first);
 	}
 
 	public void moveToNextGroup(int groupPosition, int childPosition){

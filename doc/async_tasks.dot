@@ -1,0 +1,8 @@
+digraph AsyncTasks {
+      StacklrExpActivity -> AsyncLoadTask
+      StacklrExpActivity -> AsyncLoadGroupTask
+      StacklrExpActivity -> AsyncLoadGoogleCalendarListTask
+      StacklrExpActivity -> AsyncAddTask
+      AsyncLoadGoogleCalendarListTask -> AsyncLoadGoogleCalendarTask
+      ExpandableAdapter -> AsyncExecOperationTask
+}

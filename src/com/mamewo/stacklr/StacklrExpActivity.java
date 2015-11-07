@@ -35,6 +35,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
+//import android.os.Debug;
+
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -153,6 +155,9 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//trace is saved as /sdcard/stacklr.trace
+		//		Debug.startMethodTracing("stacklr");
+
 		//TODO: load from file or savedInstanceState
 		lastLoadTime_ = 0;
 		setContentView(R.layout.main_expandable);
@@ -228,6 +233,7 @@ public class StacklrExpActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
+		//Debug.stopMethodTracing();
 		if (checkGooglePlayServicesAvailable()) {
 			refreshTasks();
 		}
@@ -484,6 +490,7 @@ public class StacklrExpActivity
 
 	//group is already loaded
 	protected void startLoadTask(boolean force){
+		//TODO: remove
 		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
 			return;
 		}
