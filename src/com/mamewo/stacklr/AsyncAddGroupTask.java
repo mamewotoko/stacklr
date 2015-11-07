@@ -39,6 +39,7 @@ class AsyncAddGroupTask
 			TaskList newList = client_.tasklists().insert(lst).execute();
 			result.put(newList.getTitle(), newList);
 		}
+		//XXXX
 		activity_.adapter_.updateGroup(result, false);
 	}
 

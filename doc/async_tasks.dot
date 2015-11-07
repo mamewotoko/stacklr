@@ -1,8 +1,20 @@
 digraph AsyncTasks {
-      StacklrExpActivity -> AsyncLoadTask
-      StacklrExpActivity -> AsyncLoadGroupTask
-      StacklrExpActivity -> AsyncLoadGoogleCalendarListTask
-      StacklrExpActivity -> AsyncAddTask
-      AsyncLoadGoogleCalendarListTask -> AsyncLoadGoogleCalendarTask
-      ExpandableAdapter -> AsyncExecOperationTask
+	AsyncAddTask [shape=box];
+	AsyncAddGroupTask [shape=box];
+	AsyncLoadGroupTask [shape=box];
+	AsyncLoadTask [shape=box];
+	AsyncLoadGoogleCalendarListTask [shape=box];
+	AsyncLoadGoogleCalendarTask [shape=box];
+        AsyncExecOperationTask [shape=box];
+
+      "ExpandableAdapter.updateGroup" -> AsyncAddGroupTask -> "ExpandableAdapter.updateGroup";
+      "ExpandableAdapter.updateGroup" -> AsyncLoadGroupTask -> "ExpandableAdapter.updateGroup";
+      "ExpandableAdapter.updateGroup" -> "StacklrExpActivity.startLoadTask" -> AsyncLoadTask;
+      "StacklrExpActivity.onResume" -> "StacklrExpActivity.refreshTasks" -> AsyncLoadGroupTask;
+      "StacklrExpActivity.onOptionsItemSelected" -> AsyncLoadGroupTask;
+
+      "StacklrExpActivity.startLoadTask" -> AsyncLoadGoogleCalendarListTask;
+      AsyncLoadTask -> "StacklrExpActivity.uploadTasks" -> AsyncAddTask;
+      AsyncLoadGoogleCalendarListTask -> AsyncLoadGoogleCalendarTask;
+      AsyncLoadTask -> "ExpandableAdapter.merge" -> AsyncExecOperationTask;
 }

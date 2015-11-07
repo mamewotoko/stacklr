@@ -68,8 +68,7 @@ public class StacklrExpActivity
 	static final private int SPEECH_RECOGNITION_REQUEST_CODE = 2222;
 	static final private long LOAD_MIN_INTERVAL = 180*1000;
 
-	//TODO: separate gtask code
-	//tasks
+	//pref
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final String PREF_LAST_LOADTASK_TIME = "lastLoadTaskTime";
 
@@ -489,7 +488,7 @@ public class StacklrExpActivity
 	}
 
 	//group is already loaded
-	protected void startLoadTask(boolean force){
+	public void startLoadTask(boolean force){
 		//TODO: remove
 		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
 			return;
