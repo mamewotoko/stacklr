@@ -29,6 +29,7 @@ import com.google.api.services.tasks.TasksScopes;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 
+import android.preference.PreferenceManager;
 import android.accounts.AccountManager;
 
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -48,6 +49,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -79,6 +83,7 @@ public class StacklrExpActivity
 	List<Group> groups_;
 	public int numAsyncTasks;
 	private long lastLoadTime_;
+	private SharedPreferences pref_;
 
 	//private Handler handler_;
 	//private Runnable fileSaver_;
@@ -121,6 +126,16 @@ public class StacklrExpActivity
 		return true;
 	}
 
+	public boolean isWifiAvaiable(){
+		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
+		if(activeInfo != null
+		   && activeInfo.getType() == ConnectivityManager.TYPE_WIFI){
+			return true;
+		}
+		return false;
+	}
+
 	private void refreshTasks() {
 		// check if there is already an account selected
 		if (credential_.getSelectedAccountName() == null) {
@@ -128,9 +143,15 @@ public class StacklrExpActivity
 			chooseAccount();
 		}
 		else {
-			//TODO: use string resource for title
-			setTitle("stacklr "+credential_.getSelectedAccountName());
-			AsyncLoadGroupTask.run(this);
+			boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
+			if((!wifiOnly) || isWifiAvaiable()){
+				//TODO: use string resource for title
+				setTitle("stacklr "+credential_.getSelectedAccountName());
+				AsyncLoadGroupTask.run(this);
+			}
+			else {
+				showMessage(getString(R.string.wifi_is_not_available));
+			}
 		}
 	}
 
@@ -158,6 +179,7 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
 		//		Debug.startMethodTracing("stacklr");
 
@@ -309,6 +331,12 @@ public class StacklrExpActivity
 			handled = true;
 			break;
 		case R.id.reload_menu:
+			//TODO: display force load dialog
+			boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
+			if(wifiOnly && !isWifiAvaiable()){
+				showMessage(getString(R.string.wifi_is_not_available));
+				return true;
+			}
 			AsyncLoadGroupTask.run(this);
 			handled = true;
 			break;
@@ -515,6 +543,12 @@ public class StacklrExpActivity
 		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
 			return;
 		}
+		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
+		if(wifiOnly && !isWifiAvaiable()){
+			showMessage(getString(R.string.wifi_is_not_available));
+			return;
+		}
+
 		lastLoadTime_ = System.currentTimeMillis();
 		List<String> gidList = new ArrayList<String>();
 		for(Group group: groups_){
@@ -551,5 +585,9 @@ public class StacklrExpActivity
 
 	public File getDataDir(){
 		return datadir_;
+	}
+
+	public void showMessage(String message) {
+		Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 	}
 }
