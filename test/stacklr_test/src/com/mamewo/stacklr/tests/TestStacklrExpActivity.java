@@ -81,7 +81,7 @@ public class TestStacklrExpActivity
 		//1: first item
 		View v = list.getChildAt(1);
 		Log.d(TAG, "1");
-		TextView text = (TextView)v.findViewById(android.R.id.text1);
+		TextView text = (TextView)v.findViewById(R.id.item_name);
 		String label = text.getText().toString();
 		Log.d(TAG, "2");
 		assertTrue("item name", label.startsWith(egg+" "));
