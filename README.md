@@ -49,6 +49,8 @@ TODO
 -----
 * add preference
   * move checked item to next group option
+  * use new style
+    https://www.google.com/design/spec/patterns/settings.html#settings-labels-secondary-text 
 * merge podplayer
 * add test using Espresso
 * log item transition
@@ -96,8 +98,6 @@ TODO
 * add following groups as default
    * waiting (e.g. internet shopping)
    * wish list (not buy, but want to buy lator, display lower)
-* task chain
-   load groups -> load tasks -> upload tasks
 * avoid frequent load
    * by managing last update time
    * avoid loading group
@@ -126,6 +126,11 @@ TODO
 * implement "enter text by speech"
   * without dialog?
 * add items in history as input suggestion
+* task loader design
+  * google tasks
+  * google calendar
+  * load task chain
+      load groups -> load tasks -> upload tasks
 * Data storage design
   * save items as JSON (dump gtask)
   * Write data storage interface

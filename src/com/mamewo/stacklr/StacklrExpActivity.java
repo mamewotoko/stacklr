@@ -108,6 +108,7 @@ public class StacklrExpActivity
 	//TODO: move to expandable adapter
 	public com.google.api.services.tasks.Tasks service_;
 	public com.google.api.services.calendar.Calendar calendarService_;
+	public boolean accountPickerCanceled_;
 
 	private List<Group> getGroups(){
 		return groups_;
@@ -137,21 +138,24 @@ public class StacklrExpActivity
 	}
 
 	private void refreshTasks() {
-		// check if there is already an account selected
-		if (credential_.getSelectedAccountName() == null) {
-			// ask user to choose account
-			chooseAccount();
+		if(credential_.getSelectedAccountName() == null){
+			return;
 		}
-		else {
-			boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
-			if((!wifiOnly) || isWifiAvaiable()){
-				//TODO: use string resource for title
-				setTitle("stacklr "+credential_.getSelectedAccountName());
+		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
+		if((!wifiOnly) || isWifiAvaiable()){
+			//TODO: use string resource for title
+			setTitle("stacklr "+credential_.getSelectedAccountName());
+			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
+			if(useTasks){
 				AsyncLoadGroupTask.run(this);
 			}
-			else {
-				showMessage(getString(R.string.wifi_is_not_available));
+			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
+			if(useCalendar){
+				AsyncLoadGoogleCalendarListTask.run(this);
 			}
+		}
+		else {
+			showMessage(getString(R.string.wifi_is_not_available));
 		}
 	}
 
@@ -160,6 +164,7 @@ public class StacklrExpActivity
 	}
 
 	private void chooseAccount() {
+		accountPickerCanceled_ = false;
 		startActivityForResult(credential_.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
 	}
 
@@ -179,6 +184,7 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
 		//		Debug.startMethodTracing("stacklr");
@@ -205,10 +211,10 @@ public class StacklrExpActivity
 		//TODO: rename
 		service_ =
 			new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential_)
-            .setApplicationName("Stacklr/0.01").build();
+            .setApplicationName("Stacklr/0.2").build();
 		calendarService_ =
 			new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential_)
-			.setApplicationName("Stacklr/0.01").build();
+			.setApplicationName("Stacklr/0.2").build();
 		groups_ = Group.load(datadir_);
 		if(groups_ == null){
 			String[] groupNames = getResources().getStringArray(R.array.groups);
@@ -276,9 +282,18 @@ public class StacklrExpActivity
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//Debug.stopMethodTracing();
-		if (checkGooglePlayServicesAvailable()) {
-			refreshTasks();
+		boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
+		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
+	
+		if ((useTasks || useCalendar) && checkGooglePlayServicesAvailable()) {
+			// check if there is already an account selected
+			if (credential_.getSelectedAccountName() == null && (!accountPickerCanceled_)) {
+				// ask user to choose account
+				chooseAccount();
+			}
+			else {
+				refreshTasks();
+			}
 		}
 	}
 
@@ -332,12 +347,7 @@ public class StacklrExpActivity
 			break;
 		case R.id.reload_menu:
 			//TODO: display force load dialog
-			boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
-			if(wifiOnly && !isWifiAvaiable()){
-				showMessage(getString(R.string.wifi_is_not_available));
-				return true;
-			}
-			AsyncLoadGroupTask.run(this);
+			refreshTasks();
 			handled = true;
 			break;
 		case R.id.preference_menu:
@@ -373,6 +383,9 @@ public class StacklrExpActivity
 					editor.putString(PREF_ACCOUNT_NAME, accountName);
 					editor.commit();
 				}
+			}
+			else if(resultCode == Activity.RESULT_CANCELED){
+				accountPickerCanceled_ = true;
 			}
 			break;
 		case SPEECH_RECOGNITION_REQUEST_CODE:
@@ -539,8 +552,11 @@ public class StacklrExpActivity
 
 	//group is already loaded
 	public void startLoadTask(boolean force){
+		//want to define default value as property file...(external)
+
+		long now = System.currentTimeMillis();
 		//TODO: remove
-		if((!force) && System.currentTimeMillis()-lastLoadTime_ < LOAD_MIN_INTERVAL){
+		if((!force) && now-lastLoadTime_ < LOAD_MIN_INTERVAL){
 			return;
 		}
 		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
@@ -549,7 +565,6 @@ public class StacklrExpActivity
 			return;
 		}
 
-		lastLoadTime_ = System.currentTimeMillis();
 		List<String> gidList = new ArrayList<String>();
 		for(Group group: groups_){
 			String gid = group.getGtaskListId();
@@ -564,8 +579,8 @@ public class StacklrExpActivity
 			lastTaskLoadTime = settings.getLong(PREF_LAST_LOADTASK_TIME, -1);
 		}
 		AsyncLoadTask.run(this, gidList, lastTaskLoadTime);
-		AsyncLoadGoogleCalendarListTask.run(this);
-		long now = System.currentTimeMillis();
+
+		lastLoadTime_ = now;
 		SharedPreferences.Editor editor = settings.edit();
 		//TODO: latest item time in gtask
 		editor.putLong(PREF_LAST_LOADTASK_TIME, now);

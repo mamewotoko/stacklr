@@ -5,10 +5,34 @@
         android:key="wifi_only"
         android:defaultValue="false"
         android:selectable="true"
+        android:summaryOn="@string/wifi_only"
+        android:summaryOff="@string/not_wifi_only"
+        android:title="@string/pref_wifi_only" />
+    <CheckBoxPreference
+        android:key="use_google_tasks"
+        android:defaultValue="true"
+        android:selectable="true"
+        android:summaryOn="@string/use_google_tasks"
+        android:summaryOff="@string/do_not_use_google_tasks"
+        android:title="@string/pref_use_google_tasks" />
+    <CheckBoxPreference
+        android:key="use_google_calendar"
+        android:defaultValue="true"
+        android:selectable="true"
+        android:summaryOn="@string/use_google_calendar"
+        android:summaryOff="@string/do_not_use_google_calendar"
+        android:title="@string/pref_use_google_calendar" />
+
+<!-- move checked item to next group option -->
+<!--
+    <CheckBoxPreference
+        android:key="wifi_only"
+        android:defaultValue="false"
+        android:selectable="true"
         android:summaryOff="@string/not_wifi_only"
         android:summaryOn="@string/wifi_only"
         android:title="@string/pref_wifi_only" />
-<!-- move checked item to next group option -->
+-->    
 <!-- version -->
     <Preference
 	android:key="version"

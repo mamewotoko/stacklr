@@ -10,6 +10,15 @@
     <string name="not_wifi_only">Use Wi-Fi or mobile network</string>
     <string name="wifi_only">Use Wi-Fi only</string>
     <string name="pref_wifi_only">Use Wi-Fi only</string>
+
+    <string name="use_google_tasks">on</string>
+    <string name="do_not_use_google_tasks">off</string>
+    <string name="pref_use_google_tasks">Load google tasks</string>
+
+    <string name="use_google_calendar">on</string>
+    <string name="do_not_use_google_calendar">off</string>
+    <string name="pref_use_google_calendar">Load google calendar</string>
+
     <string name="pref_version">Version</string>
 
     <string name="wifi_is_not_available">Wi-Fi is not avaiable</string>

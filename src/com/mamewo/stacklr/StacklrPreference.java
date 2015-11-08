@@ -16,6 +16,10 @@ public class StacklrPreference
 {
 	static final
 	public String PREFKEY_WIFI_ONLY = "wify_only";
+	static final
+	public String PREFKEY_USE_GOOGLE_TASKS = "use_google_tasks";
+	static final
+	public String PREFKEY_USE_GOOGLE_CALENDAR = "use_google_calendar";
 	private SharedPreferences pref_;
 	private Preference version_;
 
