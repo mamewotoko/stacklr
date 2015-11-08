@@ -18,6 +18,7 @@
     <string name="use_google_calendar">on</string>
     <string name="do_not_use_google_calendar">off</string>
     <string name="pref_use_google_calendar">Load google calendar</string>
+    <string name="pref_networking">Networking(disabled)</string>
 
     <string name="pref_version">Version</string>
 

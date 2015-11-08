@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 <!-- wifi only mode -->
+    <PreferenceCategory
+        android:key="about"
+       android:title="@string/pref_networking" >
+
     <CheckBoxPreference
         android:key="wifi_only"
         android:defaultValue="false"
-        android:selectable="true"
+        android:selectable="false"
         android:summaryOn="@string/wifi_only"
         android:summaryOff="@string/not_wifi_only"
         android:title="@string/pref_wifi_only" />
     <CheckBoxPreference
         android:key="use_google_tasks"
-        android:defaultValue="true"
-        android:selectable="true"
+        android:defaultValue="false"
+        android:selectable="false"
         android:summaryOn="@string/use_google_tasks"
         android:summaryOff="@string/do_not_use_google_tasks"
         android:title="@string/pref_use_google_tasks" />
     <CheckBoxPreference
         android:key="use_google_calendar"
-        android:defaultValue="true"
-        android:selectable="true"
+        android:defaultValue="false"
+        android:selectable="false"
         android:summaryOn="@string/use_google_calendar"
         android:summaryOff="@string/do_not_use_google_calendar"
         android:title="@string/pref_use_google_calendar" />
-
+    </PreferenceCategory>
 <!-- move checked item to next group option -->
 <!--
     <CheckBoxPreference
