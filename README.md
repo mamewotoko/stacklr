@@ -48,7 +48,6 @@ ant debug
 TODO
 -----
 * add preference
-  * wifi only mode
   * move checked item to next group option
 * merge podplayer
 * add test using Espresso

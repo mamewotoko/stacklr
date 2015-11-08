@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- wifi only mode -->
+    <CheckBoxPreference
+        android:key="wifi_only"
+        android:defaultValue="false"
+        android:selectable="true"
+        android:summaryOff="@string/not_wifi_only"
+        android:summaryOn="@string/wifi_only"
+        android:title="@string/pref_wifi_only" />
+<!-- move checked item to next group option -->
+<!-- version -->
+    <Preference
+	android:key="version"
+	android:selectable="false"
+	android:title="@string/pref_version" />
+</PreferenceScreen>
