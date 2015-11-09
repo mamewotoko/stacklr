@@ -46,6 +46,7 @@ public class TestStacklrExpActivity
 		config.screenshotFileType = ScreenshotFileType.PNG;
 		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
 		config.shouldScroll = false;
+
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	
@@ -54,6 +55,7 @@ public class TestStacklrExpActivity
 		try{
 			solo_.finalize();
 			getActivity().finish();
+			solo_.waitForEmptyActivityStack(1000);
 			super.tearDown();
 			Log.d(TAG, "tearDown finished");
 		}
@@ -62,28 +64,20 @@ public class TestStacklrExpActivity
 		}
 	}
 
-	// @Smoke
-	// public void test000InitGoogleService(){
-		
-	// }
-
 	@Smoke
 	public void testAddNewItem(){
 		String egg = "Egg";
 		solo_.enterText(0, egg);
 		solo_.clickOnButton(0);
 		solo_.sleep(500);
-		Log.d(TAG, "0");
 
 		ExpandableListView list = (ExpandableListView)solo_.getView(R.id.expandableListView1);
 		
 		//0: group
 		//1: first item
 		View v = list.getChildAt(1);
-		Log.d(TAG, "1");
 		TextView text = (TextView)v.findViewById(R.id.item_name);
 		String label = text.getText().toString();
-		Log.d(TAG, "2");
 		assertTrue("item name", label.startsWith(egg+" "));
 		String afterText = solo_.getEditText(0).getText().toString();
 		assertTrue("after text", "".equals(afterText));
@@ -94,16 +88,53 @@ public class TestStacklrExpActivity
 
 	@Smoke
 	public void testClickFirstChild(){
-		Log.d(TAG, "testClickFirstChild");
+		String egg = "Egg";
+		solo_.enterText(0, egg);
+		solo_.clickOnButton(0);
+		solo_.sleep(500);
+
 		solo_.clickInList(2);
 		solo_.sleep(500);
-		//TODO: assert that first item goto "Stock" group
-		solo_.takeScreenshot("testClickFirstChild");
+		ExpandableListView list = (ExpandableListView)solo_.getView(R.id.expandableListView1);
+
+		int i;
+		for(i = 0; i < list.getChildCount(); i++){
+			//0: group
+			//1: first item
+			View v = list.getChildAt(i);
+			TextView text = (TextView)v.findViewById(R.id.item_name);
+			//XXXX
+			if(text == null){
+				text = (TextView)v.findViewById(android.R.id.text1);
+			}
+			String label = text.getText().toString();
+			Log.d(TAG,"testClickFirstChild: child " + i + " " + label);
+
+			if(label.equals("Stock")){
+				break;
+			}
+		}
+		i++;
+		View v = list.getChildAt(i);
+		TextView text = (TextView)v.findViewById(R.id.item_name);
+		String label = text.getText().toString();
+		Log.d(TAG,"testClickFirstChild: child " + label);
+		assertTrue("item name", label.startsWith(egg+" "));
+		String afterText = solo_.getEditText(0).getText().toString();
+
+		assertTrue("after text", "".equals(afterText));
+		Log.d(TAG, "takeScreenshot: testAddNewItem");
+		solo_.takeScreenshot("testAddNewItem");
+		Log.d(TAG, "takeScreenshot: last sleep");
 	}
 
 	@Smoke
 	public void testLongClickFirstChild(){
-		Log.d(TAG, "testLongClickFirstChild");
+		String egg = "Egg";
+		solo_.enterText(0, egg);
+		solo_.clickOnButton(0);
+		solo_.sleep(500);
+
 		solo_.clickLongInList(2);
 		solo_.sleep(1000);
 		//TODO: assert that first item goto "Stock" group
@@ -111,4 +142,5 @@ public class TestStacklrExpActivity
 		//TODO:assert
 		solo_.takeScreenshot("testLongClickFirstChild");
 	}
+
 }

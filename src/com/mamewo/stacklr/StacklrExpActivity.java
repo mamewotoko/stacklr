@@ -184,6 +184,7 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
 		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
@@ -301,7 +302,9 @@ public class StacklrExpActivity
 	protected void onStop() {
 		long lastModifiedTime = adapter_.lastModifiedTime();
 		long lastSavedTime = adapter_.lastSavedTime();
+		Log.d(TAG, "onStop: " + (lastModifiedTime - lastSavedTime));
 		if(lastSavedTime < lastModifiedTime){
+			Log.d(TAG, "onStop: saved");
 			adapter_.save();
 		}
 		//TODO: if group changed?
