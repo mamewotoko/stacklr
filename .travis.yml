@@ -22,4 +22,4 @@ before_script:
 
 script:
         - cd test/stacklr_test
-        - ant debug install test
+        - ant debug install clear test
