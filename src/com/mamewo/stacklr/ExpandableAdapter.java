@@ -59,6 +59,7 @@ public class ExpandableAdapter
 			String filename = groupNameToFilename(groups_.get(i).getName());
 			storageList_.add(new CSVItemStorage(new File(datadir, filename)));
 			children_.add(storageList_.get(i).load(i));
+			Log.d(TAG, "ExpandableAdapter: load "+ filename + " "+children_.get(children_.size()-1).size());
 			for(Item child: children_.get(children_.size()-1)){
 				name2Item_.put(child.getName(), child);
 			}
