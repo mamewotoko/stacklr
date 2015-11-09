@@ -1,6 +1,11 @@
 stacklr UI test
 ===============
 
+How to start
+------------
+```bash
+ant debug install clear test
+```
 
 MEMO
 ----
@@ -9,6 +14,7 @@ MEMO
 ```
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 ```
+* ant task "clear" is added to clear application data before testing
 
 Reference
 ---------
