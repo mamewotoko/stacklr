@@ -348,13 +348,14 @@ public class StacklrExpActivity
 			adapter_.save();
 			handled = true;
 			break;
-		case R.id.reload_menu:
-			//TODO: display force load dialog
-			refreshTasks();
-			handled = true;
-			break;
+		// case R.id.reload_menu:
+		// 	//TODO: display force load dialog
+		// 	refreshTasks();
+		// 	handled = true;
+		// 	break;
 		case R.id.preference_menu:
 			startActivity(new Intent(this, StacklrPreference.class));
+			handled = true;
 			break;
 		default:
 			break;

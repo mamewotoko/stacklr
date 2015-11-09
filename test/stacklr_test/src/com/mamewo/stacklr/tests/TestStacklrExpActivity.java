@@ -83,7 +83,6 @@ public class TestStacklrExpActivity
 		assertTrue("after text", "".equals(afterText));
 		Log.d(TAG, "takeScreenshot: testAddNewItem");
 		solo_.takeScreenshot("testAddNewItem");
-		Log.d(TAG, "takeScreenshot: last sleep");
 	}
 
 	@Smoke
@@ -120,13 +119,57 @@ public class TestStacklrExpActivity
 		String label = text.getText().toString();
 		Log.d(TAG,"testClickFirstChild: child " + label);
 		assertTrue("item name", label.startsWith(egg+" "));
-		String afterText = solo_.getEditText(0).getText().toString();
+		Log.d(TAG, "takeScreenshot: testAddNewItem");
+		solo_.takeScreenshot("testAddNewItem");
+	}
 
-		assertTrue("after text", "".equals(afterText));
+	@Smoke
+	public void testPushFromStock(){
+		String egg = "Egg";
+		solo_.enterText(0, egg);
+		solo_.clickOnButton(0);
+		solo_.sleep(500);
+
+		solo_.clickInList(2);
+		solo_.sleep(500);
+		ExpandableListView list = (ExpandableListView)solo_.getView(R.id.expandableListView1);
+
+		int i;
+		for(i = 0; i < list.getChildCount(); i++){
+			//0: group
+			//1: first item
+			View v = list.getChildAt(i);
+			TextView text = (TextView)v.findViewById(R.id.item_name);
+			//XXXX
+			if(text == null){
+				text = (TextView)v.findViewById(android.R.id.text1);
+			}
+			String label = text.getText().toString();
+			Log.d(TAG,"testClickFirstChild: child " + i + " " + label);
+
+			if(label.equals("Stock")){
+				break;
+			}
+		}
+		i++;
+		View v = list.getChildAt(i);
+		TextView text = (TextView)v.findViewById(R.id.item_name);
+		String label = text.getText().toString();
+		Log.d(TAG,"testClickFirstChild: child " + label);
+		assertTrue("item name", label.startsWith(egg+" "));
+
+		solo_.clickInList(i+1);
+		solo_.sleep(500);
+		v = list.getChildAt(1);
+		text = (TextView)v.findViewById(R.id.item_name);
+		label = text.getText().toString();
+		assertTrue("pushed", label.startsWith(egg+" "));
+		//check first item in stock ?
 		Log.d(TAG, "takeScreenshot: testAddNewItem");
 		solo_.takeScreenshot("testAddNewItem");
 		Log.d(TAG, "takeScreenshot: last sleep");
 	}
+
 
 	@Smoke
 	public void testLongClickFirstChild(){
@@ -143,4 +186,30 @@ public class TestStacklrExpActivity
 		solo_.takeScreenshot("testLongClickFirstChild");
 	}
 
+	// @Smoke
+	// public void testMenuPreference(){
+	// 	solo_.clickOnMenuItem("preference");
+	// 	solo_.sleep(500);
+	// 	assertTrue("preference screen", solo_.waitForActivity(StacklrPreference.class));
+	// 	//for first version
+	// 	solo_.sleep(500);
+	// 	assertTrue("wifi unchecked(b)", !solo_.isCheckBoxChecked(0));
+
+	// 	solo_.clickOnCheckBox(0);
+	// 	solo_.sleep(500);
+		
+	// 	assertTrue("wifi unchecked", !solo_.isCheckBoxChecked(0));
+	// 	assertTrue("gtasks unchecked(b)", !solo_.isCheckBoxChecked(1));
+
+	// 	solo_.clickOnCheckBox(1);
+	// 	solo_.sleep(500);
+
+	// 	assertTrue("gtasks unchecked", !solo_.isCheckBoxChecked(1));
+	// 	assertTrue("gcalendar unchecked(b)", !solo_.isCheckBoxChecked(2));
+
+	// 	solo_.clickOnCheckBox(2);
+	// 	solo_.sleep(500);
+
+	// 	assertTrue("gcalendar unchecked", !solo_.isCheckBoxChecked(2));
+	// }
 }
