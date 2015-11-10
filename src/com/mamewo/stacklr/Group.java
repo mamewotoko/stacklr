@@ -20,23 +20,13 @@ public class Group
 	static final String FILENAME = "_group.csv";
 	static final String[] CSV_HEADER = new String[]{"name", "gid"};
 	private String name_;
-	private String gtaskListId_;
 
 	public Group(String name, String gtaskListId){
 		name_ = name;
-		gtaskListId_ = gtaskListId;
 	}
 
 	public String getName(){
 		return name_;
-	}
-
-	public String getGtaskListId(){
-		return gtaskListId_;
-	}
-
-	public void setGtaskListId(String gid){
-		gtaskListId_ = gid;
 	}
 
 	static
@@ -47,12 +37,8 @@ public class Group
 			writer = new CSVWriter(new FileWriter(f));
 			writer.writeNext(CSV_HEADER);
 			for(Group group: groupList){
-				String gid = group.getGtaskListId();
-				if(gid == null){
-					gid = "";
-				}
 				writer.writeNext(new String[]{ group.getName(),
-											   gid });
+											   });
 			}
 		}
 		catch(IOException e){
@@ -72,7 +58,7 @@ public class Group
 
 	@Override
 	public String toString(){
-		return "group: "+name_+" "+gtaskListId_;
+		return "group: "+name_;
 	}
 
 	static

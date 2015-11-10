@@ -36,9 +36,7 @@ public class CSVItemStorage
 	static final
 	private String[] CSV_HEADER = new String[]{ TIMESTAMP_COLUMN,
 												NAME_COLUMN,
-												TYPE_COLUMN,
-												GTASK_ID_COLUMN,
-												IS_EVENT_COLUMN };
+												TYPE_COLUMN };
 
 	static final
 	private String TIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
@@ -83,17 +81,8 @@ public class CSVItemStorage
 				timestamp = sdf.parse(row[0]).getTime();
 				String name = row[1];
 				int itemtype = Integer.valueOf(row[2]);
-				String gtaskId = "";
-				if(row.length >= 4){
-					gtaskId = row[3];
-				}
-				boolean isEvent = false;
-				if(row.length >= 5){
-					Boolean.valueOf(row[4]);
-				}
 				//XXX
-				Item item = new Item(name, gtaskId, timestamp, itemtype, group);
-				item.setIsEvent(isEvent);
+				Item item = new Item(name, timestamp, itemtype, group);
 				Util.insertItem(result, item, ASCENDING);
 			}
 			//sort result by timestamp
@@ -124,16 +113,11 @@ public class CSVItemStorage
 			writer =  new CSVWriter(new FileWriter(file_));
 			writer.writeNext(CSV_HEADER);
 			for (Item item: data) {
-				String gtaskId = "";
-				if(item.getGtask() != null && item.getGtask().getId() != null){
-					gtaskId = item.getGtask().getId();
-				}
 				//TODO: move to Item.java
 				writer.writeNext(new String[] { item.lastTouchedTimestampStr(),
 												item.getName(),
-												String.valueOf(item.getType()),
-												gtaskId,
-												Boolean.toString(item.isEvent())});
+												String.valueOf(item.getType()) });
+
 			}
 			writer.close();
 		}

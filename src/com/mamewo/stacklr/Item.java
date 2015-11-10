@@ -2,8 +2,6 @@ package com.mamewo.stacklr;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import com.google.api.services.tasks.model.Task;
-import com.google.api.client.util.DateTime;
 import static com.mamewo.stacklr.Constant.*;
 
 public class Item
@@ -35,75 +33,21 @@ public class Item
 	static final
 	public int ITEM_TYPE_BOTTOM = 3;
 
-	private Task gtask_;
-	private String gtaskId_;
-	private boolean isEvent_;
-
-	public Item(String name, String gtaskId, long time, int type, int group){
+	public Item(String name, long time, int type, int group){
 		name_ = name;
 		lastTouchedTime_ = time;
 		type_ = type;
 
-		gtaskId_ = gtaskId;
 		group_ = group;
 		//group ~ tasklist
-		gtask_ = null;
-		//umm...
-		if(gtaskId_ != null && !gtaskId_.isEmpty()){
-			gtask_ = toGtask();
-		}
-		isEvent_ = false;
-	}
-
-	//TODO: save item type in gtask
-	//TODO: remove task dependency
-	public Item(Task gtask, int group){
-		name_ = gtask.getTitle();
-		DateTime time = gtask.getUpdated();
-		lastTouchedTime_ = 0;
-		type_ = ITEM_TYPE_FOOD;
-		if(time != null){
-			lastTouchedTime_ = time.getValue();
-		}
-		gtask_ = gtask;
-		group_ = group;
-		isEvent_ = false;
-	}
-
-	public void setIsEvent(boolean isEvent){
-		isEvent_ = isEvent;
-	}
-	
-	public boolean isEvent(){
-		return isEvent_;
 	}
 
 	public long getLastTouchedTime(){
-		if(gtask_ != null){
-			DateTime time = gtask_.getUpdated();
-			if(time == null){
-				gtask_.setUpdated(new DateTime(System.currentTimeMillis()));
-				return System.currentTimeMillis();
-			}
-			return time.getValue();
-		}
 		return lastTouchedTime_;
 	}
 
 	public void setLastTouchedTime(long timeMillis){
-		if(gtask_ != null){
-			gtask_.setUpdated(new DateTime(timeMillis));
-			return;
-		}
 		lastTouchedTime_ = timeMillis;
-	}
-
-	public void setGtask(Task gtask){
-		gtask_ = gtask;
-	}
-
-	public com.google.api.services.tasks.model.Task getGtask(){
-		return gtask_;
 	}
 
 	public int getGroup(){
@@ -114,46 +58,12 @@ public class Item
 		group_ = group;
 	}
 
-	public Task toGtask(){
-		if(gtask_ == null){
-			gtask_ = new Task().setTitle(name_)
-				.setUpdated(new DateTime(lastTouchedTime_));
-			if(gtaskId_ != null && !gtaskId_.isEmpty()){
-				gtask_.setId(gtaskId_);
-			}
-		}
-		return gtask_;
-	}
-
-	public void update(Task gtask){
-		DateTime date = gtask.getUpdated();
-		long time;
-		if(date == null){
-			time = System.currentTimeMillis();
-		}
-		else {
-			time = date.getValue();
-		}
-		setLastTouchedTime(time);
-		gtask_ = gtask;
-	}
-
 	public String getName(){
-		if(gtask_ != null){
-			return gtask_.getTitle();
-		}
 		return name_;
 	}
 
 	public int getType(){
 		return type_;
-	}
-
-	public String getNotes(){
-		if(gtask_ == null){
-			return null;
-		}
-		return gtask_.getNotes();
 	}
 
 	public void setType(int t){
@@ -204,7 +114,7 @@ public class Item
 	}
 
 	public int nextGroup(){
-		if(isEvent_ && group_ == TO_BUY){
+		if(group_ == TO_BUY){
 			return HISTORY;
 		}
 		return NEXT_GROUP[group_];
@@ -212,6 +122,6 @@ public class Item
 
 	@Override
 	public String toString(){
-		return name_ + " " + type_ + " " + isEvent_ + " " + group_;
+		return name_ + " " + type_ + " " + group_;
 	}
 }

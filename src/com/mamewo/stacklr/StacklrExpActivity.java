@@ -20,20 +20,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.tasks.TasksScopes;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.CalendarScopes;
 
 import android.preference.PreferenceManager;
 import android.accounts.AccountManager;
 
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
 //import android.os.Debug;
@@ -78,17 +68,12 @@ public class StacklrExpActivity
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final String PREF_LAST_LOADTASK_TIME = "lastLoadTaskTime";
 
-	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
-	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+	// final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
+	// final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
 	List<Group> groups_;
-	public int numAsyncTasks;
-	private long lastLoadTime_;
+	// public int numAsyncTasks;
+	// private long lastLoadTime_;
 	private SharedPreferences pref_;
-
-	//private Handler handler_;
-	//private Runnable fileSaver_;
-	private boolean groupLoaded_ = false;
-	//end of tasks
 
 	private final int[] RADIO_ID = new int[]{
 		R.id.radio_to_buy,
@@ -104,80 +89,13 @@ public class StacklrExpActivity
 	public ExpandableAdapter adapter_;
 	private Intent speechIntent_;
 	private File datadir_;
-	private GoogleAccountCredential credential_;
-	//TODO: move to expandable adapter
-	public com.google.api.services.tasks.Tasks service_;
-	public com.google.api.services.calendar.Calendar calendarService_;
-	public boolean accountPickerCanceled_;
 
 	private List<Group> getGroups(){
 		return groups_;
 	}
 
-	/** Check that Google Play services APK is installed and up to date. */
-	private boolean checkGooglePlayServicesAvailable() {
-		final int connectionStatusCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-		if (GooglePlayServicesUtil.isUserRecoverableError(connectionStatusCode)) {
-			showGooglePlayServicesAvailabilityErrorDialog(connectionStatusCode);
-			//TODO: toast?
-			return false;
-        } else if (connectionStatusCode != ConnectionResult.SUCCESS) {
-            return false;
-		}
-		return true;
-	}
-
-	public boolean isWifiAvaiable(){
-		ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeInfo = connMgr.getActiveNetworkInfo();
-		if(activeInfo != null
-		   && activeInfo.getType() == ConnectivityManager.TYPE_WIFI){
-			return true;
-		}
-		return false;
-	}
-
-	private void refreshTasks() {
-		if(credential_.getSelectedAccountName() == null){
-			return;
-		}
-		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
-		if((!wifiOnly) || isWifiAvaiable()){
-			//TODO: use string resource for title
-			setTitle("stacklr "+credential_.getSelectedAccountName());
-			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
-			if(useTasks){
-				AsyncLoadGroupTask.run(this);
-			}
-			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
-			if(useCalendar){
-				AsyncLoadGoogleCalendarListTask.run(this);
-			}
-		}
-		else {
-			showMessage(getString(R.string.wifi_is_not_available));
-		}
-	}
-
 	void refreshView() {
 		adapter_.notifyDataSetChanged();
-	}
-
-	private void chooseAccount() {
-		accountPickerCanceled_ = false;
-		startActivityForResult(credential_.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
-	}
-
-	void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
-		runOnUiThread(new Runnable(){
-				@Override
-				public void run(){
-					Dialog dialog =
-						GooglePlayServicesUtil.getErrorDialog(connectionStatusCode, StacklrExpActivity.this,
-															  REQUEST_GOOGLE_PLAY_SERVICES);
-					dialog.show();
-				}
-			});
 	}
 
 	/** Called when the activity is first created. */
@@ -185,13 +103,11 @@ public class StacklrExpActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
-		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
 		//		Debug.startMethodTracing("stacklr");
 
 		//TODO: load from file or savedInstanceState
-		lastLoadTime_ = 0;
 		setContentView(R.layout.main_expandable);
 		PackageManager m = getPackageManager();
 		String s = getPackageName();
@@ -203,19 +119,7 @@ public class StacklrExpActivity
 			Log.w(TAG, "Error Package name not found ", e);
 		}
 		//---------------
-		//gtasks & google calendar
-		credential_ =
-		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR_READONLY));
-		
-		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-		credential_.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 		//TODO: rename
-		service_ =
-			new com.google.api.services.tasks.Tasks.Builder(httpTransport, jsonFactory, credential_)
-            .setApplicationName("Stacklr/0.2").build();
-		calendarService_ =
-			new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential_)
-			.setApplicationName("Stacklr/0.2").build();
 		groups_ = Group.load(datadir_);
 		if(groups_ == null){
 			String[] groupNames = getResources().getStringArray(R.array.groups);
@@ -254,59 +158,18 @@ public class StacklrExpActivity
 				listView_.collapseGroup(i);
 			}
 		}
-		// handler_ = new Handler();
-		// fileSaver_ = new Runnable(){
-		// 		@Override
-		// 		public void run(){
-		// 			Log.d(TAG, "saver run");
-		// 			long now = System.currentTimeMillis();
-		// 			//nearly idle 
-		// 			//count modified items and large enough
-		// 			long lastModifiedTime = adapter_.lastModifiedTime();
-		// 			long lastSavedTime = adapter_.lastSavedTime();
-		// 			if(lastSavedTime < lastModifiedTime && now-adapter_.lastModifiedTime() >= 3000){
-		// 				Log.d(TAG, "save data to file");
-		// 				adapter_.save();
-		// 			}
-		// 			handler_.postDelayed(fileSaver_, 3000);
-		// 		}
-		// 	};
-		// handler_.postDelayed(fileSaver_, 8000);
 	}
 
 	@Override
 	protected void onStart(){
 		super.onStart();
+		//failed...
 		listView_.requestFocus();
 	}
 
 	@Override
-	protected void onResume() {
-		super.onResume();
-		boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
-		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
-	
-		if ((useTasks || useCalendar) && checkGooglePlayServicesAvailable()) {
-			// check if there is already an account selected
-			if (credential_.getSelectedAccountName() == null && (!accountPickerCanceled_)) {
-				// ask user to choose account
-				chooseAccount();
-			}
-			else {
-				refreshTasks();
-			}
-		}
-	}
-
-	@Override
 	protected void onStop() {
-		long lastModifiedTime = adapter_.lastModifiedTime();
-		long lastSavedTime = adapter_.lastSavedTime();
-		Log.d(TAG, "onStop: " + (lastModifiedTime - lastSavedTime));
-		if(lastSavedTime < lastModifiedTime){
-			Log.d(TAG, "onStop: saved");
-			adapter_.save();
-		}
+		adapter_.save();
 		//TODO: if group changed?
 		Group.save(datadir_, groups_);
 		super.onStop();
@@ -367,31 +230,6 @@ public class StacklrExpActivity
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
-		case REQUEST_GOOGLE_PLAY_SERVICES:
-			if(resultCode != RESULT_OK){
-				checkGooglePlayServicesAvailable();
-			}
-			break;
-		case REQUEST_AUTHORIZATION:
-			if(resultCode != RESULT_OK) {
-				chooseAccount();
-			}
-			break;
-		case REQUEST_ACCOUNT_PICKER:
-			if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
-				String accountName = data.getExtras().getString(AccountManager.KEY_ACCOUNT_NAME);
-				if (accountName != null) {
-					credential_.setSelectedAccountName(accountName);
-					SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putString(PREF_ACCOUNT_NAME, accountName);
-					editor.commit();
-				}
-			}
-			else if(resultCode == Activity.RESULT_CANCELED){
-				accountPickerCanceled_ = true;
-			}
-			break;
 		case SPEECH_RECOGNITION_REQUEST_CODE:
 			if (resultCode != RESULT_OK) {
 				break;
@@ -543,63 +381,6 @@ public class StacklrExpActivity
 			}
 			return handled;
 		}
-	}
-
-	//call: POST load
-	public void uploadTasks(){
-		Map<Group, List<Item>> local = adapter_.getLocalTasks();
-		Log.d(TAG, "uploadTasks: " + local.size());
-		if(local.size() > 0){
-			AsyncAddTask.run(this, local);
-		}
-	}
-
-	//group is already loaded
-	public void startLoadTask(boolean force){
-		//want to define default value as property file...(external)
-
-		long now = System.currentTimeMillis();
-		//TODO: remove
-		if((!force) && now-lastLoadTime_ < LOAD_MIN_INTERVAL){
-			return;
-		}
-		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
-		if(wifiOnly && !isWifiAvaiable()){
-			showMessage(getString(R.string.wifi_is_not_available));
-			return;
-		}
-
-		List<String> gidList = new ArrayList<String>();
-		for(Group group: groups_){
-			String gid = group.getGtaskListId();
-			if(gid == null){
-				gid = "";
-			}
-			gidList.add(gid);
-		}
-		long lastTaskLoadTime = -1;
-		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-		if(!force){
-			lastTaskLoadTime = settings.getLong(PREF_LAST_LOADTASK_TIME, -1);
-		}
-		AsyncLoadTask.run(this, gidList, lastTaskLoadTime);
-
-		lastLoadTime_ = now;
-		SharedPreferences.Editor editor = settings.edit();
-		//TODO: latest item time in gtask
-		editor.putLong(PREF_LAST_LOADTASK_TIME, now);
-		editor.commit();
-	}
-	
-	public void showLoadingIcon(){
-		loadingIcon_.setVisibility(View.VISIBLE);
-	}
-	public void hideLoadingIcon(){
-		loadingIcon_.setVisibility(View.INVISIBLE);
-	}
-	
-	public com.google.api.services.tasks.Tasks getTasksService(){
-		return service_;
 	}
 
 	public File getDataDir(){

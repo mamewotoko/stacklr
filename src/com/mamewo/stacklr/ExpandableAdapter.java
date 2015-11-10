@@ -11,16 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.StringReader;
 
-import com.google.api.services.tasks.model.Task;
-import com.google.api.services.tasks.model.TaskList;
-import com.google.api.services.tasks.TasksRequest;
-import com.google.api.services.tasks.Tasks;
-
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.CalendarScopes;
-
-import com.google.api.client.util.DateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
@@ -68,201 +58,6 @@ public class ExpandableAdapter
 		lastModifiedTime_ = System.currentTimeMillis();
 	}
 
-	private int gtaskListId2gid(String gtaskListId){
-		for(int i = 0; i < groups_.size(); i++){
-			Group group = groups_.get(i);
-			if(gtaskListId.equals(group.getGtaskListId())){
-				return i;
-			}
-		}
-		//TODO: throw exception
-		return -1;
-	}
-
-	/**
-	 * @param lst list of gtask for each group
-	 */
-	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
-		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
-		com.google.api.services.tasks.Tasks client = activity_.getTasksService();
-
-		//TODO: lock?
-		//remove/move duplicate old items
-		for(int nth = 0; nth < lst.size(); nth++){
-			if(lst.get(nth) == null){
-				continue;
-			}
-			List<Item> targetChild = children_.get(nth);
-			String targetChildTaskListId = groups_.get(nth).getGtaskListId();
-
-			//TODO: detect removed item
-			//move, load new, upload new
-			String currentTime = new Date(System.currentTimeMillis()).toString();
-			for(Task task: lst.get(nth)){
-				String thisName = task.getTitle();
-				if(thisName.isEmpty()){
-					continue;
-				}
-				Log.d(TAG, "merge item: "+thisName);
-
-				Item existing = name2Item_.get(thisName);
-				if(existing == null){
-					if(!isTaskCompleted(task)){
-						//new item
-						Item newItem = new Item(task, nth);
-						name2Item_.put(newItem.getName(), newItem);
-						Util.insertItem(targetChild, newItem, ASCENDING);
-					}
-				}
-				else {
-					Log.d(TAG, "gtask exists: " + task + " " + isTaskCompleted(task));
-					if(isTaskCompleted(task)){
-						//remove existing
-						//TODO: check completed time of gtask
-						children_.get(existing.getGroup()).remove(existing);
-						continue;
-					}
-					if(existing.getGtask() == null){
-						existing.setGtask(task);
-					}
-					DateTime gtaskTime = task.getUpdated();
-					Log.d(TAG, "  exists with same timestamp: " + task);
-					if(gtaskTime != null){
-						//TODO: handle case that local timestamp is empty
-						//net is new or equal
-						if(existing.getLastTouchedTime() == gtaskTime.getValue()){
-							Log.d(TAG, "  exists with same timestamp: " + task);
-							continue;
-
-						}
-						if(existing.getLastTouchedTime() < gtaskTime.getValue()){
-							Log.d(TAG, "gtask is new: " + task);
-							//remove old item
-							existing.update(task);
-							Task oldGtask = existing.getGtask();
-							//old group id
-							if(!oldGtask.getId().equals(task.getId())){
-								try{
-									String oldGroupId = groups_.get(existing.getGroup()).getGtaskListId();
-									existing.setGtask(task);
-									//may fail, if task is removed on gtask
-									operationList.add(client.tasks().delete(oldGroupId, oldGtask.getId()));
-								}
-								catch(IOException e){
-									Log.d(TAG, "IOException", e);
-								}
-							}
-							children_.get(existing.getGroup()).remove(existing);
-							//TODO: sync group
-							//List<Item> targetList = targetChild;
-							List<Item> targetList = targetChild;
-							//if(!targetChildTaskListId.equals()
-							
-							Util.insertItem(targetList, existing, ASCENDING);
-						}
-						else {
-							Log.d(TAG, "remote gtask is old: " + task);
-							//net is old
-							//update task
-							//TODO: check diff?
-							String destId = groups_.get(existing.getGroup()).getGtaskListId();
-							if(destId == null){
-								continue;
-							}
-							String oldTaskListId = groups_.get(nth).getGtaskListId();
-							try{
-								//update group/link ....
-								//side effect
-								//check time
-								Task existingGtask = existing.getGtask();
-
-								//for now update group (tasklist)
-								if(nth != existing.getGroup()){
-									//tasks.move api just move task position in the tasklist
-									//remove & add (then update gtask)
-									Task newTask = existingGtask.clone();
-									newTask.setId(null);
-									
-									operationList.add(client.tasks().delete(oldTaskListId, existingGtask.getId()));
-									//TODO: add to new tasklist
-									existing.setGtask(null);
-								}
-							}
-							catch(IOException e){
-								Log.d(TAG, "IOException", e);
-							}
-						}
-					}
-				}
-			}
-		}
-		if(!operationList.isEmpty()){
-			AsyncExecOperationTask.run(activity_, operationList);
-		}
-		updated();
-	}
-
-	//move to async task
-	public void pushCalendarEvents(List<Event> events){
-		for(Event e: events){
-			String name = e.getSummary();
-			EventDateTime start = e.getStart();
-			DateTime startDt = start.getDate();
-			if(startDt == null){
-				startDt = start.getDateTime();
-			}			
-			Log.d(TAG, "event from calendar(start,dt,date): "
-				  +e.getSummary()+" "
-				  +start+" "
-				  +start.getDateTime()+" "
-				  +start.getDate()+" "
-				  +startDt.getValue());
-			Item existing = name2Item_.get(name);
-			Item item;
-			//XXX
-			if(existing != null){
-				if(startDt.getValue() <= existing.getLastTouchedTime()){
-					Log.d(TAG, "pushToEvent: skip " + name);
-					continue;
-				}
-				Log.d(TAG, "pushToEvent: pop " + name + " " + startDt);
-				item = existing;
-				item.setLastTouchedTime(startDt.getValue());
-			}
-			else{
-				Log.d(TAG, "pushToEvent: new " + name + " " + startDt);
-				item = new Item(name, "", startDt.getValue(), Item.ITEM_TYPE_TOP, TO_BUY);
-			}
-			item.setIsEvent(true);
-			pushToBuy(item);
-		}
-		updated();
-	}
-
-	public void updateGroup(Map<String, TaskList> result, boolean first){
-		List<String> absentGroup = new ArrayList<String>();
-		for(Group group: groups_){
-			TaskList gtasklist = result.get(group.getName());
-			if(gtasklist != null){
-				Log.d(TAG, "updateGroup: " + gtasklist.getTitle() + " " + gtasklist.getId());
-				group.setGtaskListId(gtasklist.getId());
-			}
-			else {
-				//create tasklist
-				if(first){
-					absentGroup.add(group.getName());
-				}
-			}
-		}
-		//TODO: add condition to load
-		if(first && !absentGroup.isEmpty()){
-			AsyncAddGroupTask.run(activity_, absentGroup);
-			return;
-		}
-		//TODO: modify
-		activity_.startLoadTask(first);
-	}
-
 	public void moveToNextGroup(int groupPosition, int childPosition){
  		Item item = children_.get(groupPosition).get(childPosition);
  		int nextGroupPosition = item.nextGroup();
@@ -277,7 +72,6 @@ public class ExpandableAdapter
 		List<Item> lst = children_.get(nextGroupPosition);
 		Util.insertItem(lst, item, ASCENDING);
 		notifyDataSetChanged();
-		updated();
 	}
 
 	public Item search(String itemname){
@@ -298,7 +92,6 @@ public class ExpandableAdapter
 		//children_.get(TO_BUY).add(0, item);
 		List<Item> lst = children_.get(TO_BUY);
 		Util.insertItem(lst, item, ASCENDING);
-		updated();
 		notifyDataSetChanged();
 	}
 
@@ -313,12 +106,11 @@ public class ExpandableAdapter
 				}
 				//TODO: find existing item
 				//TODO: if entered from text box
-				pushToBuy(new Item(itemname, null, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
+				pushToBuy(new Item(itemname, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
 			}
 		} catch (IOException e) {
 			Log.d(TAG, "IOException", e);
 		}
-		updated();
 	}
 
 	public Item remove(int group, int pos, boolean updateUI) {
@@ -326,12 +118,10 @@ public class ExpandableAdapter
 		if(updateUI){
 			notifyDataSetChanged();
 		}
-		updated();
 		return item;
 	}
 
 	public Item remove(int group, int pos) {
-		updated();
 		return remove(group, pos, true);
 	}
 
@@ -346,7 +136,6 @@ public class ExpandableAdapter
 		item.setGroup(HISTORY);
 		List<Item> lst = children_.get(HISTORY);
 		Util.insertItem(lst, item, ASCENDING);
-		updated();
 		notifyDataSetChanged();
 	}
 
@@ -441,16 +230,7 @@ public class ExpandableAdapter
 			break;
 		}
 		text.setTextColor(color);
-		TextView note = (TextView) convertView.findViewById(R.id.item_note0);
-		String noteContents = item.getNotes();
-		if(noteContents == null){
-			note.setVisibility(View.GONE);
-		}
-		else {
-			//TODO: limit lines of displayed note
-			note.setVisibility(View.VISIBLE);
-			note.setText(noteContents);
-		}
+		//XXX
 		return convertView;
 	}
 
@@ -461,44 +241,5 @@ public class ExpandableAdapter
 
 	static String groupNameToFilename(String groupName){
 		return groupName.replaceAll(" ", "_")+".txt";
-	}
-
-	//TODO: 定義するクラスを考える
-	static boolean isTaskCompleted(com.google.api.services.tasks.model.Task task){
-		return COMPLETED_STATUS.equals(task.getStatus());
-	}
-
-	public Map<Group, List<Item>> getLocalTasks(){
-		Map<Group, List<Item>> result = new HashMap<Group, List<Item>>();
-
-		for(int i = 0; i < children_.size(); i++){
-			List<Item> itemlist = new ArrayList<Item>();
-			List<Item> itemsOfGroup = children_.get(i);
-			Group group = groups_.get(i);
-			for(int j = 0; j < itemsOfGroup.size(); j++){
-				Item item = itemsOfGroup.get(j);
-				if((!item.isEvent()) && item.getGtask() == null){
-					Log.d(TAG, "local task: "+item.getName() + " " + item.isEvent());
-					itemlist.add(item);
-				}
-			}
-			if(!itemlist.isEmpty()){
-				result.put(group, itemlist);
-			}
-		}
-		return result;
-	}
-
-	public long lastSavedTime(){
-		return lastSavedTime_;
-	}
-
-	public long lastModifiedTime(){
-		return lastModifiedTime_;
-	}
-
-	//limit update group?
-	public void updated(){
-		lastModifiedTime_ = System.currentTimeMillis();
 	}
 }
