@@ -118,17 +118,12 @@ public class StacklrExpActivity
 		catch (NameNotFoundException e) {
 			Log.w(TAG, "Error Package name not found ", e);
 		}
-		//---------------
-		//TODO: rename
-		groups_ = Group.load(datadir_);
-		if(groups_ == null){
-			String[] groupNames = getResources().getStringArray(R.array.groups);
-			groups_ = new ArrayList<Group>();
-			for(String name: groupNames){
-				groups_.add(new Group(name, null));
-			}
+
+		groups_ = new ArrayList<Group>();
+		for(String groupName: getResources().getStringArray(R.array.groups)){
+			groups_.add(new Group(groupName));
 		}
-		//TODO: sync group(upload)
+
 		//---------------
 		// line based
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
@@ -171,7 +166,6 @@ public class StacklrExpActivity
 	protected void onStop() {
 		adapter_.save();
 		//TODO: if group changed?
-		Group.save(datadir_, groups_);
 		super.onStop();
 	}
 	

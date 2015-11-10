@@ -114,9 +114,6 @@ public class Item
 	}
 
 	public int nextGroup(){
-		if(group_ == TO_BUY){
-			return HISTORY;
-		}
 		return NEXT_GROUP[group_];
 	}
 
