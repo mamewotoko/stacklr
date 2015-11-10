@@ -89,7 +89,7 @@ public class CSVItemStorage
 				}
 				boolean isEvent = false;
 				if(row.length >= 5){
-					Boolean.valueOf(row[4]);
+					isEvent = Boolean.valueOf(row[4]);
 				}
 				//XXX
 				Item item = new Item(name, gtaskId, timestamp, itemtype, group);
