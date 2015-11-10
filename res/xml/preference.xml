@@ -38,4 +38,9 @@
 	android:key="version"
 	android:selectable="false"
 	android:title="@string/pref_version" />
+    <Preference
+	android:key="version"
+	android:selectable="false"
+	android:summary="@string/pref_author_summary"
+	android:title="@string/pref_author" />
 </PreferenceScreen>
