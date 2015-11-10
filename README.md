@@ -1,4 +1,4 @@
-stacklr - Stack based shopping/TODO list [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
+stacklr - Stack based shopping/TODO list ![icon](res/drawable-xhdpi/ic_launcher.png) [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
 ========================================
 Concept
 -------
@@ -12,6 +12,8 @@ Concept
   | Sugar   V history: candidates to add to shopping list 
   +---------
 </pre>
+
+![screenshot](doc/screenshot/screenshot_0.png)
 
 Functions
 ---------
