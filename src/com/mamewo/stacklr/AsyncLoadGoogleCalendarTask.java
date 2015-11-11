@@ -26,7 +26,6 @@ public class AsyncLoadGoogleCalendarTask
 	protected void doInBackground()
 		throws IOException
 	{
-		//TODO: use last loaded time as minTime
 		events_ = calendarClient_.events().list(calendarId_)
 			.setTimeMin(ONE_WEEK_AGO)
 			.setTimeMax(new DateTime(System.currentTimeMillis()))
