@@ -10,11 +10,15 @@
 <hr>
 <div align="right">
 <!-- hhmts start -->
-Last modified: Thu Nov 12 12:34:44 2015
+Last modified: Thu Nov 12 18:23:08 2015
 <!-- hhmts end -->
 </div>
 
-<canvas id="icon" width="512" height="512" style="border: solid 2px red;"/>
+<canvas id="icon" width="512" height="512" style="border: solid 2px red;"></canvas>
+<br />xhdpi <canvas id="icon_96" width="96" height="96" style="border: solid 2px red;"></canvas>
+<br />hdpi <canvas id="icon_72" width="72" height="72" style="border: solid 2px red;"></canvas>
+<br />mdpi <canvas id="icon_48" width="48" height="48" style="border: solid 2px red;"></canvas>
+<br />ldpi <canvas id="icon_36" width="36" height="36" style="border: solid 2px red;"></canvas>
 
 <script>
 var c = document.getElementById("icon");
@@ -25,10 +29,10 @@ cx.fillRect(0, 0, c.width, c.height);
 cx.globalAlpha = 1;
 var X_OFFSET = 46;
 cx.fillStyle = "orange";
-var y_top = 80;
-var height = 60;
-var width = 240;
-var margin = 16;
+var y_top = 15;
+var height = 80;
+var width = 260;
+var margin = 20;
 var xpos =  [ 80, 128, 128, 128, 128 ];
 for(var i = 0; i < xpos.length; i++){
    var x = xpos[i];
@@ -73,6 +77,15 @@ cx.moveTo(X_OFFSET+128+width+10, a2y-30);
 cx.lineTo(X_OFFSET+128+width-50, a2y);
 cx.lineTo(X_OFFSET+128+width+10, a2y+30);
 cx.fill();
+
+var image_size = [36, 48, 72, 96];
+for(var i = 0; i < image_size.length; i++){
+   var isize = image_size[i];
+   var target = document.getElementById("icon_"+isize);
+   var tx = target.getContext("2d");
+   tx.imageSmoothingEnabled = true;
+   tx.drawImage(c, 0, 0, isize, isize);
+}
 
 </script>
 </body></html>

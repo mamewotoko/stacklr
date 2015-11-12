@@ -18,6 +18,7 @@ public class Constant {
 		true,
 		true,
 		false,
+		false,
 		false
 	};
 
