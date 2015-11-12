@@ -10,7 +10,7 @@
 <hr>
 <div align="right">
 <!-- hhmts start -->
-Last modified: Tue Nov 10 20:28:17 2015
+Last modified: Thu Nov 12 12:34:44 2015
 <!-- hhmts end -->
 </div>
 
@@ -29,7 +29,7 @@ var y_top = 80;
 var height = 60;
 var width = 240;
 var margin = 16;
-var xpos =  [ 100, 128, 128, 128, 128 ];
+var xpos =  [ 80, 128, 128, 128, 128 ];
 for(var i = 0; i < xpos.length; i++){
    var x = xpos[i];
    var y = y_top+i*(height+margin);
@@ -60,14 +60,15 @@ cx.fill();
 cx.lineWidth = 20;
 cx.beginPath();
 cx.strokeStyle = "gray";
-cx.arc(X_OFFSET+128+width, y_top+2*(height+margin)+height, (height+margin)/2, Math.PI/2, -Math.PI/2, true);
+cx.arc(X_OFFSET+128+width, y_top+2*height+margin+margin/2, (height+margin)/2, Math.PI/2, -Math.PI/2, true);
 cx.stroke();
 
 cx.beginPath();
 cx.fillStyle = "gray";
 cx.lineWidth = 1;
 //var a2y = 100+2*(height+10)+height+5+(height+10)/2;
-var a2y = y_top+2*(height+margin)+height + (height+margin)/2;
+//var a2y = y_top+2*(height+margin)+height + (height+margin)/2;
+var a2y =  y_top+2*height+margin+margin/2 + (height+margin)/2;
 cx.moveTo(X_OFFSET+128+width+10, a2y-30);
 cx.lineTo(X_OFFSET+128+width-50, a2y);
 cx.lineTo(X_OFFSET+128+width+10, a2y+30);
