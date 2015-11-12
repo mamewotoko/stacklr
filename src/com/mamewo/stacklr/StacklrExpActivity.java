@@ -94,7 +94,8 @@ public class StacklrExpActivity
 		R.id.radio_to_buy,
 		R.id.radio_stock,
 		R.id.radio_history,
-		R.id.radio_archive
+		R.id.radio_archive,
+		R.id.radio_later
 	};
 
 	private ExpandableListView listView_;
@@ -145,11 +146,11 @@ public class StacklrExpActivity
 		if((!wifiOnly) || isWifiAvaiable()){
 			//TODO: use string resource for title
 			setTitle("stacklr "+credential_.getSelectedAccountName());
-			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
+			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, true);
 			if(useTasks){
 				AsyncLoadGroupTask.run(this);
 			}
-			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
+			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
 			if(useCalendar){
 				AsyncLoadGoogleCalendarListTask.run(this);
 			}
@@ -184,6 +185,8 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//load default preferences from xml
+		PreferenceManager.setDefaultValues(this, R.xml.preference, false);
 		Log.d(TAG, "onCreate");
 		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
@@ -464,7 +467,7 @@ public class StacklrExpActivity
 			if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
 				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
 				final int childPosition = ExpandableListView.getPackedPositionChild(id);
-				final Item item = adapter_.get(groupPosition, childPosition);
+				final Item item = (Item)adapter_.getChild(groupPosition, childPosition);
 
 				AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
 				View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
@@ -503,6 +506,7 @@ public class StacklrExpActivity
 							int nextGroupId = -1;
 							//TODO: loop....
 							RadioGroup nextGroup = (RadioGroup)((AlertDialog)dialog).findViewById(R.id.radio_group);
+							long updatedTime = System.currentTimeMillis();
 							switch(nextGroup.getCheckedRadioButtonId()){
 							case R.id.radio_to_buy:
 								nextGroupId = TO_BUY;
@@ -516,13 +520,18 @@ public class StacklrExpActivity
 							case R.id.radio_archive:
 								nextGroupId = ARCHIVE;
 								break;
-								//TODO: add remove?
+							case R.id.radio_later:
+								//3 days later
+								updatedTime += 3*24*60*60*1000;
+								nextGroupId = LATER;
+								break;
 							default:
 								break;
 							}
+							//
 							item.setType(spinner.getSelectedItemPosition());
 							//TODO: if moved
-							adapter_.moveToGroup(groupPosition, childPosition, nextGroupId);
+							adapter_.moveToGroup(groupPosition, childPosition, nextGroupId, updatedTime);
 							dialog.dismiss();
 						}
 					});

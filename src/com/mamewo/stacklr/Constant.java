@@ -11,7 +11,7 @@ public class Constant {
 	static protected final int STOCK = 1;
 	static protected final int HISTORY = 2;
 	static protected final int ARCHIVE = 3;
-	//static protected final int REMOVE = -1;
+	static protected final int LATER = 4;
 
 	//move to preference
 	static boolean[] DEFAULT_GROUP_OPEN = {

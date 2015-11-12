@@ -38,7 +38,6 @@ import static com.mamewo.stacklr.Constant.*;
 public class ExpandableAdapter
 	extends BaseExpandableListAdapter
 {
-	//TODO:Customize?
 	private List<List<Item>> children_;
 	private List<ItemStorage> storageList_;
 	private List<Group> groups_;
@@ -270,10 +269,16 @@ public class ExpandableAdapter
 	}
 
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){
-		Log.d(TAG, "moveToGroup" + groupPosition + " "+childPosition);
+		moveToGroup(groupPosition, childPosition, nextGroupPosition, System.currentTimeMillis());
+	}
+
+	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition, long updatedTime){
+		Log.d(TAG, "moveToGroup " + groupPosition + " "+childPosition + " " + nextGroupPosition);
 		Item item = children_.get(groupPosition).remove(childPosition);
 		item.setGroup(nextGroupPosition);
-		item.setLastTouchedTime(System.currentTimeMillis());
+		if(updatedTime > 0){
+			item.setLastTouchedTime(updatedTime);
+		}
 		List<Item> lst = children_.get(nextGroupPosition);
 		Util.insertItem(lst, item, ASCENDING);
 		notifyDataSetChanged();
@@ -331,23 +336,7 @@ public class ExpandableAdapter
 	}
 
 	public Item remove(int group, int pos) {
-		updated();
 		return remove(group, pos, true);
-	}
-
-	public Item get(int group, int pos){
-		return children_.get(group).get(pos);
-	}
-
-	public void moveToHistory(int groupPosition, int childPosition){
-		Item item = children_.get(groupPosition).remove(childPosition);
-		//children_.get(HISTORY).add(0, item);
-		//mmmm
-		item.setGroup(HISTORY);
-		List<Item> lst = children_.get(HISTORY);
-		Util.insertItem(lst, item, ASCENDING);
-		updated();
-		notifyDataSetChanged();
 	}
 
 	public void save() {
