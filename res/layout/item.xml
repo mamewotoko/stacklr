@@ -4,11 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/item_dialog_name"
+
+<!-- api11 -->
+<!--
 	android:textIsSelectable="true"
 	android:inputType="none"
 	android:editable="false"
+-->
+
+    <TextView
+        android:id="@+id/item_dialog_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
