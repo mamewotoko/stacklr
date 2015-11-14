@@ -452,12 +452,29 @@ public class StacklrExpActivity
 		}
 	}
 	
-	public void showCalendarDialog(final TextView datetext, final TextView datelong){
+	private void setLaterTime(long time, TextView datetext, TextView datelong){
+		DateFormat df = DateFormat.getDateInstance();
+		Date newdate = new Date(time);
+		datetext.setText(df.format(newdate));
+		datelong.setText(Long.toString(time));
+	}
+	
+	private void showCalendarDialog(final TextView datetext, final TextView datelong){
 		AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
 		View contentView = View.inflate(StacklrExpActivity.this, R.layout.calendar_dialog, null);
 		//TODO; show item name as title
+
 		builder.setView(contentView);
-		//(DatePicker)contentView.findViewById(R.id.date_picker);
+		DatePicker picker = (DatePicker)contentView.findViewById(R.id.date_picker);
+
+		java.util.Calendar cal = java.util.Calendar.getInstance();
+		cal.setTimeInMillis(Long.valueOf(datelong.getText().toString()));
+		int year = cal.get(java.util.Calendar.YEAR);
+		int month = cal.get(java.util.Calendar.MONTH);
+		int date = cal.get(java.util.Calendar.DATE);
+		//TODO: show diff date
+		picker.updateDate(year, month, date);
+
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which){
@@ -472,9 +489,8 @@ public class StacklrExpActivity
 
 					GregorianCalendar cal = new GregorianCalendar();
 					cal.set(picker.getYear(), picker.getMonth(), picker.getDayOfMonth(), 0, 0, 0);
-					Date newdate = cal.getTime();
-					datetext.setText(df.format(newdate));
-					datelong.setText(Long.toString(newdate.getTime()));
+					long time = cal.getTimeInMillis();
+					setLaterTime(time, datetext, datelong);
 					dialog.dismiss();
 				}
 			});
@@ -528,25 +544,38 @@ public class StacklrExpActivity
 
 			int initRadioButtonId = RADIO_ID[groupPosition];
 				
-			RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
+			final RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
 			radioGroup.check(initRadioButtonId);
 
 			final TextView datetext = (TextView)contentView.findViewById(R.id.item_later_date);
-			long now = System.currentTimeMillis();
-			
-			//later選択時のみ表示
-			datetext.setText(df.format(new Date(now)));
-
 			final TextView datelong = (TextView)contentView.findViewById(R.id.item_later_date_long);
-			datelong.setText(Long.toString(now));
+
+			long now = System.currentTimeMillis();
+			setLaterTime(now, datetext, datelong);
+
+			radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() 
+				{
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId) {
+						switch(checkedId){
+						case R.id.radio_later:
+							long later = System.currentTimeMillis();
+							later += 3*24*60*60*1000;
+							setLaterTime(later, datetext, datelong);
+							break;
+						default:
+							break;
+						}
+					}
+				});
 
 			//xxx
 			Button datebutton = (Button)contentView.findViewById(R.id.item_later_date_button);
 			datebutton.setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View v){
+						radioGroup.check(R.id.radio_later);
 						showCalendarDialog(datetext, datelong);
-						//TODO: show date picker or calendar
 					}
 				});
 
