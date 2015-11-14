@@ -76,7 +76,7 @@ public class TestStacklrExpActivity
 		//0: group
 		//1: first item
 		View v = list.getChildAt(1);
-		TextView text = (TextView)v.findViewById(R.id.item_name);
+		TextView text = (TextView)v.findViewById(R.id.target_text_view);
 		String label = text.getText().toString();
 		assertTrue("item name", label.startsWith(egg+" "));
 		String afterText = solo_.getEditText(0).getText().toString();

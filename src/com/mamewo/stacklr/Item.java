@@ -14,7 +14,7 @@ public class Item
 		STOCK, //from to buy
 		TO_BUY, //from stock, to buy(click) or history list(long)
 		TO_BUY, //from history
-		HISTORY //from archive
+		TO_BUY, //from later
 	};
 
 	private String name_;

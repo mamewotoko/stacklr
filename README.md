@@ -80,6 +80,9 @@ TODO
 * add classify label to each item (add to item notes/save locally?)
   * importance
   * urgency
+* refine item type
+  food & item (to buy, stock)
+  TODO once/repeat
 * items link to EC site
   amazon (waiting/wish list/watch list..)
     books

@@ -94,7 +94,6 @@ public class StacklrExpActivity
 		R.id.radio_to_buy,
 		R.id.radio_stock,
 		R.id.radio_history,
-		R.id.radio_archive,
 		R.id.radio_later
 	};
 
@@ -516,9 +515,6 @@ public class StacklrExpActivity
 								break;
 							case R.id.radio_history:
 								nextGroupId = HISTORY;
-								break;
-							case R.id.radio_archive:
-								nextGroupId = ARCHIVE;
 								break;
 							case R.id.radio_later:
 								//3 days later
