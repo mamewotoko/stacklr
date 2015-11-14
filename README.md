@@ -172,10 +172,12 @@ Tasks API Client Library for Java - Google APIs Client Library for Java — Goog
 https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/com/google/api/services/tasks/Tasks.html
 
 * initialize android project
-
-android create project -n stacklr -p . -t android-16 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
+```bash
+android create project -n stacklr -p . -t android-10 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
 cd libsrc/google-play-services_lib
-android update lib-project -p . -t android-16
+android update lib-project -p . -t android-10
+```
+
 * This code include copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
 

@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Date;
+import java.text.DateFormat;
 
 import java.io.File;
 
@@ -460,92 +462,111 @@ public class StacklrExpActivity
 		}
 
 		@Override
-		public boolean onItemLongClick(AdapterView<?> parent, View view,
-									   int position, long id) {
-			boolean handled = false;
-			if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-				final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-				final int childPosition = ExpandableListView.getPackedPositionChild(id);
-				final Item item = (Item)adapter_.getChild(groupPosition, childPosition);
-
-				AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
-				View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
-				builder.setView(contentView);
-				//set default radio
-				
-				String itemname = item.getName();
-				//set item name
-				//TODO: change id
-				TextView itemnameView = (TextView)contentView.findViewById(R.id.item_dialog_name);
-				itemnameView.setText(itemname);
-
-				final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_dialog_type);
-				ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
-																					 R.array.item_type, android.R.layout.simple_spinner_item);
-				adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-				spinner.setAdapter(adapter);
-				spinner.setSelection(item.getType());
-
-				int initRadioButtonId = RADIO_ID[groupPosition];
-				
-				RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
-				radioGroup.check(initRadioButtonId);
-
-				//TODO: use string resource
-				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-						@Override
-						public void onClick(DialogInterface dialog, int which){
-							dialog.cancel();
-						}
-					});
-				builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
-						@Override
-						public void onClick(DialogInterface dialog, int which){
-							//TODO: move to specified group
-							int nextGroupId = -1;
-							//TODO: loop....
-							RadioGroup nextGroup = (RadioGroup)((AlertDialog)dialog).findViewById(R.id.radio_group);
-							long updatedTime = System.currentTimeMillis();
-							switch(nextGroup.getCheckedRadioButtonId()){
-							case R.id.radio_to_buy:
-								nextGroupId = TO_BUY;
-								break;
-							case R.id.radio_stock:
-								nextGroupId = STOCK;
-								break;
-							case R.id.radio_history:
-								nextGroupId = HISTORY;
-								break;
-							case R.id.radio_later:
-								//3 days later
-								updatedTime += 3*24*60*60*1000;
-								nextGroupId = LATER;
-								break;
-							default:
-								break;
-							}
-							//
-							item.setType(spinner.getSelectedItemPosition());
-							//TODO: if moved
-							adapter_.moveToGroup(groupPosition, childPosition, nextGroupId, updatedTime);
-							dialog.dismiss();
-						}
-					});
-				builder.setNeutralButton("Remove", new DialogInterface.OnClickListener(){
-						@Override
-						public void onClick(DialogInterface dialog, int which){
-							//TODO: show confirm dialog?
-							adapter_.remove(groupPosition, childPosition);
-							dialog.dismiss();
-						}
-					});
-				builder.create().show();
-
-				//TODO: display context menu
-				//Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
-				handled = true;
+		public boolean onItemLongClick(AdapterView<?> parent,
+									   View view,
+									   int position,
+									   long id)
+		{
+			//final DateFormat
+			final DateFormat df = DateFormat.getDateInstance();
+			
+			if (ExpandableListView.getPackedPositionType(id) != ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+				return false;
 			}
-			return handled;
+			final int groupPosition = ExpandableListView.getPackedPositionGroup(id);
+			final int childPosition = ExpandableListView.getPackedPositionChild(id);
+			final Item item = (Item)adapter_.getChild(groupPosition, childPosition);
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
+			View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
+			builder.setView(contentView);
+			//set default radio
+				
+			String itemname = item.getName();
+			//set item name
+			//TODO: change id
+			TextView itemnameView = (TextView)contentView.findViewById(R.id.item_dialog_name);
+			itemnameView.setText(itemname);
+
+			final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_dialog_type);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
+																				 R.array.item_type, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			spinner.setSelection(item.getType());
+
+			int initRadioButtonId = RADIO_ID[groupPosition];
+				
+			RadioGroup radioGroup = (RadioGroup)contentView.findViewById(R.id.radio_group);
+			radioGroup.check(initRadioButtonId);
+
+			final TextView datetext = (TextView)contentView.findViewById(R.id.item_later_date);
+			long now = System.currentTimeMillis();
+			
+			//later選択時のみ表示
+			datetext.setText(df.format(new Date(now)));
+
+			//xxx
+			Button datebutton = (Button)contentView.findViewById(R.id.item_later_date_button);
+			datebutton.setOnClickListener(new View.OnClickListener(){
+					@Override
+					public void onClick(View v){
+						//TODO: show date picker or calendar
+					}
+				});
+
+			//TODO: use string resource
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which){
+						dialog.cancel();
+					}
+				});
+			builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which){
+						//TODO: move to specified group
+						int nextGroupId = -1;
+						//TODO: loop....
+						RadioGroup nextGroup = (RadioGroup)((AlertDialog)dialog).findViewById(R.id.radio_group);
+						long updatedTime = System.currentTimeMillis();
+						switch(nextGroup.getCheckedRadioButtonId()){
+						case R.id.radio_to_buy:
+							nextGroupId = TO_BUY;
+							break;
+						case R.id.radio_stock:
+							nextGroupId = STOCK;
+							break;
+						case R.id.radio_history:
+							nextGroupId = HISTORY;
+							break;
+						case R.id.radio_later:
+							//3 days later
+							updatedTime += 3*24*60*60*1000;
+							nextGroupId = LATER;
+							break;
+						default:
+							break;
+						}
+						//
+						item.setType(spinner.getSelectedItemPosition());
+						//TODO: if moved
+						adapter_.moveToGroup(groupPosition, childPosition, nextGroupId, updatedTime);
+						dialog.dismiss();
+					}
+				});
+			builder.setNeutralButton("Remove", new DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(DialogInterface dialog, int which){
+						//TODO: show confirm dialog?
+						adapter_.remove(groupPosition, childPosition);
+						dialog.dismiss();
+					}
+				});
+			builder.create().show();
+			//TODO: display context menu
+			//Log.d(TAG, "onItemLongClick id: "+ Long.toHexString(id));
+			return true;
 		}
 	}
 
