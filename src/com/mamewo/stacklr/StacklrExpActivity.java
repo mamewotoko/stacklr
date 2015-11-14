@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.text.DateFormat;
 
 import java.io.File;
@@ -52,6 +53,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+import android.widget.DatePicker;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -449,6 +452,35 @@ public class StacklrExpActivity
 		}
 	}
 	
+	public void showCalendarDialog(final TextView datetext, final TextView datelong){
+		AlertDialog.Builder builder = new AlertDialog.Builder(StacklrExpActivity.this);
+		View contentView = View.inflate(StacklrExpActivity.this, R.layout.calendar_dialog, null);
+		//TODO; show item name as title
+		builder.setView(contentView);
+		//(DatePicker)contentView.findViewById(R.id.date_picker);
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which){
+					dialog.cancel();
+				}
+			});
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which){
+					DateFormat df = DateFormat.getDateInstance();
+					DatePicker picker = (DatePicker)((AlertDialog)dialog).findViewById(R.id.date_picker);
+
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.set(picker.getYear(), picker.getMonth(), picker.getDayOfMonth(), 0, 0, 0);
+					Date newdate = cal.getTime();
+					datetext.setText(df.format(newdate));
+					datelong.setText(Long.toString(newdate.getTime()));
+					dialog.dismiss();
+				}
+			});
+		builder.create().show();
+	}
+
 	private class ItemClickListener
 		implements ExpandableListView.OnChildClickListener,
 				   OnItemLongClickListener
@@ -481,7 +513,6 @@ public class StacklrExpActivity
 			View contentView = View.inflate(StacklrExpActivity.this, R.layout.item, null);
 			builder.setView(contentView);
 			//set default radio
-				
 			String itemname = item.getName();
 			//set item name
 			//TODO: change id
@@ -506,11 +537,15 @@ public class StacklrExpActivity
 			//later選択時のみ表示
 			datetext.setText(df.format(new Date(now)));
 
+			final TextView datelong = (TextView)contentView.findViewById(R.id.item_later_date_long);
+			datelong.setText(Long.toString(now));
+
 			//xxx
 			Button datebutton = (Button)contentView.findViewById(R.id.item_later_date_button);
 			datebutton.setOnClickListener(new View.OnClickListener(){
 					@Override
 					public void onClick(View v){
+						showCalendarDialog(datetext, datelong);
 						//TODO: show date picker or calendar
 					}
 				});
@@ -542,7 +577,8 @@ public class StacklrExpActivity
 							break;
 						case R.id.radio_later:
 							//3 days later
-							updatedTime += 3*24*60*60*1000;
+							//updatedTime += 3*24*60*60*1000;
+							updatedTime = Long.valueOf(datelong.getText().toString());
 							nextGroupId = LATER;
 							break;
 						default:
