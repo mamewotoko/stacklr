@@ -142,7 +142,7 @@ public class StacklrExpActivity
 		return false;
 	}
 
-	private void refreshTasks() {
+	private void refreshTasks(boolean loadGroups) {
 		if(credential_.getSelectedAccountName() == null){
 			return;
 		}
@@ -153,7 +153,12 @@ public class StacklrExpActivity
 			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, true);
 			adapter_.stackLater();
 			if(useTasks){
-				AsyncLoadGroupTask.run(this);
+				if(loadGroups){
+					AsyncLoadGroupTask.run(this);
+				}
+				else {
+					startLoadTask(false);
+				}
 			}
 			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
 			if(useCalendar){
@@ -301,7 +306,15 @@ public class StacklrExpActivity
 				chooseAccount();
 			}
 			else {
-				refreshTasks();
+				boolean loadGroups = false;
+				for(Group group: groups_){
+					String gid = group.getGtaskListId();
+					if(gid == null || "".equals(gid)){
+						loadGroups = true;
+						break;
+					}
+				}
+				refreshTasks(loadGroups);
 			}
 		}
 	}
@@ -358,7 +371,7 @@ public class StacklrExpActivity
 			break;
 		case R.id.reload_menu:
 			//TODO: display force load dialog
-			refreshTasks();
+			refreshTasks(true);
 			handled = true;
 			break;
 		case R.id.preference_menu:

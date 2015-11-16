@@ -3,7 +3,6 @@ package com.mamewo.stacklr;
 import com.google.api.services.tasks.model.Task;
 import com.google.api.services.tasks.Tasks;
 import com.google.api.client.util.DateTime;
-//.TasksOperations.List;
 
 import java.io.IOException;
 import java.util.ArrayList;
