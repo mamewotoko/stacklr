@@ -490,4 +490,15 @@ public class ExpandableAdapter
 	public void updated(){
 		lastModifiedTime_ = System.currentTimeMillis();
 	}
+
+	public void stackLater(){
+		long now = System.currentTimeMillis();
+		for(int i = 0; i < children_.get(LATER).size(); i++){
+			Item item = children_.get(LATER).get(i);
+			if(now < item.getLastTouchedTime()){
+				break;
+			}
+			pushToBuy(item);			
+		}
+	}
 }

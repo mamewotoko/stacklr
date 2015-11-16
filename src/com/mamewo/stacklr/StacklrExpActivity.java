@@ -151,6 +151,7 @@ public class StacklrExpActivity
 			//TODO: use string resource for title
 			setTitle("stacklr "+credential_.getSelectedAccountName());
 			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, true);
+			adapter_.stackLater();
 			if(useTasks){
 				AsyncLoadGroupTask.run(this);
 			}
