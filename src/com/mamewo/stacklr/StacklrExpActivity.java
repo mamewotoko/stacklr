@@ -195,9 +195,12 @@ public class StacklrExpActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		long t1 = System.nanoTime();
+
 		//load default preferences from xml
 		PreferenceManager.setDefaultValues(this, R.xml.preference, false);
-		Log.d(TAG, "onCreate");
+		long t2 = System.nanoTime();
+
 		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
@@ -205,7 +208,10 @@ public class StacklrExpActivity
 
 		//TODO: load from file or savedInstanceState
 		lastLoadTime_ = 0;
+		long t3 = System.nanoTime();
 		setContentView(R.layout.main_expandable);
+		long t4 = System.nanoTime();
+
 		PackageManager m = getPackageManager();
 		String s = getPackageName();
 		try {
@@ -215,6 +221,7 @@ public class StacklrExpActivity
 		catch (NameNotFoundException e) {
 			Log.w(TAG, "Error Package name not found ", e);
 		}
+		long t5 = System.nanoTime();
 		//---------------
 		//gtasks & google calendar
 		credential_ =
@@ -229,6 +236,8 @@ public class StacklrExpActivity
 		calendarService_ =
 			new com.google.api.services.calendar.Calendar.Builder(httpTransport, jsonFactory, credential_)
 			.setApplicationName("Stacklr/0.2").build();
+
+		long t6 = System.nanoTime();
 		groups_ = Group.load(datadir_);
 		if(groups_ == null){
 			String[] groupNames = getResources().getStringArray(R.array.groups);
@@ -248,7 +257,11 @@ public class StacklrExpActivity
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
 
+		long t7 = System.nanoTime();
+
 		adapter_ = new ExpandableAdapter(this, groups_);
+		long t8 = System.nanoTime();
+
 		//TODO: show load toast?
 		listView_ = (ExpandableListView) findViewById(R.id.expandableListView1);
 		ItemClickListener listener = new ItemClickListener();
@@ -258,6 +271,8 @@ public class StacklrExpActivity
 		speechIntent_ = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		speechIntent_.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 							   RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		long t9 = System.nanoTime();
+
 		//TODO: add option
 		for(int i = 0; i < groups_.size(); i++){
 			if(Constant.DEFAULT_GROUP_OPEN[i]){
@@ -267,7 +282,22 @@ public class StacklrExpActivity
 				listView_.collapseGroup(i);
 			}
 		}
-		// handler_ = new Handler();
+		long t10 = System.nanoTime();
+		
+		Log.d(TAG, "perf,1,"+t1);
+		Log.d(TAG, "perf,2,"+t2);
+		Log.d(TAG, "perf,3,"+t3);
+		Log.d(TAG, "perf,4,"+t4);
+		Log.d(TAG, "perf,5,"+t5);
+		Log.d(TAG, "perf,6,"+t6);
+		Log.d(TAG, "perf,7,"+t7);
+		Log.d(TAG, "perf,8,"+t8);
+		Log.d(TAG, "perf,9,"+t9);
+		Log.d(TAG, "perf,10,"+t10);
+		//t3-t4: 50%
+		//t7-t8: 30%
+		
+		//handler_ = new Handler();
 		// fileSaver_ = new Runnable(){
 		// 		@Override
 		// 		public void run(){
@@ -285,12 +315,6 @@ public class StacklrExpActivity
 		// 		}
 		// 	};
 		// handler_.postDelayed(fileSaver_, 8000);
-	}
-
-	@Override
-	protected void onStart(){
-		super.onStart();
-		listView_.requestFocus();
 	}
 
 	@Override
