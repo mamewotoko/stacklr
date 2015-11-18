@@ -16,6 +16,11 @@
         android:summaryOff="@string/do_not_use_google_tasks"
         android:title="@string/pref_use_google_tasks" />
     <CheckBoxPreference
+	android:key="remove_completed_gtask"
+        android:defaultValue="true"
+	android:selectable="true"
+	android:title="@string/pref_remove_completed_gtask" />
+    <CheckBoxPreference
         android:key="use_google_calendar"
         android:defaultValue="true"
         android:selectable="true"

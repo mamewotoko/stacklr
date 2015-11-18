@@ -50,6 +50,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -88,7 +89,7 @@ public class StacklrExpActivity
 	List<Group> groups_;
 	public int numAsyncTasks;
 	private long lastLoadTime_;
-	private SharedPreferences pref_;
+	public SharedPreferences pref_;
 
 	//private Handler handler_;
 	//private Runnable fileSaver_;
@@ -105,7 +106,7 @@ public class StacklrExpActivity
 
 	private ExpandableListView listView_;
 	private EditText targetEditText_;
-	private View loadingIcon_;
+	//private View loadingIcon_;
 
 	public ExpandableAdapter adapter_;
 	private Intent speechIntent_;
@@ -208,10 +209,10 @@ public class StacklrExpActivity
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
 
-
 		//TODO: load from file or savedInstanceState
 		lastLoadTime_ = 0;
 		long t3 = System.nanoTime();
+		getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main_expandable);
 		long t4 = System.nanoTime();
 
@@ -262,7 +263,7 @@ public class StacklrExpActivity
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
 		targetEditText_.setOnEditorActionListener(this);
 		targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
-		loadingIcon_ = findViewById(R.id.loading_icon);
+		//loadingIcon_ = findViewById(R.id.loading_icon);
 
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
@@ -734,10 +735,12 @@ public class StacklrExpActivity
 	}
 	
 	public void showLoadingIcon(){
-		loadingIcon_.setVisibility(View.VISIBLE);
+		//loadingIcon_.setVisibility(View.VISIBLE);
+		setProgressBarIndeterminate(true);
 	}
 	public void hideLoadingIcon(){
-		loadingIcon_.setVisibility(View.INVISIBLE);
+		//loadingIcon_.setVisibility(View.INVISIBLE);
+		setProgressBarIndeterminate(false);
 	}
 	
 	public com.google.api.services.tasks.Tasks getTasksService(){

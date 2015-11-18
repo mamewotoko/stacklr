@@ -28,8 +28,9 @@ class AsyncExecOperationTask
 	{
 		//TODO: use batch?
 		//BatchRequest batch = client_.batch();
+		int i = 0;
 		for(TasksRequest operation: lst_){
-			Log.d(TAG, "execute: " +operation.getClass().getName() + " " + operation.toString());
+			Log.d(TAG, "execute: " +(i++)+ " " +operation.getClass().getName() + " " + operation.toString());
 			try{
 				operation.execute();
 			}

@@ -15,6 +15,8 @@
     <string name="do_not_use_google_tasks">off</string>
     <string name="pref_use_google_tasks">Load google tasks</string>
 
+    <string name="pref_remove_completed_gtask">Remove completed google tasks</string>
+
     <string name="use_google_calendar">on</string>
     <string name="do_not_use_google_calendar">off</string>
     <string name="pref_use_google_calendar">Load google calendar</string>

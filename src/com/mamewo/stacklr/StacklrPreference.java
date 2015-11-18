@@ -14,12 +14,15 @@ public class StacklrPreference
 			   //View.OnClickListener,
 			   //OnSharedPreferenceChangeListener
 {
+	//TODO: move to strings.xml?
 	static final
 	public String PREFKEY_WIFI_ONLY = "wify_only";
 	static final
 	public String PREFKEY_USE_GOOGLE_TASKS = "use_google_tasks";
 	static final
 	public String PREFKEY_USE_GOOGLE_CALENDAR = "use_google_calendar";
+	static final
+	public String PREFKEY_REMOVE_COMPELTED_TASK = "remove_completed_gtask";
 	private SharedPreferences pref_;
 	private Preference version_;
 

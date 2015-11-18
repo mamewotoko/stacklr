@@ -83,6 +83,7 @@ public class ExpandableAdapter
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
 		com.google.api.services.tasks.Tasks client = activity_.getTasksService();
+		boolean removeCompleted = activity_.pref_.getBoolean(StacklrPreference.PREFKEY_REMOVE_COMPELTED_TASK, true);
 
 		//TODO: lock?
 		//remove/move duplicate old items
@@ -91,8 +92,8 @@ public class ExpandableAdapter
 				continue;
 			}
 			List<Item> targetChild = children_.get(nth);
-			String targetChildTaskListId = groups_.get(nth).getGtaskListId();
-
+			String gTaskListId = groups_.get(nth).getGtaskListId();
+			
 			//TODO: detect removed item
 			//move, load new, upload new
 			String currentTime = new Date(System.currentTimeMillis()).toString();
@@ -114,12 +115,6 @@ public class ExpandableAdapter
 				}
 				else {
 					Log.d(TAG, "gtask exists: " + task + " " + isTaskCompleted(task));
-					if(isTaskCompleted(task)){
-						//remove existing
-						//TODO: check completed time of gtask
-						children_.get(existing.getGroup()).remove(existing);
-						continue;
-					}
 					if(existing.getGtask() == null){
 						existing.setGtask(task);
 					}
@@ -135,6 +130,19 @@ public class ExpandableAdapter
 						}
 						if(existing.getLastTouchedTime() < gtaskTime.getValue()){
 							Log.d(TAG, "gtask is new: " + task);
+							if(isTaskCompleted(task)){
+								//TODO: check completed time of gtask
+								children_.get(existing.getGroup()).remove(existing);
+								if(removeCompleted){
+									try{
+										operationList.add(client.tasks().delete(gTaskListId, task.getId()));
+									}
+									catch(IOException e){
+										Log.d(TAG, "remove completd", e);
+									}
+								}
+								continue;
+							}
 							//remove old item
 							existing.update(task);
 							Task oldGtask = existing.getGtask();
@@ -169,7 +177,8 @@ public class ExpandableAdapter
 							}
 							String oldTaskListId = groups_.get(nth).getGtaskListId();
 							try{
-								//update group/link ....
+								//TODO: remove completed if items in to buy list
+								//TODO: update group/link ....
 								//side effect
 								//check time
 								Task existingGtask = existing.getGtask();
