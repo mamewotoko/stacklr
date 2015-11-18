@@ -39,7 +39,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
-//import android.os.Debug;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -98,6 +98,7 @@ public class StacklrExpActivity
 	private final int[] RADIO_ID = new int[]{
 		R.id.radio_to_buy,
 		R.id.radio_stock,
+		R.id.radio_shelf,
 		R.id.radio_history,
 		R.id.radio_later
 	};
@@ -194,8 +195,10 @@ public class StacklrExpActivity
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		Debug.startMethodTracing("stacklr");
 		long t1 = System.nanoTime();
+		super.onCreate(savedInstanceState);
+
 
 		//load default preferences from xml
 		PreferenceManager.setDefaultValues(this, R.xml.preference, false);
@@ -204,7 +207,7 @@ public class StacklrExpActivity
 		accountPickerCanceled_ = false;
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
 		//trace is saved as /sdcard/stacklr.trace
-		//		Debug.startMethodTracing("stacklr");
+
 
 		//TODO: load from file or savedInstanceState
 		lastLoadTime_ = 0;
@@ -246,6 +249,13 @@ public class StacklrExpActivity
 				groups_.add(new Group(name, null));
 			}
 		}
+		if(! "Shelf".equals(groups_.get(2).getName())){
+			//add is not supported?
+			groups_.add(2, new Group("Shelf", ""));
+		}
+		if(! "Later".equals(groups_.get(groups_.size()-1).getName())){
+			groups_.add(new Group("Later", ""));
+		}
 		//TODO: sync group(upload)
 		//---------------
 		// line based
@@ -283,6 +293,7 @@ public class StacklrExpActivity
 			}
 		}
 		long t10 = System.nanoTime();
+		Debug.stopMethodTracing();
 		
 		Log.d(TAG, "perf,1,"+t1);
 		Log.d(TAG, "perf,2,"+t2);
@@ -639,14 +650,17 @@ public class StacklrExpActivity
 						case R.id.radio_stock:
 							nextGroupId = STOCK;
 							break;
+						case R.id.radio_shelf:
+							nextGroupId = SHELF;
+							break;
 						case R.id.radio_history:
 							nextGroupId = HISTORY;
 							break;
 						case R.id.radio_later:
-							//3 days later
+							nextGroupId = LATER;
+							//3 days later in default
 							//updatedTime += 3*24*60*60*1000;
 							updatedTime = Long.valueOf(datelong.getText().toString());
-							nextGroupId = LATER;
 							break;
 						default:
 							break;

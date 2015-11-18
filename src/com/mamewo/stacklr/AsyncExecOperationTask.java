@@ -25,13 +25,17 @@ class AsyncExecOperationTask
 
 	@Override
 	protected void doInBackground()
-		throws IOException
 	{
 		//TODO: use batch?
 		//BatchRequest batch = client_.batch();
 		for(TasksRequest operation: lst_){
 			Log.d(TAG, "execute: " +operation.getClass().getName() + " " + operation.toString());
-			operation.execute();
+			try{
+				operation.execute();
+			}
+			catch(IOException e){
+				Log.d(TAG, "AsyncExecOperationTask", e);
+			}
 		}
 	}
 

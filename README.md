@@ -101,6 +101,7 @@ TODO
   * performance problem by commit b56b?
     * load local items using async task
       onCreate takes 718msec
+        use relative layout to reduce nested LinearLayout?
   * fix duplicate google task list is created
 * use gradle to build project and fetch libraries
 * add following groups as default

@@ -41,6 +41,11 @@
 		   android:layout_height="wrap_content"
 		   android:text="Stock"
 		   />
+      <RadioButton android:id="@+id/radio_shelf"
+		   android:layout_width="wrap_content"
+		   android:layout_height="wrap_content"
+		   android:text="Shelf"
+		   />
       <RadioButton android:id="@+id/radio_history"
 		   android:layout_width="wrap_content"
 		   android:layout_height="wrap_content"

@@ -46,7 +46,6 @@ public class ExpandableAdapter
 	private long lastModifiedTime_;
 	private long lastSavedTime_;
 
-	//long touch -> history or remove
 	public ExpandableAdapter(StacklrExpActivity activity, List<Group> groups){
 		activity_ = activity;
 		groups_ = groups;
@@ -493,8 +492,9 @@ public class ExpandableAdapter
 
 	public void stackLater(){
 		long now = System.currentTimeMillis();
-		for(int i = 0; i < children_.get(LATER).size(); i++){
-			Item item = children_.get(LATER).get(i);
+		int len = children_.get(LATER).size();
+		for(int i = 0; i < len; i++){
+			Item item = children_.get(LATER).get(len-1-i);
 			if(now < item.getLastTouchedTime()){
 				break;
 			}

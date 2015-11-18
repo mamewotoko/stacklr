@@ -9,13 +9,15 @@ public class Constant {
 	//order of groups
 	static protected final int TO_BUY = 0;
 	static protected final int STOCK = 1;
-	static protected final int HISTORY = 2;
-	static protected final int LATER = 3;
+	static protected final int SHELF = 2;
+	static protected final int HISTORY = 3;
+	static protected final int LATER = 4;
 
 	//move to preference
 	static boolean[] DEFAULT_GROUP_OPEN = {
 		true,
 		true,
+		false,
 		false,
 		false
 	};

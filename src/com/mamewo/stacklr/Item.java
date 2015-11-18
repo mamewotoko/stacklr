@@ -13,6 +13,7 @@ public class Item
 	private int[] NEXT_GROUP = new int[]{
 		STOCK, //from to buy
 		TO_BUY, //from stock, to buy(click) or history list(long)
+		TO_BUY, //shelf
 		TO_BUY, //from history
 		TO_BUY, //from later
 	};
