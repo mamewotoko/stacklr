@@ -29,6 +29,7 @@ abstract class CommonAsyncTask
 	@Override
 		protected void onPreExecute() {
 		super.onPreExecute();
+		Log.d(TAG, "onPreExecute: show progress " + this.getClass().getName());
 		//TODO: synchronize?
 		activity_.numAsyncTasks++;
 		activity_.showLoadingIcon();

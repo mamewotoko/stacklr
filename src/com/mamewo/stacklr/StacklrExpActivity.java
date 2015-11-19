@@ -82,7 +82,7 @@ public class StacklrExpActivity
 
 	//pref
 	private static final String PREF_ACCOUNT_NAME = "accountName";
-	private static final String PREF_LAST_LOADTASK_TIME = "lastLoadTaskTime";
+	private static final String PREF_LAST_LOAD_TIME = "lastLoadTime";
 
 	final HttpTransport httpTransport = AndroidHttp.newCompatibleTransport();
 	final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -142,31 +142,45 @@ public class StacklrExpActivity
 		return false;
 	}
 
-	private void refreshTasks(boolean loadGroups) {
+	private void refreshTasks(boolean loadGroups, boolean force) {
 		if(credential_.getSelectedAccountName() == null){
 			return;
 		}
+		setTitle("stacklr "+credential_.getSelectedAccountName());
+		adapter_.stackLater();
+
 		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
-		if((!wifiOnly) || isWifiAvaiable()){
-			//TODO: use string resource for title
-			setTitle("stacklr "+credential_.getSelectedAccountName());
-			boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, true);
-			adapter_.stackLater();
-			if(useTasks){
-				if(loadGroups){
-					AsyncLoadGroupTask.run(this);
-				}
-				else {
-					startLoadTask(false);
-				}
+
+		if(wifiOnly || !isWifiAvaiable()){
+			showMessage(getString(R.string.wifi_is_not_available));
+			return;
+		}
+		//TODO: use string resource for title
+		long now = System.currentTimeMillis();
+		if((!force) && now-lastLoadTime_ < LOAD_MIN_INTERVAL){
+			Log.d(TAG, "short interval return " + (now-lastLoadTime_));
+			return;
+		}
+		//TODO: set lastLoadTime_ only if load successed
+		lastLoadTime_ = now;
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		//TODO: latest item time in gtask
+		editor.putLong(PREF_LAST_LOAD_TIME, lastLoadTime_);
+		editor.commit();
+
+		boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, true);			
+		if(useTasks){
+			if(loadGroups){
+				AsyncLoadGroupTask.run(this);
 			}
-			boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
-			if(useCalendar){
-				AsyncLoadGoogleCalendarListTask.run(this);
+			else {
+				startLoadTask(false);
 			}
 		}
-		else {
-			showMessage(getString(R.string.wifi_is_not_available));
+		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
+		if(useCalendar){
+			AsyncLoadGoogleCalendarListTask.run(this);
 		}
 	}
 
@@ -207,7 +221,9 @@ public class StacklrExpActivity
 		//trace is saved as /sdcard/stacklr.trace
 
 		//TODO: load from file or savedInstanceState
-		lastLoadTime_ = 0;
+		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
+		lastLoadTime_ = settings.getLong(PREF_LAST_LOAD_TIME, 0);
+
 		long t3 = System.nanoTime();
 		getWindow().requestFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.main_expandable);
@@ -228,7 +244,6 @@ public class StacklrExpActivity
 		credential_ =
 		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR_READONLY));
 		
-		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
 		credential_.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 		//TODO: rename
 		service_ =
@@ -345,7 +360,7 @@ public class StacklrExpActivity
 						break;
 					}
 				}
-				refreshTasks(loadGroups);
+				refreshTasks(loadGroups, loadGroups);
 			}
 		}
 	}
@@ -402,7 +417,7 @@ public class StacklrExpActivity
 			break;
 		case R.id.reload_menu:
 			//TODO: display force load dialog
-			refreshTasks(true);
+			refreshTasks(true, true);
 			handled = true;
 			break;
 		case R.id.preference_menu:
@@ -695,13 +710,6 @@ public class StacklrExpActivity
 
 	//group is already loaded
 	public void startLoadTask(boolean force){
-		//want to define default value as property file...(external)
-
-		long now = System.currentTimeMillis();
-		//TODO: remove
-		if((!force) && now-lastLoadTime_ < LOAD_MIN_INTERVAL){
-			return;
-		}
 		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
 		if(wifiOnly && !isWifiAvaiable()){
 			showMessage(getString(R.string.wifi_is_not_available));
@@ -717,17 +725,7 @@ public class StacklrExpActivity
 			gidList.add(gid);
 		}
 		long lastTaskLoadTime = -1;
-		SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
-		if(!force){
-			lastTaskLoadTime = settings.getLong(PREF_LAST_LOADTASK_TIME, -1);
-		}
 		AsyncLoadTask.run(this, gidList, lastTaskLoadTime);
-
-		lastLoadTime_ = now;
-		SharedPreferences.Editor editor = settings.edit();
-		//TODO: latest item time in gtask
-		editor.putLong(PREF_LAST_LOADTASK_TIME, now);
-		editor.commit();
 	}
 	
 	public void showLoadingIcon(){
