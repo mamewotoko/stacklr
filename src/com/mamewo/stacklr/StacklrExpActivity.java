@@ -106,8 +106,6 @@ public class StacklrExpActivity
 
 	private ExpandableListView listView_;
 	private EditText targetEditText_;
-	//private View loadingIcon_;
-
 	public ExpandableAdapter adapter_;
 	private Intent speechIntent_;
 	private File datadir_;
@@ -200,7 +198,6 @@ public class StacklrExpActivity
 		long t1 = System.nanoTime();
 		super.onCreate(savedInstanceState);
 
-
 		//load default preferences from xml
 		PreferenceManager.setDefaultValues(this, R.xml.preference, false);
 		long t2 = System.nanoTime();
@@ -263,8 +260,6 @@ public class StacklrExpActivity
 		targetEditText_ = (EditText) findViewById(R.id.target_text_view);
 		targetEditText_.setOnEditorActionListener(this);
 		targetEditText_.setOnTouchListener(new MicClickListener(targetEditText_));
-		//loadingIcon_ = findViewById(R.id.loading_icon);
-
 		Button pushButton = (Button) findViewById(R.id.push_button);
 		pushButton.setOnClickListener(new PushButtonListener());
 
@@ -735,12 +730,10 @@ public class StacklrExpActivity
 	}
 	
 	public void showLoadingIcon(){
-		//loadingIcon_.setVisibility(View.VISIBLE);
-		setProgressBarIndeterminate(true);
+		setProgressBarIndeterminateVisibility(true);
 	}
 	public void hideLoadingIcon(){
-		//loadingIcon_.setVisibility(View.INVISIBLE);
-		setProgressBarIndeterminate(false);
+		setProgressBarIndeterminateVisibility(false);
 	}
 	
 	public com.google.api.services.tasks.Tasks getTasksService(){

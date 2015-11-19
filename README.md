@@ -49,10 +49,12 @@ ant debug
 
 TODO
 -----
+* progress item
+* add note
 * add preference
   * move checked item to next group option
   * use new style
-    https://www.google.com/design/spec/patterns/settings.html#settings-labels-secondary-text 
+    https://www.google.com/design/spec/patterns/settings.html#settings-labels-secondary-text
 * merge podplayer
 * add test using Espresso
 * log item transition
@@ -66,9 +68,6 @@ TODO
   * parent/child 
 * shopping mode (filter)
   food/article, not event
-* payment item
-  fill amount
-  add url
 * switch to other google account (for testing only?)
 * later
   * assign specific date (scheduled, move to calender)
