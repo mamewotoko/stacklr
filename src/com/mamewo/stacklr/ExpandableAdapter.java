@@ -81,7 +81,7 @@ public class ExpandableAdapter
 	 * @param lst list of gtask for each group
 	 */
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
-		List<TasksRequest> operationList = new ArrayList<TasksRequest>();
+		List<TasksRequest<?>> operationList = new ArrayList<TasksRequest<?>>();
 		com.google.api.services.tasks.Tasks client = activity_.getTasksService();
 		boolean removeCompleted = activity_.pref_.getBoolean(StacklrPreference.PREFKEY_REMOVE_COMPELTED_TASK, true);
 

@@ -5,18 +5,18 @@ import java.util.List;
 public class Util {
 
 	static
-	public<T> void insertItem(List<T> lst, T item, boolean ascending){
+	public<T extends Comparable<T>> void insertItem(List<T> lst, T item, boolean ascending){
 		insertItem(lst, item, 0, lst.size()-1, ascending);
 	}
 
 	static
-	public<T> void insertItem(List<T> lst, T item, int from, int to, boolean ascending){
+	public<T extends Comparable<T>> void insertItem(List<T> lst, T item, int from, int to, boolean ascending){
 		if(lst.size() == 0){
 			lst.add(item);
 		}
 		else {
 			int med = (from+to)/2;
-			int diff = ((Comparable)item).compareTo(lst.get(med));
+			int diff = item.compareTo(lst.get(med));
 			if(!ascending){
 				diff = -diff;
 			}

@@ -16,9 +16,9 @@ import android.util.Log;
 class AsyncExecOperationTask
 	extends CommonAsyncTask
 {
-	private List<TasksRequest> lst_;
+	private List<TasksRequest<?>> lst_;
 
-	public AsyncExecOperationTask(StacklrExpActivity activity, List<TasksRequest> lst) {
+	public AsyncExecOperationTask(StacklrExpActivity activity, List<TasksRequest<?>> lst) {
 		super(activity);
 		lst_ = lst;
 	}
@@ -29,7 +29,7 @@ class AsyncExecOperationTask
 		//TODO: use batch?
 		//BatchRequest batch = client_.batch();
 		int i = 0;
-		for(TasksRequest operation: lst_){
+		for(TasksRequest<?> operation: lst_){
 			Log.d(TAG, "execute: " +(i++)+ " " +operation.getClass().getName() + " " + operation.toString());
 			try{
 				operation.execute();
@@ -41,7 +41,7 @@ class AsyncExecOperationTask
 	}
 
 	static
-	public void run(StacklrExpActivity activity, List<TasksRequest> lst) {
+	public void run(StacklrExpActivity activity, List<TasksRequest<?>> lst) {
 		new AsyncExecOperationTask(activity, lst).execute();
 	}
 }

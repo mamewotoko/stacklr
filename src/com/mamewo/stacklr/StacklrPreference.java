@@ -30,7 +30,9 @@ public class StacklrPreference
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		pref_ = PreferenceManager.getDefaultSharedPreferences(this);
+		//TODO: unrecommended API
 		addPreferencesFromResource(R.xml.preference);
+		//TODO: unrecommended API
 		version_ = findPreference("version");
 		PackageInfo pi;
 		try {

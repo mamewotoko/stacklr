@@ -7,7 +7,7 @@ import com.google.api.client.util.DateTime;
 import static com.mamewo.stacklr.Constant.*;
 
 public class Item
-	implements Comparable
+	implements Comparable<Item>
 {
 	static final
 	private int[] NEXT_GROUP = new int[]{
@@ -184,12 +184,7 @@ public class Item
 	//ascending order of type
 	//descending order of time
 	@Override
-	public int compareTo(Object other){
-		Item item = (Item)other;
-		// int diff = type_ - item.type_;
-		// if(diff != 0){
-		// 	return diff;
-		// }
+	public int compareTo(Item item){
 		int typediff = type_ - item.type_;
 		if(typediff != 0){
 			return -typediff;

@@ -39,7 +39,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
 
-import android.os.Debug;
+//import android.os.Debug;
 import android.os.Handler;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -194,7 +194,7 @@ public class StacklrExpActivity
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Debug.startMethodTracing("stacklr");
+		//		Debug.startMethodTracing("stacklr");
 		long t1 = System.nanoTime();
 		super.onCreate(savedInstanceState);
 
@@ -289,7 +289,7 @@ public class StacklrExpActivity
 			}
 		}
 		long t10 = System.nanoTime();
-		Debug.stopMethodTracing();
+		//Debug.stopMethodTracing();
 		
 		Log.d(TAG, "perf,1,"+t1);
 		Log.d(TAG, "perf,2,"+t2);
@@ -453,6 +453,7 @@ public class StacklrExpActivity
 				break;
 			}
 			targetEditText_.setText(matches.get(0));
+			break;
 		default:
 			break;
 		}
