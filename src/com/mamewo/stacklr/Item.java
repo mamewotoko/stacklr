@@ -32,7 +32,7 @@ public class Item
 	static final
 	public int ITEM_TYPE_FOOD = 1;
 	static final
-	public int ITEM_TYPE_ARTICLE = 2;
+	public int ITEM_TYPE_ACTION_ITEM = 2;
 	static final
 	public int ITEM_TYPE_BOTTOM = 3;
 

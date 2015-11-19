@@ -31,7 +31,7 @@
     <string-array name="item_type">
       <item>Top</item>
       <item>Food</item>
-      <item>Article</item>
+      <item>Action Item</item>
       <item>Bottom</item>
     </string-array>
     

@@ -430,7 +430,7 @@ public class ExpandableAdapter
 		case Item.ITEM_TYPE_TOP:
 			color = Color.rgb(250, 175, 186);
 			break;
-		case Item.ITEM_TYPE_ARTICLE:
+		case Item.ITEM_TYPE_ACTION_ITEM:
 			color = Color.rgb(85, 183, 43);
 			break;
 		default:

@@ -49,25 +49,22 @@ ant debug
 
 TODO
 -----
-* progress item
 * add note
 * add preference
+  * color preference
   * move checked item to next group option
   * use new style
     https://www.google.com/design/spec/patterns/settings.html#settings-labels-secondary-text
-* merge podplayer
 * add test using Espresso
 * log item transition
   file
   local database
   to google calendar?
-* lib-project? (google task list data adapter)
-  * add to malarm
 * fork simple app project
   * use one task list
   * parent/child 
 * shopping mode (filter)
-  food/article, not event
+  food/items, not event,action item
 * switch to other google account (for testing only?)
 * later
   * assign specific date (scheduled, move to calender)
@@ -83,11 +80,11 @@ TODO
   food & item (to buy, stock)
   TODO once/repeat
 * items link to EC site
-  amazon (waiting/wish list/watch list..)
-    books
-    DVD
-  movies
-  feedly
+  * amazon (waiting/wish list/watch list..)
+    * books
+    * DVD
+  * movies
+  * feedly
 * recommend new item?
 * undo?
 * search item?
@@ -97,7 +94,8 @@ TODO
 * sync with google task
   * item corresponding google task is removed
 * bug
-  * performance problem by commit b56b?
+  * item with old google task id is not uploaded
+  * performance problem (by commit b56b?)
     * load local items using async task
       onCreate takes 718msec
         setContentView: 110msec
@@ -122,10 +120,6 @@ TODO
 * add sync config
 * add touch menu, which is just update timestamp (or push button for each item)
 * draw icon
-* add dialog to set item property
-   item type
-   button to select next group
-   color?
 * add licence file
 * add wording file and support multiple language
 * UI with Action bar
