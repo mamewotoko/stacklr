@@ -66,9 +66,6 @@ TODO
 * shopping mode (filter)
   food/items, not event,action item
 * switch to other google account (for testing only?)
-* later
-  * assign specific date (scheduled, move to calender)
-  * remind later(e.g. 3 days later)
 * checklist
   * e.g. daily routine
   * e.g. have wallet, phone, bag, note before going shopping (do before)

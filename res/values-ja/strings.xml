@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">stacklr</string>
+    
+    <!-- task error -->
+    <string name="error">Error</string>
+    <string name="error_format">[Error] %s</string>
+
+    <!-- preference -->
+    <string name="not_wifi_only">Wi-Fiが使えないときはモバイルネットワークを使う</string>
+    <string name="wifi_only">Wi-Fiのみ使う</string>
+    <string name="pref_wifi_only">Wi-Fiのみ使う</string>
+
+    <string name="use_google_tasks">使う</string>
+    <string name="do_not_use_google_tasks">使わない</string>
+    <string name="pref_use_google_tasks">Googleタスクを使う</string>
+
+    <string name="pref_remove_completed_gtask">完了したGoogleタスクを消す</string>
+
+    <string name="use_google_calendar">使う</string>
+    <string name="do_not_use_google_calendar">使わない</string>
+    <string name="pref_use_google_calendar">Googleカレンダーを使う</string>
+
+    <string name="pref_version">バージョン</string>
+    <string name="pref_author">作者: Takashi Masuyama</string>
+    <string name="pref_author_summary">mamewotoko@gmail.com</string>
+
+    <string name="wifi_is_not_available">Wi-Fiが使えません。</string>
+    
+    <!-- Item.ITEM_TYPE_XXX -->
+<!--
+    <string-array name="item_type">
+      <item>トップ</item>
+      <item>食べ物</item>
+      <item>アクションアイテム</item>
+      <item>ボトム</item>
+    </string-array>
+    
+    <string-array name="groups">
+      <item>買う物</item>
+      <item>ストック</item>
+      <item>棚</item>
+      <item>履歴</item>
+      <item>後で</item>
+    </string-array>
+-->
+</resources>
