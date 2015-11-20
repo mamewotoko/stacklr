@@ -536,13 +536,13 @@ public class StacklrExpActivity
 		//TODO: show diff date
 		picker.updateDate(year, month, date);
 
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which){
 					dialog.cancel();
 				}
 			});
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which){
 					DateFormat df = DateFormat.getDateInstance();
@@ -641,13 +641,13 @@ public class StacklrExpActivity
 				});
 
 			//TODO: use string resource
-			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+			builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(DialogInterface dialog, int which){
 						dialog.cancel();
 					}
 				});
-			builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(DialogInterface dialog, int which){
 						//TODO: move to specified group
@@ -684,7 +684,7 @@ public class StacklrExpActivity
 						dialog.dismiss();
 					}
 				});
-			builder.setNeutralButton("Remove", new DialogInterface.OnClickListener(){
+			builder.setNeutralButton(R.string.remove, new DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(DialogInterface dialog, int which){
 						//TODO: show confirm dialog?

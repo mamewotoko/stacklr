@@ -26,7 +26,13 @@
     <string name="pref_author_summary">mamewotoko@gmail.com</string>
 
     <string name="wifi_is_not_available">Wi-Fi is not avaiable</string>
+
+    <string name="menu_save">Save</string>
+    <string name="menu_reload">Reload</string>
+    <string name="menu_preference">Preference</string>
     
+    <string name="remove">Remove</string>
+
     <!-- Item.ITEM_TYPE_XXX -->
     <string-array name="item_type">
       <item>Top</item>
