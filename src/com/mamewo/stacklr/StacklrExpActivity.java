@@ -38,6 +38,7 @@ import android.accounts.AccountManager;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.ConnectionResult;
 import java.util.Collections;
+import java.util.Set;
 
 //import android.os.Debug;
 import android.os.Handler;
@@ -304,6 +305,14 @@ public class StacklrExpActivity
 			}
 		}
 		long t10 = System.nanoTime();
+		Intent intent = getIntent();
+		Set<String> categories = intent.getCategories();
+		Log.d(TAG, "onCreate check intent: "+intent+" "+categories);
+		//TODO: filtered by the 2nd filter
+		//TODO: just save, do not move stacklr UI to front
+		if("com.google.android.gm.action.AUTO_SEND".equals(intent.getAction())){
+			adapter_.pushToBuyAsText(intent.getStringExtra("android.intent.extra.TEXT"));
+		}
 		//Debug.stopMethodTracing();
 		
 		Log.d(TAG, "perf,1,"+t1);
@@ -388,14 +397,7 @@ public class StacklrExpActivity
 			if (itemname.isEmpty()) {
 				return;
 			}
-			Item existing = adapter_.search(itemname);
-			if(existing != null){
-				existing.setLastTouchedTime(System.currentTimeMillis());
-				adapter_.pushToBuy(existing);
-			}
-			else {
-				adapter_.pushToBuyList(itemname);
-			}
+			adapter_.pushToBuyAsText(itemname);
 			targetEditText_.setText("");
 		}
 	}
@@ -478,19 +480,11 @@ public class StacklrExpActivity
 	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 		if (actionId == EditorInfo.IME_ACTION_DONE
 			|| actionId == EditorInfo.IME_NULL) {
-			String item = v.getText().toString();
-			//search
-			if(item.length() == 0){
+			String itemname = v.getText().toString();
+			if(itemname.length() == 0){
 				return true;
 			}
-			Item existing = adapter_.search(item);
-			if(existing != null){
-				existing.setLastTouchedTime(System.currentTimeMillis());
-				adapter_.pushToBuy(existing);
-			}
-			else {
-				adapter_.pushToBuyList(item);
-			}
+			adapter_.pushToBuyAsText(itemname);
 			v.setText("");
 			return true;
 		}

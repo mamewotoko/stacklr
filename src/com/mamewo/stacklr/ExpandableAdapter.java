@@ -293,7 +293,7 @@ public class ExpandableAdapter
 		updated();
 	}
 
-	public Item search(String itemname){
+	private Item search(String itemname){
 		return name2Item_.get(itemname);
 	}
 
@@ -315,7 +315,7 @@ public class ExpandableAdapter
 		notifyDataSetChanged();
 	}
 
-	public void pushToBuyList(String items) {
+	public void pushToBuyAsText(String items) {
 		BufferedReader br = new BufferedReader(new StringReader(items));
 		String itemname;
 		try {
@@ -325,8 +325,15 @@ public class ExpandableAdapter
 					continue;
 				}
 				//TODO: find existing item
-				//TODO: if entered from text box
-				pushToBuy(new Item(itemname, null, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
+				Item existing = search(itemname);
+				if(existing != null){
+					existing.setLastTouchedTime(System.currentTimeMillis());
+					pushToBuy(existing);
+				}
+				else {
+					//TODO: if entered from text box
+					pushToBuy(new Item(itemname, null, System.currentTimeMillis(), Item.ITEM_TYPE_FOOD, TO_BUY));
+				}
 			}
 		} catch (IOException e) {
 			Log.d(TAG, "IOException", e);
