@@ -12,7 +12,7 @@ android:
 
 before_script:
         - android list sdk
-        - ls -1 /usr/local/android-sdk/extras/google/m2repository/com/google/android/gms/
+        - find /usr/local/android-sdk/extras/google/m2repository/com/google/android/gms/play-services-identity
 #        - mkdir libsrc
 #        - echo setup emulator
 #        - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:19"
