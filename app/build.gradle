@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
   //compileSdkVersion 'Google Inc.:Google APIs:8'
-  compileSdkVersion 23
+  compileSdkVersion 19
   buildToolsVersion '23.0.1'
 
   buildTypes {
@@ -39,6 +39,6 @@ dependencies {
   compile 'com.google.http-client:google-http-client-gson:1.19.0' exclude module: 'httpclient'
 
   compile 'com.opencsv:opencsv:3.7'  
-  compile 'com.google.apis:google-api-services-calendar:v3-rev170-1.21.0'
+  //compile 'com.google.apis:google-api-services-calendar:v3-rev170-1.21.0'
   compile 'com.google.code.gson:gson:2.6'
 }
