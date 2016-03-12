@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-  //compileSdkVersion 'Google Inc.:Google APIs:8'
   compileSdkVersion 19
   buildToolsVersion '23.0.1'
 

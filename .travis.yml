@@ -10,8 +10,8 @@ android:
     licences:
         - '.+'
 
-#before_script:
-#        - android list target
+before_script:
+        - android list sdk
 #        - mkdir libsrc
 #        - echo setup emulator
 #        - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:19"
