@@ -5,15 +5,15 @@ android:
         - android-19
         - extra-google-google_play_services
         - addon-google_apis-google-19
-        - extra-android-support
         - extra-android-m2repository
         - extra-google-m2repository
-    licences:
+#        - extra-android-support
+licences:
         - '.+'
 
-before_script:
-        - android list sdk
-        - find /usr/local/android-sdk/extras/google/m2repository/com/google/android/gms/play-services-identity
+#before_script:
+#        - android list sdk
+#        - find /usr/local/android-sdk/extras/google/m2repository/com/google/android/gms/play-services-identity
 #        - mkdir libsrc
 #        - echo setup emulator
 #        - echo no | android create avd --force -n test -t "Google Inc.:Google APIs:19"
