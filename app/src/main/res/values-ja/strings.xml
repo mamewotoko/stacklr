@@ -34,7 +34,21 @@
     <string name="remove">削除</string>
     <string name="date">日付け</string>
 
-    <!-- Item.ITEM_TYPE_XXX -->
+    <string-array name="item_type">
+      <item>Top</item>
+      <item>Food</item>
+      <item>Action Item</item>
+      <item>Bottom</item>
+    </string-array>
+    
+    <string-array name="groups">
+      <item>To buy list</item>
+      <item>Stock</item>
+      <item>Shelf</item>
+      <item>History</item>
+      <item>Later</item>
+    </string-array>
+
 <!--
     <string-array name="item_type">
       <item>トップ</item>

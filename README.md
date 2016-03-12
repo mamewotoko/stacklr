@@ -33,28 +33,24 @@ Functions
 
 Build
 -----
-* copy google-play-service_lib code into libsrc directory
+* build using gradlew
 ```bash
-mkdir libsrc
-cp $ANDROID_HOME/extras/google/google_play_services/libproject/google-play-services_lib libsrc/
-```
-* add libsrc/google-play-services_lib as library project
-```bash
-android update lib-project -p libsrc/google-play-services_lib -t android-16
-```
-* build using ant
-```bash
-ant debug
+./gradlew build
 ```
 
 TODO
 -----
+* move test code to proper path
 * add note
+* save status by onSaveInstanceState
+  * remove csv files
 * add preference
   * color preference
   * move checked item to next group option
   * use new style
     https://www.google.com/design/spec/patterns/settings.html#settings-labels-secondary-text
+* modify behavior when intent received from google app (by voice)
+  * just add data and hide UI?
 * add test using Espresso
 * log item transition
   file
