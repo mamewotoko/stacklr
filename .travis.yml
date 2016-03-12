@@ -7,7 +7,6 @@ android:
         - addon-google_apis-google-19
         - extra-android-m2repository
         - extra-google-m2repository
-#        - extra-android-support
 licences:
         - '.+'
 
@@ -21,9 +20,6 @@ licences:
 #        - android-wait-for-emulator
 #        - adb shell input keyevent 82 &
 
-#script:
-#        - cd test/stacklr_test
-#        - ant debug install clear test
-
+# TODO: test
 script:
         - ./gradlew build

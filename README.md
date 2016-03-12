@@ -175,4 +175,6 @@ android update lib-project -p . -t android-10
 * This code include copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
 
-Takashi Masuyama < mamewotoko@gmail.com >
+----
+Takashi Masuyama < mamewotoko@gmail.com >  
+http://mamewo.ddo.jp/
