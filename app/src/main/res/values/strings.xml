@@ -30,8 +30,9 @@
     <string name="menu_save">Save</string>
     <string name="menu_reload">Reload</string>
     <string name="menu_preference">Preference</string>
-    
+
     <string name="remove">Remove</string>
+    <string name="later_date">Date</string>
 
     <!-- Item.ITEM_TYPE_XXX -->
     <string-array name="item_type">

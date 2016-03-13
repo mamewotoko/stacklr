@@ -38,9 +38,18 @@ Build
 ./gradlew build
 ```
 
+Robotium Test
+-------------
+```bash
+./gradlew connectedAndroidTest
+```
+
 TODO
 -----
-* move test code to proper path
+* test
+    * skip account chooser
+* fix lint warinings
+* fix wifi only bug
 * add note
 * save status by onSaveInstanceState
   * remove csv files
