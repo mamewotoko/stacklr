@@ -152,7 +152,7 @@ public class StacklrExpActivity
 
 		boolean wifiOnly = pref_.getBoolean(StacklrPreference.PREFKEY_WIFI_ONLY, false);
 
-		if(wifiOnly || !isWifiAvaiable()){
+		if(wifiOnly && !isWifiAvaiable()){
 			showMessage(getString(R.string.wifi_is_not_available));
 			return;
 		}
