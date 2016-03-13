@@ -47,9 +47,8 @@ Robotium Test
 TODO
 -----
 * test
-    * skip account chooser
+    * skip/handle account chooser
 * fix lint warinings
-* fix wifi only bug
 * update readme to use gradle build script
 * add note
 * save status by onSaveInstanceState
