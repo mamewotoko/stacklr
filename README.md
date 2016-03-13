@@ -50,6 +50,7 @@ TODO
     * skip account chooser
 * fix lint warinings
 * fix wifi only bug
+* update readme to use gradle build script
 * add note
 * save status by onSaveInstanceState
   * remove csv files
@@ -167,20 +168,19 @@ MEMO
     https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/overview-summary.html
     - Sample code (mercurial repository)
       https://code.google.com/p/google-api-java-client.samples/
-
 * Add Google Play Services to Your Project
   https://developer.android.com/google/play-services/setup.html#Setup
 Tasks API Client Library for Java - Google APIs Client Library for Java — Google Developers
 * Class Tasks
 https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/com/google/api/services/tasks/Tasks.html
-
 * initialize android project
 ```bash
 android create project -n stacklr -p . -t android-10 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
 cd libsrc/google-play-services_lib
 android update lib-project -p . -t android-10
 ```
-
+* Robotium JavaDoc
+  http://robotium.googlecode.com/svn/doc/index.html
 * This code include copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
 
