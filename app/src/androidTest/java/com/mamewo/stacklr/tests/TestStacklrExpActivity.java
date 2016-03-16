@@ -3,6 +3,10 @@ package com.mamewo.stacklr.tests;
 import java.io.File;
 import android.test.ActivityInstrumentationTestCase2;
 
+import android.content.Intent;
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.common.AccountPicker;
+
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
 import com.robotium.solo.Solo.Config.ScreenshotFileType;
@@ -38,10 +42,21 @@ public class TestStacklrExpActivity
         super("com.mamewo.stacklr", StacklrExpActivity.class);
     }
 
+	// @Override
+	// public void onCreate(Bundle savedInstanceState) {
+	// 	super.onCraete(savedInstanceState);
+	// 	//select default account
+	// 	Intent googlePicker = AccountPicker.newChooseAccountIntent(null, null, new String[]{GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE}, true, null, null, null, null);
+	// 	//Utils.PICK_ACCOUNT_REQUEST
+	// 	startActivityForResult(googlePicker, 1234);
+	// 	//wait?
+	// }
+	
 	@Override
 	public void setUp(){
 		Log.d(TAG, "setup started");
 
+		
 		Config config = new Config();
 		config.screenshotFileType = ScreenshotFileType.PNG;
 		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();

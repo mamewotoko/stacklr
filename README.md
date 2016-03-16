@@ -1,4 +1,4 @@
-stacklr - Stack based shopping/TODO list ![icon](res/drawable-xhdpi/ic_launcher.png) [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
+stacklr - Stack based shopping/TODO list ![icon](app/src/main/res/drawable-xhdpi/ic_launcher.png) [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
 ========================================
 Concept
 -------
