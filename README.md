@@ -31,15 +31,24 @@ Functions
   * e.g. weekly TODO like clean my room
 * move history item to shopping list
 
-Build
------
-* build using gradlew
+Build(command line)
+-------------------
+1. create local.properties file which contains property ```sdk.dir=<path/to/android-sdk>```
+(or android create project with gradle option)
+2. build using gradlew
 ```bash
 ./gradlew build
 ```
+3. debug apk file is generated to ```app/build/outputs/apk/app-debug.apk```
+
+Build(Android Studio)
+---------------------
+select menu: Build -> Build APK
 
 Robotium Test
 -------------
+1. connect device or start emulator with Gooogle APIs image
+2. start testing
 ```bash
 ./gradlew connectedAndroidTest
 ```
@@ -47,7 +56,7 @@ Robotium Test
 TODO
 -----
 * test
-    * skip/handle account chooser
+    * skip/handle google account chooser
 * fix lint warinings
 * update readme to use gradle build script
 * add note
@@ -160,27 +169,18 @@ MEMO
   https://developers.google.com/google-apps/calendar/?hl=ja
 * Google Tasks API
   https://developers.google.com/google-apps/tasks/?hl=ja
-  - Authorizing with Google for REST APIs
+  * Authorizing with Google for REST APIs
     http://developer.android.com/google/auth/http-auth.html
   https://developers.google.com/accounts/docs/OAuth2
-  - Tasks API v1 (Rev. 41) 1.20.0
+  * Tasks API v1 (Rev. 41) 1.20.0
     https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/overview-summary.html
-    - Sample code (mercurial repository)
+    * Sample code (mercurial repository)
       https://code.google.com/p/google-api-java-client.samples/
-* Add Google Play Services to Your Project
-  https://developer.android.com/google/play-services/setup.html#Setup
-Tasks API Client Library for Java - Google APIs Client Library for Java — Google Developers
 * Class Tasks
 https://developers.google.com/resources/api-libraries/documentation/tasks/v1/java/latest/com/google/api/services/tasks/Tasks.html
-* initialize android project
-```bash
-android create project -n stacklr -p . -t android-10 -k com.mamewo.stacklr -a StacklrActivity --subprojects --library libsrc/google-play-services_lib
-cd libsrc/google-play-services_lib
-android update lib-project -p . -t android-10
-```
 * Robotium JavaDoc
   http://robotium.googlecode.com/svn/doc/index.html
-* This code include copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
+* This code includes copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
 
 ----
