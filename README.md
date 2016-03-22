@@ -33,9 +33,10 @@ Functions
 
 Build(command line)
 -------------------
-1. create local.properties file which contains property ```sdk.dir=<path/to/android-sdk>```
+1. install "Google Repository" using android sdk manager
+2. create local.properties file which contains property ```sdk.dir=<path/to/android-sdk>```
 (or android create project with gradle option)
-2. build using gradlew
+3. build using gradlew
 ```bash
 ./gradlew build
 ```
