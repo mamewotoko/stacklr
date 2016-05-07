@@ -4,6 +4,8 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import java.util.Map;
+import java.util.HashMap;
 
 import android.util.Log;
 
@@ -17,34 +19,50 @@ public class AsyncLoadGoogleCalendarListTask
 {
 	//one week before
 	static public DateTime ONE_WEEK_AGO = new DateTime(System.currentTimeMillis()-7*24*60*60*1000);
-	static public String CALENDAR_NAME = "stacklr";
-	private String calendarId_ = "primary";
-
-	public AsyncLoadGoogleCalendarListTask(StacklrExpActivity activity){
+	private String calendarName_;
+	private String calendarId_;
+	static private Map<String, String> calendarName2Id_ = new HashMap<String, String>();
+	private CalendarIdRunnable post_;
+	
+	public AsyncLoadGoogleCalendarListTask(StacklrExpActivity activity,
+										   String calendarName,
+										   CalendarIdRunnable post){
 		super(activity);
+		calendarName_ = calendarName;
+		post_ = post;
+		calendarId_ = null;
 	}
 	
 	@Override
 	protected void doInBackground()
 		throws IOException
 	{
+		//default
+		calendarId_ = "primary";
+
 		Log.d(TAG, "AsyncLoadGoogleCalendarListTask.doInBackground");
 		List<CalendarListEntry> l = calendarClient_
 			.calendarList()
 			.list()
 			.execute()
 			.getItems();
-		for(CalendarListEntry entry: l){
-			if(CALENDAR_NAME.equals(entry.getSummary())){
-				calendarId_ = entry.getId();
-				return;
+		synchronized(calendarName2Id_){
+			for(CalendarListEntry entry: l){
+				calendarName2Id_.put(entry.getSummary(), entry.getId());
 			}
 		}
 	}
 
 	static
-	public void run(StacklrExpActivity activity) {
-		new AsyncLoadGoogleCalendarListTask(activity).execute();
+	public void run(StacklrExpActivity activity,
+					String calendarName,
+					CalendarIdRunnable post) {
+		if(calendarName2Id_.size() > 0){
+			//TODO: post? (
+			post.run(calendarName, calendarName2Id_.get(calendarName));
+			return;
+		}
+		new AsyncLoadGoogleCalendarListTask(activity, calendarName, post).execute();
 	}
 
 	@Override
@@ -52,6 +70,13 @@ public class AsyncLoadGoogleCalendarListTask
 		super.onPostExecute(success);
 		//TODO: save calendarId
 		//XXX
-		AsyncLoadGoogleCalendarTask.run(activity_, calendarId_);
+		//AsyncLoadGoogleCalendarTask.run(activity_, calendarId_);
+		if(success){
+			post_.run(calendarName_, calendarName2Id_.get(calendarName_));
+		}
+	}
+
+	interface CalendarIdRunnable {
+		public void run(String calendarName, String calendarId);
 	}
 }

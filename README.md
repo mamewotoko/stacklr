@@ -37,9 +37,10 @@ Build(command line)
 2. create local.properties file which contains property ```sdk.dir=<path/to/android-sdk>```
 (or android create project with gradle option)
 3. build using gradlew
-```bash
-./gradlew build
-```
+
+    ```bash
+    ./gradlew build
+    ```
 3. debug apk file is generated to ```app/build/outputs/apk/app-debug.apk```
 
 Build(Android Studio)
@@ -50,14 +51,22 @@ Robotium Test
 -------------
 1. connect device or start emulator with Gooogle APIs image
 2. start testing
-```bash
-./gradlew connectedAndroidTest
-```
+
+    ```bash
+    ./gradlew connectedAndroidTest
+    ```
 
 TODO
 -----
+* log item transition to google calendar?
+  * add calendar name preference
+    * laod/save
+    * enable/disable logging
+* add stack of transition
+  * and implement undo (by shake)
+  * view stack (recent item)
 * test
-    * skip/handle google account chooser
+  * skip/handle google account chooser
 * fix lint warinings
 * update readme to use gradle build script
 * add note
@@ -71,10 +80,6 @@ TODO
 * modify behavior when intent received from google app (by voice)
   * just add data and hide UI?
 * add test using Espresso
-* log item transition
-  file
-  local database
-  to google calendar?
 * fork simple app project
   * use one task list
   * parent/child 
@@ -166,8 +171,8 @@ MEMO
 ----
 * Google Keep has no api yet
   http://stackoverflow.com/questions/19196238/is-there-a-google-keep-api
-* Google Calendar API
-  https://developers.google.com/google-apps/calendar/?hl=ja
+* Calendar API v3
+  https://developers.google.com/resources/api-libraries/documentation/calendar/v3/java/latest/
 * Google Tasks API
   https://developers.google.com/google-apps/tasks/?hl=ja
   * Authorizing with Google for REST APIs

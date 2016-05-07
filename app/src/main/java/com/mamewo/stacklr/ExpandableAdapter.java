@@ -274,6 +274,20 @@ public class ExpandableAdapter
  		Item item = children_.get(groupPosition).get(childPosition);
  		int nextGroupPosition = item.nextGroup();
 		moveToGroup(groupPosition, childPosition, nextGroupPosition);
+		if(TO_BUY == groupPosition){
+			final String eventName = item.getName();
+			//AsyncAddGoogleCalendarEvent.run();
+			//load id -> add item to calendar
+			//TOOD: add preference of calendar name
+			AsyncLoadGoogleCalendarListTask.run(activity_,
+												"stacklr_done",
+												new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable(){
+													@Override
+													public void run(String calendarName, String calendarId){
+														AsyncAddGoogleCalendarEvent.run(activity_, calendarId, eventName);
+													}
+												});
+		}
 	}
 
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){

@@ -36,16 +36,16 @@ public class AsyncLoadGoogleCalendarTask
 		//Log.d(TAG, "AsyncLoadGoogleCalendarTask.doInBackground: " + events_);
 	}
 
-	static
-		public void run(StacklrExpActivity activity, String calendarId) {
-		new AsyncLoadGoogleCalendarTask(activity, calendarId).execute();
-	}
-
 	@Override
 	protected void onPostExecute(Boolean success) {
 		super.onPostExecute(success);
 		if(events_ != null){
 			activity_.adapter_.pushCalendarEvents(events_);
 		}
+	}
+
+	static
+	public void run(StacklrExpActivity activity, String calendarId) {
+		new AsyncLoadGoogleCalendarTask(activity, calendarId).execute();
 	}
 }

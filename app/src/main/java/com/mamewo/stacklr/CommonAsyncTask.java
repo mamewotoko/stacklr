@@ -27,7 +27,7 @@ abstract class CommonAsyncTask
 	}
 
 	@Override
-		protected void onPreExecute() {
+	protected void onPreExecute() {
 		super.onPreExecute();
 		Log.d(TAG, "onPreExecute: show progress " + this.getClass().getName());
 		//TODO: synchronize?
@@ -36,7 +36,7 @@ abstract class CommonAsyncTask
 	}
 
 	@Override
-		protected final Boolean doInBackground(Void... ignored) {
+	protected final Boolean doInBackground(Void... ignored) {
 		try {
 			doInBackground();
 			return true;

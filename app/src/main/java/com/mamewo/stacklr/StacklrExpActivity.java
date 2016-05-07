@@ -81,6 +81,9 @@ public class StacklrExpActivity
 	final static
 	public String PACKAGE_NAME = StacklrExpActivity.class.getPackage().getName();
 
+	static public
+	final String CALENDAR_NAME = "stacklr";
+
 	//pref
 	private static final String PREF_ACCOUNT_NAME = "accountName";
 	private static final String PREF_LAST_LOAD_TIME = "lastLoadTime";
@@ -181,7 +184,15 @@ public class StacklrExpActivity
 		}
 		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
 		if(useCalendar){
-			AsyncLoadGoogleCalendarListTask.run(this);
+			//TODO: config calendar name
+			AsyncLoadGoogleCalendarListTask.run(this,
+												CALENDAR_NAME,
+												new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable() {
+													@Override
+													public void run(String calendarName, String calendarId){
+														AsyncLoadGoogleCalendarTask.run(StacklrExpActivity.this, calendarId);
+													}
+												});
 		}
 	}
 
