@@ -7,6 +7,7 @@ import com.google.api.services.calendar.Calendar;
 import java.util.Map;
 import java.util.HashMap;
 
+import android.widget.Toast;
 import android.util.Log;
 
 import static com.mamewo.stacklr.Constant.TAG;
@@ -57,9 +58,18 @@ public class AsyncLoadGoogleCalendarListTask
 	public void run(StacklrExpActivity activity,
 					String calendarName,
 					CalendarIdRunnable post) {
+		//use cache data
 		if(calendarName2Id_.size() > 0){
-			//TODO: post? (
-			post.run(calendarName, calendarName2Id_.get(calendarName));
+			String calendarId = calendarName2Id_.get(calendarName);
+			if(null != calendarId){
+				post.run(calendarName, calendarId);
+			}
+			else {
+				//calendar not found
+				String errorMessage = String.format(activity.getString(R.string.error_calendar_not_found),
+													calendarName);
+				Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
+			}
 			return;
 		}
 		new AsyncLoadGoogleCalendarListTask(activity, calendarName, post).execute();
@@ -72,7 +82,16 @@ public class AsyncLoadGoogleCalendarListTask
 		//XXX
 		//AsyncLoadGoogleCalendarTask.run(activity_, calendarId_);
 		if(success){
-			post_.run(calendarName_, calendarName2Id_.get(calendarName_));
+			String calendarId = calendarName2Id_.get(calendarName_);
+			if(null != calendarId){
+				post_.run(calendarName_, calendarName2Id_.get(calendarName_));
+			}
+			else {
+				//calendar not found
+				String errorMessage = String.format(activity_.getString(R.string.error_calendar_not_found),
+													calendarName_);
+				Toast.makeText(activity_, errorMessage, Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 

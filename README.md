@@ -62,9 +62,12 @@ TODO
   * add calendar name preference
     * laod/save
     * enable/disable logging
+  * add calendar if absent
+    * or list exising calendar
 * add stack of transition
   * and implement undo (by shake)
   * view stack (recent item)
+  * buffer not sent transitions
 * test
   * skip/handle google account chooser
 * fix lint warinings

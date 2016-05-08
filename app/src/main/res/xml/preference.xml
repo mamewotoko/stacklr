@@ -8,26 +8,65 @@
         android:summaryOn="@string/wifi_only"
         android:summaryOff="@string/not_wifi_only"
         android:title="@string/pref_wifi_only" />
-    <CheckBoxPreference
-        android:key="use_google_tasks"
-        android:defaultValue="true"
-        android:selectable="true"
-        android:summaryOn="@string/use_google_tasks"
-        android:summaryOff="@string/do_not_use_google_tasks"
-        android:title="@string/pref_use_google_tasks" />
-    <CheckBoxPreference
-	android:key="remove_completed_gtask"
-        android:defaultValue="true"
-	android:selectable="true"
-	android:title="@string/pref_remove_completed_gtask" />
-    <CheckBoxPreference
-        android:key="use_google_calendar"
-        android:defaultValue="true"
-        android:selectable="true"
-        android:summaryOn="@string/use_google_calendar"
-        android:summaryOff="@string/do_not_use_google_calendar"
-        android:title="@string/pref_use_google_calendar" />
 
+    <PreferenceCategory
+	android:title="@string/google_tasks_category">
+      <!-- load google task -->
+      <CheckBoxPreference
+          android:key="use_google_tasks"
+          android:defaultValue="true"
+          android:selectable="true"
+          android:summaryOn="@string/use_google_tasks"
+          android:summaryOff="@string/do_not_use_google_tasks"
+          android:title="@string/pref_use_google_tasks" />
+      <!-- TODO: sub item -->
+      <CheckBoxPreference
+	  android:key="remove_completed_gtask"
+          android:defaultValue="true"
+	  android:selectable="true"
+	  android:title="@string/pref_remove_completed_gtask" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+	android:title="@string/google_calendar_category">
+      <!-- calendar: laod / log (save) -->
+      <CheckBoxPreference
+        android:key="load_google_calendar"
+        android:defaultValue="false"
+        android:selectable="true"
+        android:title="@string/pref_load_google_calendar" />
+      <!--
+	  android:summaryOn="@string/summary_load_google_calendar"
+          android:summaryOff="@string/summary_do_not_load_google_calendar"
+      -->
+      
+      <EditTextPreference
+	  android:key="load_calendar_name"
+	  android:defaultValue="stacklr"
+	  android:dependency="load_google_calendar"
+	  android:title="@string/pref_calendar_name_to_load"
+	  />
+
+      <!-- calendar: laod / log (save) -->
+      <CheckBoxPreference
+        android:key="log_google_calendar"
+        android:defaultValue="false"
+        android:selectable="true"
+        android:title="@string/pref_log_google_calendar"
+	/>
+      <!--
+	  android:summaryOn="@string/summary_log_google_calendar"
+          android:summaryOff="@string/summary_do_not_log_google_calendar"
+      -->
+
+      <EditTextPreference
+	  android:key="log_calendar_name"
+	  android:defaultValue="stacklr_done"
+	  android:dependency="log_google_calendar"
+	  android:title="@string/pref_calendar_name_to_log"
+	  />
+    </PreferenceCategory>
+    
 <!-- move checked item to next group option -->
 <!--
     <CheckBoxPreference

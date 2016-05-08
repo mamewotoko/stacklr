@@ -11,16 +11,23 @@
     <string name="wifi_only">Use Wi-Fi only</string>
     <string name="pref_wifi_only">Use Wi-Fi only</string>
 
+    <string name="google_tasks_category">Google tasks</string>
     <string name="use_google_tasks">on</string>
     <string name="do_not_use_google_tasks">off</string>
     <string name="pref_use_google_tasks">Load google tasks</string>
-
     <string name="pref_remove_completed_gtask">Remove completed google tasks</string>
 
+    <string name="google_calendar_category">Google calendar</string>
     <string name="use_google_calendar">on</string>
     <string name="do_not_use_google_calendar">off</string>
-    <string name="pref_use_google_calendar">Load google calendar</string>
 
+    <string name="pref_load_google_calendar">Load google calendar</string>
+    <string name="pref_calendar_name_to_load">Calendar name to load</string>
+    <string name="pref_log_google_calendar">Log events to google calendar</string>
+    <string name="pref_calendar_name_to_log">Calendar name to log</string>
+
+    <string name="error_calendar_not_found">Google calendar: %1$s is not found</string>
+    
     <string name="pref_version">Version</string>
     <string name="pref_author">Author: Takashi Masuyama</string>
     <string name="pref_author_summary">mamewotoko@gmail.com</string>

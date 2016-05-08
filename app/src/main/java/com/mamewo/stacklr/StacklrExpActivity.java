@@ -182,17 +182,20 @@ public class StacklrExpActivity
 				startLoadTask(false);
 			}
 		}
-		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, true);
-		if(useCalendar){
-			//TODO: config calendar name
-			AsyncLoadGoogleCalendarListTask.run(this,
-												CALENDAR_NAME,
-												new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable() {
-													@Override
-													public void run(String calendarName, String calendarId){
-														AsyncLoadGoogleCalendarTask.run(StacklrExpActivity.this, calendarId);
-													}
-												});
+		boolean loadCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_LOAD_CALENDAR, true);
+		if(loadCalendar){
+			String calendarName = pref_.getString(StacklrPreference.PREFKEY_LOAD_CALENDAR_NAME,
+												  StacklrPreference.DEFAULT_LOAD_CALENDAR_NAME);
+			if(!calendarName.isEmpty()){
+				AsyncLoadGoogleCalendarListTask.run(this,
+													calendarName,
+													new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable() {
+														@Override
+														public void run(String calendarName, String calendarId){
+															AsyncLoadGoogleCalendarTask.run(StacklrExpActivity.this, calendarId);
+														}
+													});
+			}
 		}
 	}
 
@@ -363,9 +366,9 @@ public class StacklrExpActivity
 	protected void onResume() {
 		super.onResume();
 		boolean useTasks = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_TASKS, false);
-		boolean useCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_USE_GOOGLE_CALENDAR, false);
+		boolean loadCalendar = pref_.getBoolean(StacklrPreference.PREFKEY_LOAD_CALENDAR, false);
 	
-		if ((useTasks || useCalendar) && checkGooglePlayServicesAvailable()) {
+		if ((useTasks || loadCalendar) && checkGooglePlayServicesAvailable()) {
 			// check if there is already an account selected
 			if (credential_.getSelectedAccountName() == null && (!accountPickerCanceled_)) {
 				// ask user to choose account

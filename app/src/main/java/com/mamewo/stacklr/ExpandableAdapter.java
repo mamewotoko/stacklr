@@ -274,19 +274,23 @@ public class ExpandableAdapter
  		Item item = children_.get(groupPosition).get(childPosition);
  		int nextGroupPosition = item.nextGroup();
 		moveToGroup(groupPosition, childPosition, nextGroupPosition);
-		if(TO_BUY == groupPosition){
-			final String eventName = item.getName();
-			//AsyncAddGoogleCalendarEvent.run();
-			//load id -> add item to calendar
-			//TOOD: add preference of calendar name
-			AsyncLoadGoogleCalendarListTask.run(activity_,
-												"stacklr_done",
-												new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable(){
-													@Override
-													public void run(String calendarName, String calendarId){
-														AsyncAddGoogleCalendarEvent.run(activity_, calendarId, eventName);
-													}
-												});
+		if(activity_.pref_.getBoolean(StacklrPreference.PREFKEY_LOG_CALENDAR,
+									  StacklrPreference.DEFAULT_LOG_CALENDAR)) {
+			if(TO_BUY == groupPosition){
+				final String eventName = item.getName();
+				   //AsyncAddGoogleCalendarEvent.run();
+				   //load id -> add item to calendar
+				   //TOOD: add preference of calendar name
+				AsyncLoadGoogleCalendarListTask.CalendarIdRunnable post = new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable(){
+						@Override
+						public void run(String calendarName, String calendarId){
+							AsyncAddGoogleCalendarEvent.run(activity_, calendarId, eventName);
+						}
+					};
+				String calendarName = activity_.pref_.getString(StacklrPreference.PREFKEY_LOG_CALENDAR_NAME,
+													  StacklrPreference.DEFAULT_LOG_CALENDAR_NAME);
+				AsyncLoadGoogleCalendarListTask.run(activity_, calendarName, post);
+			}
 		}
 	}
 

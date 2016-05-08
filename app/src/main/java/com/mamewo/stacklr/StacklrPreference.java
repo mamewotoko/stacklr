@@ -14,15 +14,30 @@ public class StacklrPreference
 			   //View.OnClickListener,
 			   //OnSharedPreferenceChangeListener
 {
-	//TODO: move to strings.xml?
+	//TODO: move to strings.xml to assign id?
 	static final
 	public String PREFKEY_WIFI_ONLY = "wify_only";
 	static final
 	public String PREFKEY_USE_GOOGLE_TASKS = "use_google_tasks";
 	static final
-	public String PREFKEY_USE_GOOGLE_CALENDAR = "use_google_calendar";
-	static final
 	public String PREFKEY_REMOVE_COMPELTED_TASK = "remove_completed_gtask";
+	static final
+	public String PREFKEY_LOAD_CALENDAR = "load_google_calendar";
+	static final
+	public boolean DEFAULT_LOAD_CALENDAR = false;
+	static final
+	public String PREFKEY_LOAD_CALENDAR_NAME = "load_calendar_name";
+	static final
+	public String DEFAULT_LOAD_CALENDAR_NAME = "stacklr";
+	static final
+	public String PREFKEY_LOG_CALENDAR = "log_google_calendar";
+	static final
+	public boolean DEFAULT_LOG_CALENDAR = false;
+	static final
+	public String PREFKEY_LOG_CALENDAR_NAME = "log_calendar_name";
+	static final
+	public String DEFAULT_LOG_CALENDAR_NAME = "stacklr_done";
+
 	private SharedPreferences pref_;
 	private Preference version_;
 
