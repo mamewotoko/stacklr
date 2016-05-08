@@ -11,15 +11,20 @@
     <string name="wifi_only">Wi-Fiのみ使う</string>
     <string name="pref_wifi_only">Wi-Fiのみ使う</string>
 
+    <string name="google_tasks_category">Googleタスク</string>
     <string name="use_google_tasks">使う</string>
     <string name="do_not_use_google_tasks">使わない</string>
     <string name="pref_use_google_tasks">Googleタスクを使う</string>
+    <string name="pref_remove_completed_gtask">完了したタスクを削除する</string>
 
-    <string name="pref_remove_completed_gtask">完了したGoogleタスクを消す</string>
+    <string name="google_calendar_category">Googleカレンダー</string>
 
-    <string name="use_google_calendar">使う</string>
-    <string name="do_not_use_google_calendar">使わない</string>
-    <string name="pref_use_google_calendar">Googleカレンダーを使う</string>
+    <string name="pref_load_google_calendar">カレンダーを読み込む</string>
+    <string name="pref_calendar_name_to_load">読み込むカレンダーの名前</string>
+    <string name="pref_log_google_calendar">完了したイベントを記録する</string>
+    <string name="pref_calendar_name_to_log">記録するカレンダーの名前</string>
+
+    <string name="error_calendar_not_found">Googleカレンダー「%1$s」は見つかりません。</string>
 
     <string name="pref_version">バージョン</string>
     <string name="pref_author">作者: Takashi Masuyama</string>
@@ -32,7 +37,7 @@
     <string name="menu_preference">設定</string>
 
     <string name="remove">削除</string>
-    <string name="date">日付け</string>
+    <string name="later_date">日付</string>
 
     <string-array name="item_type">
       <item>Top</item>

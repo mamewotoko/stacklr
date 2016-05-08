@@ -64,6 +64,8 @@ TODO
     * enable/disable logging
   * add calendar if absent
     * or list exising calendar
+    * add ui to not log event
+      * eg. canceled event
 * add stack of transition
   * and implement undo (by shake)
   * view stack (recent item)
