@@ -5,14 +5,13 @@ import android.preference.PreferenceActivity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 public class StacklrPreference
 	extends PreferenceActivity
-			//implements OnPreferenceClickListener
-			   //View.OnClickListener,
-			   //OnSharedPreferenceChangeListener
+	implements OnSharedPreferenceChangeListener
 {
 	//TODO: move to strings.xml to assign id?
 	static final
@@ -20,7 +19,7 @@ public class StacklrPreference
 	static final
 	public String PREFKEY_USE_GOOGLE_TASKS = "use_google_tasks";
 	static final
-	public String PREFKEY_REMOVE_COMPELTED_TASK = "remove_completed_gtask";
+	public String PREFKEY_REMOVE_COMPLETED_TASK = "remove_completed_gtask";
 	static final
 	public String PREFKEY_LOAD_CALENDAR = "load_google_calendar";
 	static final
@@ -58,5 +57,29 @@ public class StacklrPreference
 			version_.setSummary("unknown");
 		}
 	}
-}
 
+	@Override
+	protected void onResume(){
+		super.onResume();
+		pref_.registerOnSharedPreferenceChangeListener(this);
+		updateSummary(pref_);
+	}
+
+	@Override
+	protected void onPause(){
+		super.onPause();
+		pref_.unregisterOnSharedPreferenceChangeListener(this);
+	}
+	
+	private void updateSummary(SharedPreferences sharedPreferences){
+		findPreference(PREFKEY_LOAD_CALENDAR_NAME).setSummary(sharedPreferences.getString(PREFKEY_LOAD_CALENDAR_NAME,
+																						  DEFAULT_LOAD_CALENDAR_NAME));
+        findPreference(PREFKEY_LOG_CALENDAR_NAME).setSummary(sharedPreferences.getString(PREFKEY_LOG_CALENDAR_NAME,
+																						 DEFAULT_LOG_CALENDAR_NAME));
+	}
+	
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		updateSummary(sharedPreferences);
+    }  
+}

@@ -83,7 +83,7 @@ public class ExpandableAdapter
 	public void merge(List<List<com.google.api.services.tasks.model.Task>> lst){
 		List<TasksRequest<?>> operationList = new ArrayList<TasksRequest<?>>();
 		com.google.api.services.tasks.Tasks client = activity_.getTasksService();
-		boolean removeCompleted = activity_.pref_.getBoolean(StacklrPreference.PREFKEY_REMOVE_COMPELTED_TASK, true);
+		boolean removeCompleted = activity_.pref_.getBoolean(StacklrPreference.PREFKEY_REMOVE_COMPLETED_TASK, true);
 
 		//TODO: lock?
 		//remove/move duplicate old items
