@@ -427,8 +427,13 @@ public class StacklrExpActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		boolean handled = false;
 		switch (item.getItemId()) {
-		case R.id.save_menu:
-			adapter_.save();
+		// case R.id.save_menu:
+		// 	adapter_.save();
+		// 	handled = true;
+		// 	break;
+		case R.id.undo_menu:
+			Log.d(TAG, "undo menu selected");
+			adapter_.undo();
 			handled = true;
 			break;
 		case R.id.reload_menu:

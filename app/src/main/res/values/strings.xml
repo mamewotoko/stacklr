@@ -32,7 +32,10 @@
 
     <string name="wifi_is_not_available">Wi-Fi is not avaiable</string>
 
-    <string name="menu_save">Save</string>
+    <!--
+	<string name="menu_save">Save</string>
+    -->
+    <string name="menu_undo">Undo</string>
     <string name="menu_reload">Reload</string>
     <string name="menu_preference">Preference</string>
 

@@ -45,12 +45,14 @@ public class ExpandableAdapter
 	private StacklrExpActivity activity_;
 	private long lastModifiedTime_;
 	private long lastSavedTime_;
+	private TransitionStack history_;
 
 	public ExpandableAdapter(StacklrExpActivity activity, List<Group> groups){
 		activity_ = activity;
 		groups_ = groups;
 		children_ = new LinkedList<List<Item>>();
 		storageList_ = new LinkedList<ItemStorage>();
+		history_ = new TransitionStack();
 		name2Item_ = new HashMap<String, Item>();
 		File datadir = activity_.getDataDir();
 		for (int i = 0; i < groups_.size(); i++) {
@@ -299,8 +301,9 @@ public class ExpandableAdapter
 	}
 
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition, long updatedTime){
-		Log.d(TAG, "moveToGroup " + groupPosition + " "+childPosition + " " + nextGroupPosition);
+		//Log.d(TAG, "moveToGroup " + groupPosition + " "+childPosition + " " + nextGroupPosition);
 		Item item = children_.get(groupPosition).remove(childPosition);
+		history_.push(item, groupPosition, nextGroupPosition, item.getLastTouchedTime());
 		item.setGroup(nextGroupPosition);
 		if(updatedTime > 0){
 			item.setLastTouchedTime(updatedTime);
@@ -534,5 +537,27 @@ public class ExpandableAdapter
 			}
 			pushToBuy(item);			
 		}
+	}
+
+	public TransitionStack getTransitionStack(){
+		return history_;
+	}
+
+	public void undo(){
+		if(0 == history_.size()){
+			return;
+		}
+		TransitionStack.Transition orig = history_.remove(0);
+		//
+		if(!children_.get(orig.getTo()).remove(orig.getItem())){
+			return;
+		}
+		//assert oldItem == orig.getItem()
+		Item item = orig.getItem();
+		item.setLastTouchedTime(orig.getOrigTime());
+		List<Item> lst = children_.get(orig.getFrom());
+		Util.insertItem(lst, item, ASCENDING);
+		updated();
+		notifyDataSetChanged();
 	}
 }

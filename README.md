@@ -58,21 +58,16 @@ Robotium Test
 
 TODO
 -----
-* log item transition to google calendar?
-  * add calendar name preference
-    * laod/save
-    * enable/disable logging
-  * add calendar if absent
+* log item transition to google calendar
+  * add calendar if absent?
     * or list exising calendar
-    * add ui to not log event
-      * eg. canceled event
+  * add ui to not log event
+    * eg. canceled event (not done event)
 * add stack of transition
-  * and implement undo (by shake)
   * view stack (recent item)
-  * buffer not sent transitions
+  * buffer transitions which is not log to google calendar
 * test
   * skip/handle google account chooser
-* fix lint warinings
 * update readme to use gradle build script
 * add note
 * save status by onSaveInstanceState
@@ -106,7 +101,6 @@ TODO
     * books
     * DVD
   * movies
-  * feedly
 * recommend new item?
 * undo?
 * search item?
