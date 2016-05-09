@@ -257,7 +257,7 @@ public class StacklrExpActivity
 		//---------------
 		//gtasks & google calendar
 		credential_ =
-		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR_READONLY));
+		 	GoogleAccountCredential.usingOAuth2(this, Arrays.asList(TasksScopes.TASKS, CalendarScopes.CALENDAR));
 		
 		credential_.setSelectedAccountName(settings.getString(PREF_ACCOUNT_NAME, null));
 		//TODO: rename
