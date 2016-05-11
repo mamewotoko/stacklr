@@ -25,10 +25,12 @@ Functions
    bought item but not consumed
 * move stock to shopping list
    no stock
-* upload to google task
-* load google calendar (named "stacklr" or primary calender if no stacklr calendar exists)
-  * e.g. list recorded TV shows
-  * e.g. weekly TODO like clean my room
+* load/save google calendar
+  * upload to google task
+  * load google calendar (named "stacklr" or primary calender if no stacklr calendar exists)
+    * e.g. list recorded TV shows
+    * e.g. weekly TODO like clean my room
+![load/save figure](doc/stacklr_sync.svg)
 * move history item to shopping list
 
 Build(command line)
@@ -63,13 +65,17 @@ TODO
     * or list exising calendar
   * add ui to not log event
     * eg. canceled event (not done event)
-* add stack of transition
-  * view stack (recent item)
-  * buffer transitions which is not log to google calendar
+  * view transition stack (recent item)
+    * select undo item
+  * buffer transitions which is not log to google calendar  
+* use as memo tool (as new app?)
+  * tab ui to switch
+  * customizable group?
+  * e.g. add songs to sing at next karaoke party?
+  * e.g. copy to playlist of music player app?
 * test
   * skip/handle google account chooser
-* update readme to use gradle build script
-* add note
+* add note of google task for each item
 * save status by onSaveInstanceState
   * remove csv files
 * add preference
