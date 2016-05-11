@@ -30,7 +30,7 @@ Functions
   * load google calendar (named "stacklr" or primary calender if no stacklr calendar exists)
     * e.g. list recorded TV shows
     * e.g. weekly TODO like clean my room
-![load/save figure](doc/stacklr_sync.svg)
+![load/save figure](doc/stacklr_sync.png)
 * move history item to shopping list
 
 Build(command line)
