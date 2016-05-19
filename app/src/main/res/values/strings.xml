@@ -41,6 +41,7 @@
 
     <string name="remove">Remove</string>
     <string name="later_date">Date</string>
+    <string name="checkbox_write_to_calendar">write to google calendar</string>
 
     <!-- Item.ITEM_TYPE_XXX -->
     <string-array name="item_type">

@@ -116,6 +116,11 @@ TODO
 * sync with google task
   * item corresponding google task is removed
 * bug
+  * long click item
+    -> later
+    -> date
+    -> cancel
+    then, displayed date is changed, but should be current time
   * item with old google task id is not uploaded
   * performance problem (by commit b56b?)
     * load local items using async task

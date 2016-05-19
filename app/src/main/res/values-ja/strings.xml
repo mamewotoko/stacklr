@@ -41,6 +41,7 @@
 
     <string name="remove">削除</string>
     <string name="later_date">日付</string>
+    <string name="checkbox_write_to_calendar">Google calendarに書き込む</string>
 
     <string-array name="item_type">
       <item>Top</item>

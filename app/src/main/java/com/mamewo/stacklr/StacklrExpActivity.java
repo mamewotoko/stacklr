@@ -56,6 +56,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import android.widget.DatePicker;
+import android.widget.CheckBox;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -578,7 +579,7 @@ public class StacklrExpActivity
 		@Override
 		public boolean onChildClick(ExpandableListView parent, View v,
 									int groupPosition, int childPosition, long id) {
-			Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
+			//Log.d(TAG, "childClicked " + groupPosition + " " + childPosition);
 			adapter_.moveToNextGroup(groupPosition, childPosition);
 			return true;
 		}
@@ -611,7 +612,8 @@ public class StacklrExpActivity
 
 			final Spinner spinner = (Spinner)contentView.findViewById(R.id.item_dialog_type);
 			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(StacklrExpActivity.this,
-																				 R.array.item_type, android.R.layout.simple_spinner_item);
+																				 R.array.item_type,
+																				 android.R.layout.simple_spinner_item);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			spinner.setAdapter(adapter);
 			spinner.setSelection(item.getType());
@@ -626,6 +628,17 @@ public class StacklrExpActivity
 
 			long now = System.currentTimeMillis();
 			setLaterTime(now, datetext, datelong);
+
+			final CheckBox checkWriteCalendar = (CheckBox)contentView.findViewById(R.id.item_write_to_calendar);
+			if(pref_.getBoolean(StacklrPreference.PREFKEY_LOG_CALENDAR,
+								StacklrPreference.DEFAULT_LOG_CALENDAR)) {
+				checkWriteCalendar.setChecked(groupPosition == TO_BUY);
+				checkWriteCalendar.setEnabled(true);
+			}
+			else {
+				checkWriteCalendar.setChecked(false);
+				checkWriteCalendar.setEnabled(false);
+			}
 
 			radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() 
 				{
@@ -692,8 +705,7 @@ public class StacklrExpActivity
 						}
 						//
 						item.setType(spinner.getSelectedItemPosition());
-						//TODO: if moved
-						adapter_.moveToGroup(groupPosition, childPosition, nextGroupId, updatedTime);
+						adapter_.moveToGroup(groupPosition, childPosition, nextGroupId, updatedTime, checkWriteCalendar.isChecked());
 						dialog.dismiss();
 					}
 				});
