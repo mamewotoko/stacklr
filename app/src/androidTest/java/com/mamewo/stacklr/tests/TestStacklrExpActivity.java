@@ -7,9 +7,10 @@ import android.content.Intent;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.AccountPicker;
 
+import com.squareup.spoon.Spoon;
+
 import com.robotium.solo.Solo;
 import com.robotium.solo.Solo.Config;
-import com.robotium.solo.Solo.Config.ScreenshotFileType;
 import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.Smoke;
@@ -55,13 +56,8 @@ public class TestStacklrExpActivity
 	@Override
 	public void setUp(){
 		Log.d(TAG, "setup started");
-
 		
 		Config config = new Config();
-		config.screenshotFileType = ScreenshotFileType.PNG;
-		config.screenshotSavePath = new File(Environment.getExternalStorageDirectory(), "Robotium-Screenshots").getPath();
-		config.shouldScroll = false;
-
 		solo_ = new Solo(getInstrumentation(), config, getActivity());
 	}
 	
@@ -96,9 +92,8 @@ public class TestStacklrExpActivity
 		assertTrue("item name", label.startsWith(egg+" "));
 		String afterText = solo_.getEditText(0).getText().toString();
 		assertTrue("after text", "".equals(afterText));
-		Log.d(TAG, "takeScreenshot: testAddNewItem");
-		solo_.takeScreenshot("testAddNewItem");
-		Log.d(TAG, "takeScreenshot: last sleep");
+		Log.d(TAG, "screenshot: testAddNewItem");
+		Spoon.screenshot(getActivity(), "add_new_item");
 	}
 
 	@Smoke
@@ -138,9 +133,8 @@ public class TestStacklrExpActivity
 		String afterText = solo_.getEditText(0).getText().toString();
 
 		assertTrue("after text", "".equals(afterText));
-		Log.d(TAG, "takeScreenshot: testAddNewItem");
-		solo_.takeScreenshot("testAddNewItem");
-		Log.d(TAG, "takeScreenshot: last sleep");
+		Log.d(TAG, "screenshoth: testAddNewItem");
+		Spoon.screenshot(getActivity(), "click_first_item");
 	}
 
 	@Smoke
@@ -155,7 +149,6 @@ public class TestStacklrExpActivity
 		//TODO: assert that first item goto "Stock" group
 		assertTrue("dilogOpen", solo_.waitForDialogToOpen(1000));
 		//TODO:assert
-		solo_.takeScreenshot("testLongClickFirstChild");
+		Spoon.screenshot(getActivity(), "long_click_first_item");
 	}
-
 }

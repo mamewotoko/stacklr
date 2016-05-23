@@ -1,5 +1,16 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.squareup.spoon:spoon-runner:1.2.0'
+    classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.0'
+  }
+}
+
 //apply plugin: 'com.android.application'
 apply plugin: 'android'
+apply plugin: 'spoon'
 
 android {
   compileSdkVersion 19
@@ -40,5 +51,7 @@ dependencies {
   compile 'com.opencsv:opencsv:3.7'  
   compile 'com.google.code.gson:gson:2.6'
 
-  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.3.1'
+  //  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.3.1'
+  androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.5.2'
+  androidTestCompile 'com.squareup.spoon:spoon-client:1.1.0'
 }
