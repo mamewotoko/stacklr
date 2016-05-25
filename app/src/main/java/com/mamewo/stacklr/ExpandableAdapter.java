@@ -279,25 +279,7 @@ public class ExpandableAdapter
 	public void moveToNextGroup(int groupPosition, int childPosition, boolean writeCalendar){
  		Item item = children_.get(groupPosition).get(childPosition);
  		int nextGroupPosition = item.nextGroup();
-		moveToGroup(groupPosition, childPosition, nextGroupPosition);
-		if(activity_.pref_.getBoolean(StacklrPreference.PREFKEY_LOG_CALENDAR,
-									  StacklrPreference.DEFAULT_LOG_CALENDAR)) {
-			if(writeCalendar){
-				final String eventName = item.getName();
-				//AsyncAddGoogleCalendarEvent.run();
-				//load id -> add item to calendar
-				//TOOD: add preference of calendar name
-				AsyncLoadGoogleCalendarListTask.CalendarIdRunnable post = new AsyncLoadGoogleCalendarListTask.CalendarIdRunnable(){
-						@Override
-						public void run(String calendarName, String calendarId){
-							AsyncAddGoogleCalendarEvent.run(activity_, calendarId, eventName);
-						}
-					};
-				String calendarName = activity_.pref_.getString(StacklrPreference.PREFKEY_LOG_CALENDAR_NAME,
-																StacklrPreference.DEFAULT_LOG_CALENDAR_NAME);
-				AsyncLoadGoogleCalendarListTask.run(activity_, calendarName, post);
-			}
-		}
+		moveToGroup(groupPosition, childPosition, nextGroupPosition, System.currentTimeMillis(), writeCalendar);
 	}
 
 	public void moveToGroup(int groupPosition, int childPosition, int nextGroupPosition){
@@ -324,7 +306,6 @@ public class ExpandableAdapter
 									  StacklrPreference.DEFAULT_LOG_CALENDAR)) {
 			if(writeCalendar){
 				final String eventName = item.getName();
-				//AsyncAddGoogleCalendarEvent.run();
 				//load id -> add item to calendar
 				//TOOD: add preference of calendar name
 				AsyncLoadGoogleCalendarListTask.CalendarIdRunnable post =
@@ -335,7 +316,7 @@ public class ExpandableAdapter
 						}
 					};
 				String calendarName = activity_.pref_.getString(StacklrPreference.PREFKEY_LOG_CALENDAR_NAME,
-													  StacklrPreference.DEFAULT_LOG_CALENDAR_NAME);
+																StacklrPreference.DEFAULT_LOG_CALENDAR_NAME);
 				AsyncLoadGoogleCalendarListTask.run(activity_, calendarName, post);
 			}
 		}
