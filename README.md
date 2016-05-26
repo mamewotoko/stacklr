@@ -75,6 +75,9 @@ TODO
   * e.g. copy to playlist of music player app?
 * test
   * skip/handle google account chooser
+  * prepare test environment
+    * manymo looks good, but not free
+    * android emulator with google api running on sakura vps is very slow (android app dies)
 * add note of google task for each item
 * save status by onSaveInstanceState
   * remove csv files
