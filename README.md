@@ -201,7 +201,13 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
   http://robotium.googlecode.com/svn/doc/index.html
 * This code includes copies of [tasks-android-sample](https://code.google.com/p/google-api-java-client.samples/)
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
-
+* release build with sign
+  1. uncomment release configuration in app/build.gradle
+  2. pass paramters as environment variables 
+ 
+    ```
+    KEYSTORE=/path/to/keystore KEY_ALIAS=ALIAS_NAME KEYSTORE_PASSWORD=xxxx KEY_PASSWORD=yyyyy ./gradlew assembleRelease
+    ```
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://mamewo.ddo.jp/

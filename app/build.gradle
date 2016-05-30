@@ -12,14 +12,25 @@ buildscript {
 apply plugin: 'android'
 apply plugin: 'spoon'
 
+
 android {
   compileSdkVersion 19
   buildToolsVersion '23.0.1'
+
+  // signingConfigs {
+  //   release {
+  //       storeFile file(System.getenv("KEYSTORE"))
+  //       storePassword System.getenv("KEYSTORE_PASSWORD")
+  //       keyAlias System.getenv("KEY_ALIAS")
+  //       keyPassword System.getenv("KEY_PASSWORD")
+  //   }
+  // }
 
   buildTypes {
     release {
       minifyEnabled false
       proguardFile getDefaultProguardFile('proguard-android.txt')
+      //      signingConfig signingConfigs.release
     }
   }
 
