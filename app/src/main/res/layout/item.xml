@@ -1,64 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical" >
 
 
-<!-- api11 -->
-<!--
-	android:textIsSelectable="true"
-	android:inputType="none"
-	android:editable="false"
--->
+  <!-- api11 -->
+  <!--
+      android:textIsSelectable="true"
+      android:inputType="none"
+      android:editable="false"
+  -->
 
-    <TextView
-        android:id="@+id/item_dialog_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="" />
-    <!--TODO:  read only -->
-    <!-- type -->
-    <Spinner
-	android:id="@+id/item_dialog_type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+  <TextView
+      android:id="@+id/item_dialog_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="" />
+  <!--TODO:  read only -->
+  <!-- type -->
+  <Spinner
+      android:id="@+id/item_dialog_type"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
 
-    <!-- next group -->
-    <RadioGroup 
-	android:id="@+id/radio_group"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
-	android:orientation="vertical">
-      <RadioButton android:id="@+id/radio_to_buy"
-		   android:layout_width="wrap_content"
-		   android:layout_height="wrap_content"
-		   android:text="To buy list"
-		   />
-      <RadioButton android:id="@+id/radio_stock"
-		   android:layout_width="wrap_content"
-		   android:layout_height="wrap_content"
-		   android:text="Stock"
-		   />
-      <RadioButton android:id="@+id/radio_shelf"
-		   android:layout_width="wrap_content"
-		   android:layout_height="wrap_content"
-		   android:text="Shelf"
-		   />
-      <RadioButton android:id="@+id/radio_history"
-		   android:layout_width="wrap_content"
-		   android:layout_height="wrap_content"
-		   android:text="History"
-		   />
+  <!-- next group -->
+  <RadioGroup 
+      android:id="@+id/radio_group"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+    <RadioButton android:id="@+id/radio_to_buy"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:text="To buy list"
+		 />
+    <RadioButton android:id="@+id/radio_stock"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:text="Stock"
+		 />
+    <RadioButton android:id="@+id/radio_shelf"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:text="Shelf"
+		 />
+    <RadioButton android:id="@+id/radio_history"
+		 android:layout_width="wrap_content"
+		 android:layout_height="wrap_content"
+		 android:text="History"
+		 />
     <LinearLayout 
-		  android:layout_width="match_parent"
-		  android:layout_height="wrap_content"
-		  android:orientation="horizontal" >
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="horizontal" >
 
       <RadioButton android:id="@+id/radio_later"
 		   android:layout_weight="1"
-		   android:layout_width="fill_parent"
+		   android:layout_width="0dp"
 		   android:layout_height="wrap_content"
 		   android:text="Later"
 		   />
@@ -67,8 +67,8 @@
 		android:layout_height="wrap_content"
 		android:layout_width="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceMedium"
-		android:layout_alignParentRight="true"
 		android:text="" />
+      <!-- 		android:layout_alignParentRight="true" -->
 
       <TextView android:id="@+id/item_later_date_long"
 		android:layout_height="wrap_content"
@@ -82,19 +82,12 @@
 	      android:layout_width="wrap_content"
 	      android:text="@string/later_date" />
     </LinearLayout>
-      
-      <!-- TODO: add date picker -->
-    </RadioGroup>
+    
+  </RadioGroup>
 
-    <CheckBox android:id="@+id/item_write_to_calendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/checkbox_write_to_calendar"
-	/>
-<!--
-    <CalendarView
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:showWeekNumber="false"/>
--->
+  <CheckBox android:id="@+id/item_write_to_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkbox_write_to_calendar"
+	    />
 </LinearLayout>
