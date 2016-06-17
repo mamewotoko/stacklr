@@ -21,7 +21,7 @@
 
     <string name="pref_load_google_calendar">カレンダーを読み込む</string>
     <string name="pref_calendar_name_to_load">読み込むカレンダーの名前</string>
-    <string name="pref_log_google_calendar">完e了したイベントを記録する</string>
+    <string name="pref_log_google_calendar">完了したイベントを記録する</string>
     <string name="pref_calendar_name_to_log">記録するカレンダーの名前</string>
 
     <string name="error_calendar_not_found">Googleカレンダー「%1$s」は見つかりません。</string>
