@@ -4,8 +4,6 @@ import json, httplib2, sys
 from oauth2client.file import Storage
 import setting
 
-# 
-
 credentials = None
 
 #redirect_uri = 'http://localhost'
@@ -33,4 +31,3 @@ req = service.calendarList().list()
 response = req.execute()
 #print req
 print json.dumps(response, indent=True, ensure_ascii=False)
-
