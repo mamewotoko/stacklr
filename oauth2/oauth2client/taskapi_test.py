@@ -4,7 +4,6 @@ import json, httplib2, sys
 from oauth2client.file import Storage
 import setting, os
 
-credential_path = "../credentials.json"
 credentials = None
 
 storage = Storage(setting.STORAGE_FILE)
