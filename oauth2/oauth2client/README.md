@@ -21,7 +21,7 @@ Run
 1. 
 
     ```
-    python taskapi_test.py
+    python calendar_test.py
     ```
     Json object which represents google calendar list will be displayed
 

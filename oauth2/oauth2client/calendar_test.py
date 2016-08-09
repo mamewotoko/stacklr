@@ -34,7 +34,9 @@ else:
 http = credentials.authorize(http)
 
 service = build('calendar', 'v3', http=http)
+## list calendar
 req = service.calendarList().list()
 response = req.execute()
+
 #print req
 print json.dumps(response, indent=True, ensure_ascii=False)
