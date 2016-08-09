@@ -4,6 +4,7 @@ import json, httplib2, sys
 from oauth2client.file import Storage
 import setting, os
 
+target_calendar_name = "debug"
 credentials = None
 
 storage = Storage(setting.STORAGE_FILE)
@@ -38,5 +39,23 @@ service = build('calendar', 'v3', http=http)
 req = service.calendarList().list()
 response = req.execute()
 
-#print req
 print json.dumps(response, indent=True, ensure_ascii=False)
+
+# cal = filter(lambda x: x["summary"] == target_calendar_name, response["items"])[0]
+# cal_id = cal["id"]
+
+# event = {
+#   'summary': 'Party japan',
+#   'description': 'A iueo',
+#   'start': {
+#     'dateTime': '2016-08-11T09:00:00',
+#     'timeZone': 'Asia/Tokyo',
+#   },
+#   'end': {
+#     'dateTime': '2016-08-12T09:00:00',
+#     'timeZone': 'Asia/Tokyo',
+#   },
+# }
+
+# event_resp = service.events().insert(calendarId=cal_id, body=event).execute()
+# print json.dumps(event_resp, indent=True, ensure_ascii=False)
