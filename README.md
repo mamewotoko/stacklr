@@ -60,6 +60,8 @@ Robotium Test
 
 TODO
 -----
+* handle share? intent from other activity
+  * e.g. chrome
 * log item transition to google calendar
   * add calendar if absent?
     * or list exising calendar
@@ -208,6 +210,10 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
     ```
     KEYSTORE=/path/to/keystore KEY_ALIAS=ALIAS_NAME KEYSTORE_PASSWORD=xxxx KEY_PASSWORD=yyyyy ./gradlew assembleRelease
     ```
+* intent
+  * com.google.android.gm.action.AUTO_SEND: Note to self
+  * android.intent.action.SEND: Send text data to other app
+    https://developer.android.com/training/sharing/send.html
 License
 -------
 ```
