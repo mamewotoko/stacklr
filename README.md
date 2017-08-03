@@ -60,6 +60,8 @@ Robotium Test
 
 TODO
 -----
+* handle share? intent from other activity
+  * e.g. chrome
 * log item transition to google calendar
   * add calendar if absent?
     * or list exising calendar
@@ -151,6 +153,7 @@ TODO
 * add touch menu, which is just update timestamp (or push button for each item)
 * draw icon
 * add license file
+* examine NOTICE file of library
 * add wording file and support multiple language
 * UI with Action bar
   http://developer.android.com/guide/topics/ui/actionbar.html
@@ -208,6 +211,28 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
     ```
     KEYSTORE=/path/to/keystore KEY_ALIAS=ALIAS_NAME KEYSTORE_PASSWORD=xxxx KEY_PASSWORD=yyyyy ./gradlew assembleRelease
     ```
+* intent
+  * com.google.android.gm.action.AUTO_SEND: Note to self
+  * android.intent.action.SEND: Send text data to other app
+    https://developer.android.com/training/sharing/send.html
+License
+-------
+```
+   Copyright 2014-2016 Takashi Masuyama
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+```
+
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://mamewo.ddo.jp/
