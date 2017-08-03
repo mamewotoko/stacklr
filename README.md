@@ -150,7 +150,7 @@ TODO
 * add sync config
 * add touch menu, which is just update timestamp (or push button for each item)
 * draw icon
-* add licence file
+* add license file
 * add wording file and support multiple language
 * UI with Action bar
   http://developer.android.com/guide/topics/ui/actionbar.html
