@@ -12,8 +12,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'spoon'
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion '23.0.1'
+  compileSdkVersion 24
+  buildToolsVersion '26.0.1'
+
+  defaultConfig {
+      applicationId "com.mamewo.stacklr"
+      versionCode 6
+      versionName "0.3"
+      
+      minSdkVersion 10
+      targetSdkVersion 26
+      //For espresso
+      //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+
 
   // signingConfigs {
   //   release {
@@ -40,9 +52,9 @@ android {
   }
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-version = 0.2
+//sourceCompatiobility = 1.7
+//targetCompatibility = 1.7
+//version = 0.2
 
 dependencies {
   compile 'com.google.android.gms:play-services-identity:7.8.0'

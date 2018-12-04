@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.mamewo.stacklr"
-      android:versionCode="5"
-      android:versionName="0.2"
       android:installLocation="auto">
     <uses-sdk android:minSdkVersion="10" />
 
