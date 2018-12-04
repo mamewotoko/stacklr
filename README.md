@@ -152,6 +152,7 @@ TODO
 * add sync config
 * add touch menu, which is just update timestamp (or push button for each item)
 * draw icon
+* add license file
 * examine NOTICE file of library
 * add wording file and support multiple language
 * UI with Action bar
