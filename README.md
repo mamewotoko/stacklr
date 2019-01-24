@@ -1,15 +1,17 @@
 stacklr - Stack based shopping/TODO list ![icon](app/src/main/res/drawable-xhdpi/ic_launcher.png) [![Build Status](https://travis-ci.org/mamewotoko/stacklr.svg?branch=master)](https://travis-ci.org/mamewotoko/stacklr)
 ========================================
+
 Concept
 -------
+
 <pre>
   +----------
   | Apple   ^
   | Orange  | shopping list
-  =========== 
+  ===========
   | Banana  | stock
   ===========
-  | Sugar   V history: candidates to add to shopping list 
+  | Sugar   V history: candidates to add to shopping list
   +---------
 </pre>
 
@@ -17,6 +19,7 @@ Concept
 
 Functions
 ---------
+
 * add new item to shopping list
    by keyboard of smart phone
    by voice
@@ -35,6 +38,7 @@ Functions
 
 Build(command line)
 -------------------
+
 1. install "Google Repository" using android sdk manager
 2. create local.properties file which contains property ```sdk.dir=<path/to/android-sdk>```
 (or android create project with gradle option)
@@ -51,6 +55,7 @@ select menu: Build -> Build APK
 
 Robotium Test
 -------------
+
 1. connect device or start emulator with Gooogle APIs image
 2. start testing
 
@@ -60,6 +65,7 @@ Robotium Test
 
 TODO
 -----
+
 * handle share? intent from other activity
   * e.g. chrome
 * log item transition to google calendar
@@ -69,7 +75,7 @@ TODO
     * eg. canceled event (not done event)
   * view transition stack (recent item)
     * select undo item
-  * buffer transitions which is not log to google calendar  
+  * buffer transitions which is not log to google calendar
 * use as memo tool (as new app?)
   * tab ui to switch
   * customizable group?
@@ -93,7 +99,7 @@ TODO
 * add test using Espresso
 * fork simple app project
   * use one task list
-  * parent/child 
+  * parent/child
 * shopping mode (filter)
   food/items, not event,action item
 * switch to other google account (for testing only?)
@@ -138,16 +144,16 @@ TODO
   * fix duplicate google task list is created
 * use gradle to build project and fetch libraries
 * add following groups as default
-   * waiting (e.g. internet shopping)
-   * wish list (not buy, but want to buy lator, display lower)
+  * waiting (e.g. internet shopping)
+  * wish list (not buy, but want to buy lator, display lower)
 * avoid frequent load
-   * by managing last update time
-   * avoid loading group
+  * by managing last update time
+  * avoid loading group
 * add test
-   * install -> permit oauth -> load groups and tasks first time
-   * start stacklr, push home button, start stacklr again (loading icon is not displayed)
-   * reload by menu (loading icon is displayed)
-   * operation to interact with google service UI
+  * install -> permit oauth -> load groups and tasks first time
+  * start stacklr, push home button, start stacklr again (loading icon is not displayed)
+  * reload by menu (loading icon is displayed)
+  * operation to interact with google service UI
 * add promote group (stock items to use first)
 * add sync config
 * add touch menu, which is just update timestamp (or push button for each item)
@@ -185,6 +191,7 @@ TODO
 
 MEMO
 ----
+
 * Google Keep has no api yet
   http://stackoverflow.com/questions/19196238/is-there-a-google-keep-api
 * Calendar API v3
@@ -206,7 +213,7 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
 * [Profiling with Traceview and dmtracedump](http://developer.android.com/intl/ja/tools/debugging/debugging-tracing.html)
 * release build with sign
   1. uncomment release configuration in app/build.gradle
-  2. pass paramters as environment variables 
+  2. pass paramters as environment variables
  
     ```
     KEYSTORE=/path/to/keystore KEY_ALIAS=ALIAS_NAME KEYSTORE_PASSWORD=xxxx KEY_PASSWORD=yyyyy ./gradlew assembleRelease
@@ -215,24 +222,27 @@ https://developers.google.com/resources/api-libraries/documentation/tasks/v1/jav
   * com.google.android.gm.action.AUTO_SEND: Note to self
   * android.intent.action.SEND: Send text data to other app
     https://developer.android.com/training/sharing/send.html
+
 License
 -------
+
 ```
-   Copyright 2014-2016 Takashi Masuyama
+Copyright 2014-2016 Takashi Masuyama
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
 
 ----
 Takashi Masuyama < mamewotoko@gmail.com >  
 http://mamewo.ddo.jp/
+
