@@ -2,13 +2,14 @@ language: android
 android:
     components:
         - build-tools-28.0.3
-        - android-28
+        - android-26
         - extra-google-google_play_services
         - addon-google_apis-google-19
         - extra-android-m2repository
         - extra-google-m2repository
 licences:
         - '.+'
+        - build-tools;28.0.3
        
 #before_script:
 #        - android list sdk
